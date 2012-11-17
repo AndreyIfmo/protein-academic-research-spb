@@ -3,7 +3,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 import org.junit.*;
 
 /**
- * Testing {@link GraphUtils#getPath(Graph, int, int)}
+ * Testing {@link GraphUtils#getPaths(Graph, int, int, int)}
  *
  * @author Maxim Buzdalov
  */
@@ -18,7 +18,7 @@ public class TSPTest {
         g.addEdge(1, 3, 2);
         g.addEdge(2, 3, 1);
 
-        Path p = GraphUtils.getPath(g, 0, 3);
+        Path p = GraphUtils.getPaths(g, 0, 3, 1)[0];
         Assert.assertEquals(3, p.cost, 1e-14);
         Assert.assertArrayEquals(new int[] {0, 1, 2, 3}, p.vertices);
     }
