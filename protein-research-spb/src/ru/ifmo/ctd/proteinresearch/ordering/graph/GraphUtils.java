@@ -10,11 +10,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class GraphUtils {
-    public static Path getPath(Graph g, int source, int target) {
+    private static void computeTables(Graph g, int source, double[][] dp, int[][] back) {
         int n = g.getN();
-        double[][] dp = new double[1 << n][n];
-        int[][] back = new int[1 << n][n];
-
         for (double[] t : dp) {
             Arrays.fill(t, Double.POSITIVE_INFINITY);
         }
@@ -40,15 +37,29 @@ public class GraphUtils {
                 }
             }
         }
+    }
 
-        int[] result = new int[n];
-        int finalMask = ((1 << n) - 1) ^ (1 << target);
-        for (int i = n - 1, last = target, mask = finalMask; i >= 0; --i) {
-            result[i] = last;
-            last = back[mask][last];
-            mask ^= 1 << last;
+    public static Path[] getPaths(Graph g, int source, int target, int k) {
+        int n = g.getN();
+        double[][] dp = new double[1 << n][n];
+        int[][] back = new int[1 << n][n];
+
+        computeTables(g, source, dp, back);
+
+        switch (k) {
+            case 1: {
+                int[] result = new int[n];
+                int finalMask = ((1 << n) - 1) ^ (1 << target);
+                for (int i = n - 1, last = target, mask = finalMask; i >= 0; --i) {
+                    result[i] = last;
+                    last = back[mask][last];
+                    mask ^= 1 << last;
+                }
+                return new Path[] {new Path(result, dp[finalMask][target])};
+            }
+            default:
+                throw new IllegalArgumentException("K = " + k + " is unsupported");
         }
 
-        return new Path(result, dp[finalMask][target]);
     }
 }
