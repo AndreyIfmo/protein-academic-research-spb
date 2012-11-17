@@ -1,7 +1,6 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import java.util.AbstractList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +9,7 @@ import java.util.List;
  * Time: 18:12
  * To change this template use File | Settings | File Templates.
  */
-public  abstract class AbstractGraph implements Graph {
+public abstract class AbstractGraph implements Graph {
     protected final int n;
     public AbstractGraph(int number) {
         this.n=number;
