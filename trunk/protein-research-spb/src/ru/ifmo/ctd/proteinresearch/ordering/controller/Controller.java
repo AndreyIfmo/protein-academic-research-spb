@@ -1,14 +1,19 @@
 package ru.ifmo.ctd.proteinresearch.ordering.controller;
 
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
+
+import java.io.IOException;
 /**
- * Created by IntelliJ IDEA.
- * User: Ansokol
- * Date: 13.11.12
- * Time: 13:55
- * To change this template use File | Settings | File Templates.
+ * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
+ * Date: 19.11.12
+ * Time: 20:02
  */
 public class Controller {
-    public static void main (String [] args) {
+    public static void main(String[] args) throws IOException {
+        Graph g1 = GraphParser.parseMatrixGraphFromFile("resources\\table-1BTB.txt");
+        Graph g2 = GraphParser.parseMatrixGraphFromFile("resources\\table-2LJI.txt");
+        System.out.println(g1+"\n"+g2);
 
     }
 }

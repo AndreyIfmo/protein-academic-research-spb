@@ -1,7 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import javax.naming.NameNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,6 +19,17 @@ public class MatrixGraph extends AbstractGraph{
         super(num);
         edges = new double[num][num];
         hasEdge = new boolean[num][num];
+    }
+
+    public MatrixGraph(int num, double[][] edges) {
+        super(num);
+        this.edges = edges;
+        hasEdge = new boolean[num][num];
+        for (int i=0; i<num; i++) {
+            for (int j=0; j<num; j++) {
+                hasEdge[i][j]=true;
+            }
+        }
     }
     
 
@@ -62,5 +73,22 @@ public class MatrixGraph extends AbstractGraph{
     @Override
     public boolean hasEdge(int from, int to) {
         return hasEdge[from][to];
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.n);
+        sb.append("\n");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                sb.append(edges[j][i]);
+                if (j!=n-1) {
+                    sb.append(" ");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

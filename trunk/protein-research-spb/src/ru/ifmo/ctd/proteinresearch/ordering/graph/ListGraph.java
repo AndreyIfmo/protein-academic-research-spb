@@ -1,7 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,4 +67,8 @@ public class ListGraph extends AbstractGraph{
         return false;
     }
 
+    @Override
+    public String toString() {
+        return (edges == null ? null : Arrays.asList(edges)).toString();
+    }
 }
