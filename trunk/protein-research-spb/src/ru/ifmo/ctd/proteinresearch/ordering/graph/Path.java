@@ -8,7 +8,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
  * To change this template use File | Settings | File Templates.
  */
 public class Path {
-    final int [] vertices;
+    final int[] vertices;
     final double cost;
 
     public Path(int[] vertices, double cost) {
