@@ -1,11 +1,11 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
- * Date: 15.11.12
- * Time: 4:02
+ *         Date: 15.11.12
+ *         Time: 4:02
  */
 
 public class GraphUtils {
@@ -54,7 +54,7 @@ public class GraphUtils {
                     last = back[mask][last];
                     mask ^= 1 << last;
                 }
-                return new Path[] {new Path(result, dp[finalMask][target])};
+                return new Path[]{new Path(result, dp[finalMask][target])};
             }
             default:
                 throw new IllegalArgumentException("K = " + k + " is unsupported");

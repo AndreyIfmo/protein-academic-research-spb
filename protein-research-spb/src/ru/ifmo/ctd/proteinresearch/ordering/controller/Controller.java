@@ -4,10 +4,11 @@ import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
 
 import java.io.IOException;
+
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
- * Date: 19.11.12
- * Time: 20:02
+ *         Date: 19.11.12
+ *         Time: 20:02
  */
 public class Controller {
     public static void main(String[] args) throws IOException {

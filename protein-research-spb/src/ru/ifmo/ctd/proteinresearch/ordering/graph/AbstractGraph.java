@@ -1,17 +1,20 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Date: 11.12.12
  * Time: 18:48
+ *
  * @author {@link "mailto:ansokolmail@gmail.com" "Andrey Sokolov"}
  */
 public abstract class AbstractGraph implements Graph {
     protected final int n;
+
     public AbstractGraph(int number) {
-        this.n=number;
+        this.n = number;
     }
+
     @Override
     public int getN() {
         return n;

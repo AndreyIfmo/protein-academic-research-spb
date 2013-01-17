@@ -1,6 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Testing {@link GraphUtils#getPaths(Graph, int, int, int)}
@@ -20,6 +21,6 @@ public class TSPTest {
 
         Path p = GraphUtils.getPaths(g, 0, 3, 1)[0];
         Assert.assertEquals(3, p.cost, 1e-14);
-        Assert.assertArrayEquals(new int[] {0, 1, 2, 3}, p.vertices);
+        Assert.assertArrayEquals(new int[]{0, 1, 2, 3}, p.vertices);
     }
 }
