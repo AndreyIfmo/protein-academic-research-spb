@@ -13,7 +13,7 @@ public class Controller {
     public static void main(String[] args) throws IOException {
         Graph g1 = GraphParser.parseMatrixGraphFromFile("resources\\table-1BTB.txt");
         Graph g2 = GraphParser.parseMatrixGraphFromFile("resources\\table-2LJI.txt");
-        System.out.println(g1+"\n"+g2);
+
 
     }
 }

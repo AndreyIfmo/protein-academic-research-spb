@@ -22,14 +22,9 @@ public class Edge {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Edge)) return false;
-
         Edge edge = (Edge) o;
+        return from == edge.from && to == edge.to && Double.compare(edge.weight, weight) == 0;
 
-        if (from != edge.from) return false;
-        if (to != edge.to) return false;
-        if (Double.compare(edge.weight, weight) != 0) return false;
-
-        return true;
     }
 
     @Override
