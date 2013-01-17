@@ -3,11 +3,9 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Ansokol
- * Date: 14.11.12
- * Time: 18:12
- * To change this template use File | Settings | File Templates.
+ * Date: 11.12.12
+ * Time: 18:48
+ * @author {@link "mailto:ansokolmail@gmail.com" "Andrey Sokolov"}
  */
 public abstract class AbstractGraph implements Graph {
     protected final int n;
@@ -16,7 +14,7 @@ public abstract class AbstractGraph implements Graph {
     }
     @Override
     public int getN() {
-        return n;  //To change body of implemented methods use File | Settings | File Templates.
+        return n;
     }
 
     @Override

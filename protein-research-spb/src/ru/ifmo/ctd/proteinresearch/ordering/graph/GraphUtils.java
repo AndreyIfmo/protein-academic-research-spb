@@ -3,12 +3,11 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Ansokol
+ * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
  * Date: 15.11.12
  * Time: 4:02
- * To change this template use File | Settings | File Templates.
  */
+
 public class GraphUtils {
     private static void computeTables(Graph g, int source, double[][] dp, int[][] back) {
         int n = g.getN();
