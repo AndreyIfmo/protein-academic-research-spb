@@ -19,6 +19,8 @@ public interface Graph {
      */
     public Graph getSubGraph(boolean[] numOfVertices);
 
+    public Graph getSubGraph(long mask);
+
     public void addEdge(int from, int to, double w);
 
     public List<Edge> edges(int x);

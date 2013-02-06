@@ -1,5 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import ru.ifmo.ctd.proteinresearch.ordering.BitUtils;
+
 import java.util.Arrays;
 
 /**
@@ -38,27 +40,49 @@ public class GraphUtils {
         }
     }
 
-    public static Path[] getPaths(Graph g, int source, int target, int k) {
+    public static Path getPath(Graph g, int source, int target) {
         int n = g.getN();
         double[][] dp = new double[1 << n][n];
         int[][] back = new int[1 << n][n];
-
         computeTables(g, source, dp, back);
+        int[] result = new int[n];
+        int finalMask = ((1 << n) - 1) ^ (1 << target);
+        for (int i = n - 1, last = target, mask = finalMask; i >= 0; --i) {
+            result[i] = last;
+            last = back[mask][last];
+            mask ^= 1 << last;
+        }
+        return new Path(result, dp[finalMask][target]);
+    }
 
+    public static Path[] getPaths(Graph g, int source, int target, int k) {
         switch (k) {
-            case 1: {
-                int[] result = new int[n];
-                int finalMask = ((1 << n) - 1) ^ (1 << target);
-                for (int i = n - 1, last = target, mask = finalMask; i >= 0; --i) {
-                    result[i] = last;
-                    last = back[mask][last];
-                    mask ^= 1 << last;
+            case 1:
+                return new Path[]{getPath(g, source, target)};
+            case 2:
+                int limit = (int) Math.pow(2, g.getN());
+                double minCost = Double.MAX_VALUE;
+                Path[] answer = new Path[2];
+                for (int i = 0; i < limit; i++) {
+                    int cur = i;
+                    cur = BitUtils.setNBit(cur, source, true);
+                    cur = BitUtils.setNBit(cur, target, true);
+                    Graph subGraph1 = g.getSubGraph(cur);
+                    Path p1 = getPath(subGraph1, source, target);
+                    cur = -i;
+                    cur = BitUtils.setNBit(cur, source, true);
+                    cur = BitUtils.setNBit(cur, target, true);
+                    Graph subGraph2 = g.getSubGraph(cur);
+                    Path p2 = getPath(subGraph2, source, target);
+                    if (p1.cost < minCost - p2.cost) {
+                        minCost = p1.cost + p2.cost;
+                        answer[0] = p1;
+                        answer[1] = p2;
+                    }
                 }
-                return new Path[]{new Path(result, dp[finalMask][target])};
-            }
+                return answer;
             default:
                 throw new IllegalArgumentException("K = " + k + " is unsupported");
         }
-
     }
 }
