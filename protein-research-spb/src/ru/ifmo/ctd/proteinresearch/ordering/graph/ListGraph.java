@@ -1,5 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import ru.ifmo.ctd.proteinresearch.ordering.BitUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +47,23 @@ public class ListGraph extends AbstractGraph {
         }
         return new ListGraph(copy);
     }
+
+    @Override
+    public Graph getSubGraph(long mask) {
+        List<Edge> toRemove = new ArrayList<Edge>();
+        List<List<Edge>> copy = new ArrayList<List<Edge>>(edges.size());
+        for (List<Edge> itList : copy) {
+            toRemove.clear();
+            for (Edge it : itList) {
+                if (!BitUtils.getNBit(mask, it.from) || !BitUtils.getNBit(mask, it.to)) {
+                    toRemove.add(it);
+                }
+            }
+            itList.removeAll(toRemove);
+        }
+        return new ListGraph(copy);
+    }
+
 
     @Override
     public void addEdge(int from, int to, double w) {

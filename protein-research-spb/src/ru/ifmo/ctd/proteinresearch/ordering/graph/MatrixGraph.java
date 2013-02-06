@@ -1,5 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import ru.ifmo.ctd.proteinresearch.ordering.BitUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,25 @@ public class MatrixGraph extends AbstractGraph {
         for (int i = 0; i < num; i++) {
             for (int j = 0; j < num; j++) {
                 if (numOfVertices[i] && numOfVertices[j]) {
+                    copyEdges[i][j] = edges[i][j];
+                    copyHasEdge[i][j] = hasEdge[i][j];
+                } else {
+                    copyEdges[i][j] = 0;
+                    copyHasEdge[i][j] = false;
+                }
+            }
+        }
+        return new MatrixGraph(copyEdges, copyHasEdge);
+    }
+
+    @Override
+    public Graph getSubGraph(long mask) {
+        double[][] copyEdges = new double[edges.length][edges.length];
+        boolean[][] copyHasEdge = new boolean[hasEdge.length][hasEdge.length];
+        int num = edges.length;
+        for (int i = 0; i < num; i++) {
+            for (int j = 0; j < num; j++) {
+                if (BitUtils.getNBit(mask, i) && BitUtils.getNBit(mask, j)) {
                     copyEdges[i][j] = edges[i][j];
                     copyHasEdge[i][j] = hasEdge[i][j];
                 } else {

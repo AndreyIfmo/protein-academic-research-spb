@@ -4,6 +4,8 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -16,6 +18,10 @@ public class TestMatrixGraph {
 
     @Before
     public void constructGraph() throws IOException {
+        File f = new File("aaa");
+        FileWriter fw = new FileWriter(f);
+        fw.write("2");
+        fw.close();
         graph = GraphParser.parseMatrixGraphFromFile("resources\\table-1BTB.txt");
     }
 
@@ -25,4 +31,6 @@ public class TestMatrixGraph {
         Assert.assertEquals(0.0, graph.getEdgeWeight(1, 1));
         Assert.assertEquals(5.124285, graph.getEdgeWeight(4, 2));
     }
+
+
 }
