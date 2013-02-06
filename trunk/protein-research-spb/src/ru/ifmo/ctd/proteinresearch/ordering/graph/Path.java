@@ -9,8 +9,8 @@ import java.util.Arrays;
  *         To change this template use File | Settings | File Templates.
  */
 public class Path {
-    final int[] vertices;
-    final double cost;
+    public final int[] vertices;
+    public final double cost;
 
     public Path(int[] vertices, double cost) {
         this.vertices = vertices;

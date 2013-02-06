@@ -39,11 +39,12 @@ public class GraphUtils {
             }
         }
     }
+
     public static Path getPath(Graph g) {
         Path p = null;
         Path temp;
         double min = Double.MAX_VALUE;
-        for (int i = 0; i <  g.getN(); i++) {
+        for (int i = 0; i < g.getN(); i++) {
             for (int j = i + 1; j < g.getN(); j++) {
                 temp = GraphUtils.getPath(g, i, j);
                 if (min > temp.cost) {
@@ -53,6 +54,27 @@ public class GraphUtils {
             }
         }
         return p;
+    }
+
+    public static Path[] getPaths(Graph g, int k) {
+        Path[] p = null;
+        Path[] temp;
+        double min = Double.MAX_VALUE;
+        for (int i = 0; i < g.getN(); i++) {
+            for (int j = i + 1; j < g.getN(); j++) {
+                temp = GraphUtils.getPaths(g, i, j, k);
+                double cost = 0;
+                for (Path it : temp) {
+                    cost += it.cost;
+                }
+                if (min > cost) {
+                    p = temp;
+                    min = cost;
+                }
+            }
+        }
+        return p;
+
     }
 
     public static Path getPath(Graph g, int source, int target) {
