@@ -1,8 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,7 +21,7 @@ public class TestMatrixGraph {
         FileWriter fw = new FileWriter(f);
         fw.write("2");
         fw.close();
-        graph = GraphParser.parseMatrixGraphFromFile("resources\\table-1BTB.txt");
+        graph = GraphParser.parseMatrixGraphFromFile("resources/table-1BTB.txt");
     }
 
     @Test
@@ -33,4 +32,8 @@ public class TestMatrixGraph {
     }
 
 
+    @After
+    public void cleanup() {
+        Assert.assertTrue(new File("aaa").delete());
+    }
 }
