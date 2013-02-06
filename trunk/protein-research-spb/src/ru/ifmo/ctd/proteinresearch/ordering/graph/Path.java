@@ -19,7 +19,6 @@ public class Path {
 
     @Override
     public String toString() {
-        return "{" + Arrays.toString(vertices) + " " + cost +
-                '}';
+        return "{" + Arrays.toString(vertices) + " " + cost + "}";
     }
 }

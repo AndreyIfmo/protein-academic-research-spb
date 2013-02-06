@@ -16,8 +16,8 @@ public class TSPTest {
     Graph g2;
     @Before
     public void init() throws IOException {
-        g1 = GraphParser.parseMatrixGraphFromFile("resources\\table-1BTB.txt");
-        g2 = GraphParser.parseMatrixGraphFromFile("resources\\table-2LJI.txt");
+        g1 = GraphParser.parseMatrixGraphFromFile("resources/table-1BTB.txt");
+        g2 = GraphParser.parseMatrixGraphFromFile("resources/table-2LJI.txt");
     }
     @Test
     public void simpleTSP() {
