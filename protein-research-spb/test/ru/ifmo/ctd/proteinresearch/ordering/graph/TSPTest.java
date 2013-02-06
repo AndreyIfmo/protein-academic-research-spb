@@ -35,7 +35,8 @@ public class TSPTest {
     }
     @Test
     public void simpleTSPForFiles() {
-        Path p = GraphUtils.getPaths(g1, 0, 19, 1)[0];
+        Path p = GraphUtils.getPath(g2);
         System.out.print(p.cost);
+        System.out.print(p);
     }
 }

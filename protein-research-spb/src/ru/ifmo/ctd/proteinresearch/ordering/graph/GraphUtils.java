@@ -39,6 +39,21 @@ public class GraphUtils {
             }
         }
     }
+    public static Path getPath(Graph g) {
+        Path p = null;
+        Path temp;
+        double min = Double.MAX_VALUE;
+        for (int i = 0; i <  g.getN(); i++) {
+            for (int j = i + 1; j < g.getN(); j++) {
+                temp = GraphUtils.getPath(g, i, j);
+                if (min > temp.cost) {
+                    p = temp;
+                    min = p.cost;
+                }
+            }
+        }
+        return p;
+    }
 
     public static Path getPath(Graph g, int source, int target) {
         int n = g.getN();
