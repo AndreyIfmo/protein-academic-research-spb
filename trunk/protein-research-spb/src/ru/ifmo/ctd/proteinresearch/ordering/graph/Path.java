@@ -1,11 +1,12 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import java.util.Arrays;
+
 /**
- * Created by IntelliJ IDEA.
- * User: Ansokol
- * Date: 15.11.12
- * Time: 4:03
- * To change this template use File | Settings | File Templates.
+ * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
+ *         Date: 14.11.12
+ *         Time: 18:18
+ *         To change this template use File | Settings | File Templates.
  */
 public class Path {
     final int[] vertices;
@@ -14,5 +15,11 @@ public class Path {
     public Path(int[] vertices, double cost) {
         this.vertices = vertices;
         this.cost = cost;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + Arrays.toString(vertices) + " " + cost +
+                '}';
     }
 }
