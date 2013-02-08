@@ -8,10 +8,10 @@ import java.io.IOException;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
- *         Date: 17.01.13
- *         Time: 19:31
+ *         Date: 08.02.13
+ *         Time: 18:34
  */
-public class TestMatrixGraph {
+public class GraphUtilsTest {
     public Graph graph;
 
     @Before
@@ -20,11 +20,7 @@ public class TestMatrixGraph {
     }
 
     @Test
-    public void testMatrixGraph() throws Exception {
-        Assert.assertEquals(30, graph.getN());
-        Assert.assertEquals(0.0, graph.getEdgeWeight(1, 1));
-        Assert.assertEquals(5.124285, graph.getEdgeWeight(4, 2));
+    public void testIsMetric() throws Exception {
+        Assert.assertEquals(false, GraphUtils.isMetric(graph));
     }
-
-
 }
