@@ -7,16 +7,18 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
  */
 public class DisjointSets {
     private int[] parent;
+    private int[] rank;
 
     public DisjointSets(int n) {
         parent = new int[n];
+        rank = new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
         }
     }
 
     public int find(int x) {
-        if (parent[x] < 0) {
+        if (parent[x] == x) {
             return x;
         } else {
             parent[x] = find(parent[x]);
@@ -25,13 +27,17 @@ public class DisjointSets {
     }
 
     public void union(int root1, int root2) {
-        if (parent[root2] < parent[root1]) {
-            parent[root1] = root2;
-        } else {
-            if (parent[root1] == parent[root2]) {
-                parent[root1]--;
+        root1 = find(root1);
+        root2 = find(root2);
+        if (root1 != root2) {
+            if (rank[root1] == rank[root2]) {
+                ++rank[root1];
             }
-            parent[root2] = root1;
+            if (rank[root1] < rank[root2]) {
+                parent[root1] = root2;
+            } else {
+                parent[root2] = root1;
+            }
         }
     }
 }

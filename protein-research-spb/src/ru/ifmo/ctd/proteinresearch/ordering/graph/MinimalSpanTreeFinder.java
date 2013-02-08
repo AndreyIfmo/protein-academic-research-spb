@@ -11,12 +11,13 @@ import java.util.List;
  *         Time: 22:01
  */
 public class MinimalSpanTreeFinder {
-    Graph getMST(Graph g) {
+    public Graph getMST(Graph g) {
         List<List<Edge>> answer = new ArrayList<List<Edge>>(g.getN());
         DisjointSets sets = new DisjointSets(g.getN());
         List<Edge> edgeList = new ArrayList<Edge>();
         for (int i = 0; i < g.getN(); i++) {
             edgeList.addAll(g.edges(i));
+            answer.add(new ArrayList<Edge>());
         }
         Collections.sort(edgeList, new EdgeComparator());
         for (Edge it : edgeList) {
@@ -32,7 +33,7 @@ public class MinimalSpanTreeFinder {
     class EdgeComparator implements Comparator<Edge> {
         @Override
         public int compare(Edge o1, Edge o2) {
-            return (o1.weight > o2.weight ? 1 : (o1.weight == o2.weight ? 0 : -1));
+            return Double.compare(o1.weight, o2.weight);
         }
     }
 }
