@@ -1,5 +1,8 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
+import org.biojava.bio.structure.*;
+import org.biojava.bio.structure.io.*;
+import org.biojava.bio.structure.jama.*;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 
 import java.io.*;
@@ -10,83 +13,11 @@ import java.util.zip.*;
  * @author Maxim Buzdalov
  */
 public class PathToPDB {
-    static class Model {
-        public final List<String> lines;
-
-        Model(List<String> lines) {
-            this.lines = lines;
-        }
-
-        public boolean equals(Object o) {
-            return o instanceof Model && lines.equals(((Model) o).lines);
-        }
-    }
-
-    static class PDB {
-        public final List<Model> models;
-        public final String title;
-
-        public PDB(String title, PDB[] sequence) {
-            this.title = title;
-            List<Model> models = new ArrayList<>();
-            for (PDB pdb : sequence) {
-                if (models.isEmpty()) {
-                    models.add(pdb.models.get(0));
-                } else {
-                    if (!pdb.models.get(0).equals(models.get(models.size() - 1))) {
-                        throw new AssertionError("Model gluing failed");
-                    }
-                }
-                models.addAll(pdb.models.subList(1, pdb.models.size()));
-            }
-            this.models = Collections.unmodifiableList(models);
-        }
-
-        public PDB(String title, InputStream stream, boolean revert) throws IOException {
-            this.title = title;
-            StringBuilder sb = new StringBuilder();
-            byte[] buffer = new byte[2048];
-            int size;
-            while ((size = stream.read(buffer)) > 0) {
-                for (int i = 0; i < size; ++i) {
-                    sb.append((char) (buffer[i]));
-                }
-            }
-            StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-            List<Model> models = new ArrayList<>();
-            while (st.hasMoreTokens()) {
-                String token = st.nextToken();
-                if (token.startsWith("MODEL")) {
-                    List<String> model = new ArrayList<>();
-                    while (!(token = st.nextToken()).startsWith("ENDMDL")) {
-                        model.add(token);
-                    }
-                    models.add(new Model(model));
-                }
-            }
-            if (revert) {
-                Collections.reverse(models);
-            }
-            this.models = Collections.unmodifiableList(models);
-        }
-
-        public void writeTo(PrintWriter out) {
-            out.println("TITLE " + title);
-            for (int i = 0; i < models.size(); ++i) {
-                out.println("MODEL " + (i + 1));
-                for (String s : models.get(i).lines) {
-                    out.println(s);
-                }
-                out.println("ENDMDL");
-            }
-            out.println("END");
-        }
-    }
-
-    public static void buildPDB(String archive, String output, Path path) throws IOException {
+    public static void buildPDB(String archive, String output, Path path) throws Exception {
         String canonicalName = new File(archive).getName();
         String prefix = canonicalName.substring(0, canonicalName.lastIndexOf('.'));
-        PDB[] pdbs = new PDB[path.vertices.length - 1];
+
+        Chain[][] pdbs = new Chain[path.vertices.length - 1][];
         Map<String, Integer> indices = new HashMap<>();
         for (int i = 1; i < path.vertices.length; ++i) {
             int a = path.vertices[i - 1] + 1;
@@ -95,27 +26,117 @@ public class PathToPDB {
             indices.put(file, a < b ? i : -i);
         }
 
+        PDBFileReader in = new PDBFileReader();
+        String tmpFileName = "tmp.pdb";
+
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(archive))) {
             ZipEntry entry;
             while ((entry = input.getNextEntry()) != null) {
                 String name = entry.getName();
                 Integer index = indices.get(name);
                 if (index != null) {
-                    int fi = name.indexOf('/');
-                    int li = name.lastIndexOf('/');
-                    PDB pdb = new PDB((index > 0 ? "+" : "-") + name.substring(fi + 1, li), input, index < 0);
-                    pdbs[Math.abs(index) - 1] = pdb;
+                    try (FileOutputStream out = new FileOutputStream(tmpFileName)) {
+                        byte[] buf = new byte[2048];
+                        int size;
+                        while ((size = input.read(buf)) > 0) {
+                            out.write(buf, 0, size);
+                        }
+                    }
+                    Structure structure = in.getStructure(tmpFileName);
+                    Chain[] models = new Chain[structure.nrModels()];
+
+                    for (int i = 0; i < models.length; ++i) {
+                        List<Chain> model = structure.getModel(i);
+                        if (model.size() != 1) {
+                            throw new AssertionError("Teapot!!1");
+                        }
+                        models[i] = model.get(0);
+                    }
+
+                    if (index < 0) {
+                        Collections.reverse(Arrays.asList(models));
+                    }
+
+                    pdbs[Math.abs(index) - 1] = models;
                 }
                 input.closeEntry();
             }
         }
+        if (!new File(tmpFileName).delete()) {
+            System.err.println("For an unknown reason, " + tmpFileName + " can not be deleted");
+        }
+
+        Structure result = new StructureImpl();
+
+        Chain last = null;
+
+        int index = 0;
+        for (Chain[] models : pdbs) {
+            if (last == null) {
+                last = models[0];
+                result.addModel(Collections.singletonList(last));
+            } else {
+                Chain aligned = align(last, models[0]);
+                for (int i = 0; i < aligned.getAtomLength(); ++i) {
+                    Group gSrc = last.getAtomGroup(i);
+                    Group gTrg = aligned.getAtomGroup(i);
+                    for (int j = 0; j < gSrc.size(); ++j) {
+                        Atom aSrc = gSrc.getAtom(j);
+                        Atom aTrg = gTrg.getAtom(j);
+                        double[] sCoords = aSrc.getCoords();
+                        double[] tCoords = aTrg.getCoords();
+                        for (int k = 0; k < sCoords.length; ++k) {
+                            if (Math.abs(sCoords[k] - tCoords[k]) > 1e-2) {
+                                throw new AssertionError("Unaligned. Index = " + index +
+                                        ", src = " + Arrays.toString(sCoords) +
+                                        ", trg = " + Arrays.toString(tCoords));
+                            }
+                        }
+                    }
+                }
+            }
+            for (int i = 1; i < models.length; ++i) {
+                Chain aligned = align(last, models[i]);
+                result.addModel(Collections.singletonList(aligned));
+                last = aligned;
+            }
+            ++index;
+        }
 
         try (PrintWriter out = new PrintWriter(output)) {
-            new PDB("TSP Result", pdbs).writeTo(out);
+            out.println("TITLE FUCK ME");
+            for (int i = 0; i < result.nrModels(); ++i) {
+                List<Chain> mdl = result.getModel(i);
+                StructureImpl s = new StructureImpl();
+                s.addModel(mdl);
+                out.println("MODEL " + i);
+                out.print(s.toPDB());
+                out.println("TER");
+                out.println("ENDMDL");
+            }
+            out.println("END");
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    private static Chain align(Chain reference, Chain argument) throws StructureException {
+        Atom[] prev = StructureTools.getAtomCAArray(reference);
+        Atom[] curr = StructureTools.getAtomCAArray(argument);
+
+        SVDSuperimposer poser = new SVDSuperimposer(prev, curr);
+        Matrix rotation = poser.getRotation();
+        Atom translation = poser.getTranslation();
+
+        Chain newLast = new ChainImpl();
+        for (Group g : argument.getAtomGroups()) {
+            Group z = (Group) g.clone();
+            Calc.rotate(z, rotation);
+            Calc.shift(z, translation);
+            newLast.addGroup(z);
+        }
+        return newLast;
+    }
+
+    public static void main(String[] args) throws Exception {
         buildPDB("2LJI.zip", "Result.pdb", new Path(
                 new int[] {6, 19, 3, 13, 11, 18, 4, 12, 0, 10, 16, 5, 15, 1, 2, 9, 7, 14, 17, 8},
                 24631.028528
