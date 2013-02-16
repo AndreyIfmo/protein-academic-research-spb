@@ -27,7 +27,6 @@ public class PathToPDB {
         }
 
         PDBFileReader in = new PDBFileReader();
-        String tmpFileName = "tmp.pdb";
 
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(archive))) {
             ZipEntry entry;
@@ -35,14 +34,15 @@ public class PathToPDB {
                 String name = entry.getName();
                 Integer index = indices.get(name);
                 if (index != null) {
-                    try (FileOutputStream out = new FileOutputStream(tmpFileName)) {
+                    String fileName = ("tmp-" + name + ".pdb").replace('/', '-');
+                    try (FileOutputStream out = new FileOutputStream(fileName)) {
                         byte[] buf = new byte[2048];
                         int size;
                         while ((size = input.read(buf)) > 0) {
                             out.write(buf, 0, size);
                         }
                     }
-                    Structure structure = in.getStructure(tmpFileName);
+                    Structure structure = in.getStructure(fileName);
                     Chain[] models = new Chain[structure.nrModels()];
 
                     for (int i = 0; i < models.length; ++i) {
@@ -61,9 +61,6 @@ public class PathToPDB {
                 }
                 input.closeEntry();
             }
-        }
-        if (!new File(tmpFileName).delete()) {
-            System.err.println("For an unknown reason, " + tmpFileName + " can not be deleted");
         }
 
         Structure result = new StructureImpl();
@@ -104,7 +101,7 @@ public class PathToPDB {
         }
 
         try (PrintWriter out = new PrintWriter(output)) {
-            out.println("TITLE FUCK ME");
+            out.println("TITLE PATH");
             for (int i = 0; i < result.nrModels(); ++i) {
                 List<Chain> mdl = result.getModel(i);
                 StructureImpl s = new StructureImpl();
@@ -137,10 +134,13 @@ public class PathToPDB {
     }
 
     public static void main(String[] args) throws Exception {
-        buildPDB("2LJI.zip", "Result.pdb", new Path(
-                new int[] {6, 19, 3, 13, 11, 18, 4, 12, 0, 10, 16, 5, 15, 1, 2, 9, 7, 14, 17, 8},
-                24631.028528
-        ));
+//        buildPDB("2LJI.zip", "PathExtract.pdb", new Path(new int[] {16, 10, 0, 12, 4, 18, 11, 13}, -1));
+        buildPDB("2LJI.zip", "PathExtract.pdb", new Path(new int[] {12, 0, 10, 15, 1, 9, 2}, -1));
+
+//        buildPDB("2LJI.zip", "Result.pdb", new Path(
+//                new int[] {6, 19, 3, 13, 11, 18, 4, 12, 0, 10, 16, 5, 15, 1, 2, 9, 7, 14, 17, 8},
+//                24631.028528
+//        ));
 
 //        int[] two = new int[] {3, 16, 10, 0, 12, 4, 18, 11, 13, 6, 19, 8, 17, 14, 7, 9, 2, 1, 15, 5};
     }
