@@ -53,7 +53,7 @@ public class MinWeightSolver {
     }
 
     public static void main(String[] args) throws IOException {
-        Graph g = GraphParser.parseMatrixGraphFromFile("resources/table-2LJI.txt");
+        Graph g = GraphParser.parseMatrixGraphFromFile("resources/2LJI_optim_costs.txt");
 
         for (int i = 0; i < g.getN(); ++i) {
             for (int j = 0; j < g.getN(); ++j) {

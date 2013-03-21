@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class MSTSolver {
     public static void main(String[] args) throws IOException {
-        Graph g = GraphParser.parseMatrixGraphFromFile("resources/table-2LJI.txt");
+        Graph g = GraphParser.parseMatrixGraphFromFile("resources/2LJI_optim_costs.txt");
         Graph mst = new MinimalSpanTreeFinder().getMST(g);
         double weight = 0;
         List<Edge> edges = new ArrayList<>();
