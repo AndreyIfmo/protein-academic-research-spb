@@ -13,16 +13,13 @@ import java.util.zip.*;
  * @author Maxim Buzdalov
  */
 public class PathToPDB {
-    public static void buildPDB(String archive, String output, Path path) throws Exception {
-        String canonicalName = new File(archive).getName();
-        String prefix = canonicalName.substring(0, canonicalName.lastIndexOf('.'));
-
+    public static void buildPDB(String archive, String pathExpression, String output, Path path) throws Exception {
         Chain[][] pdbs = new Chain[path.vertices.length - 1][];
         Map<String, Integer> indices = new HashMap<>();
         for (int i = 1; i < path.vertices.length; ++i) {
             int a = path.vertices[i - 1] + 1;
             int b = path.vertices[i] + 1;
-            String file = String.format("%s/%02d-%02d/Result.pdb", prefix, Math.min(a, b), Math.max(a, b));
+            String file = String.format(pathExpression, Math.min(a, b), Math.max(a, b));
             indices.put(file, a < b ? i : -i);
         }
 
@@ -44,6 +41,7 @@ public class PathToPDB {
                     }
                     Structure structure = in.getStructure(fileName);
                     Chain[] models = new Chain[structure.nrModels()];
+                    System.out.println(name + ": " + models.length + " models");
 
                     for (int i = 0; i < models.length; ++i) {
                         List<Chain> model = structure.getModel(i);
@@ -134,14 +132,17 @@ public class PathToPDB {
     }
 
     public static void main(String[] args) throws Exception {
-//        buildPDB("2LJI.zip", "PathExtract.pdb", new Path(new int[] {16, 10, 0, 12, 4, 18, 11, 13}, -1));
-        buildPDB("2LJI.zip", "PathExtract.pdb", new Path(new int[] {12, 0, 10, 15, 1, 9, 2}, -1));
-
-//        buildPDB("2LJI.zip", "Result.pdb", new Path(
+//        buildPDB("2LJI.zip", "2LJI/%02d-%02d/Result.pdb", "Result.pdb", new Path(
 //                new int[] {6, 19, 3, 13, 11, 18, 4, 12, 0, 10, 16, 5, 15, 1, 2, 9, 7, 14, 17, 8},
 //                24631.028528
 //        ));
-
-//        int[] two = new int[] {3, 16, 10, 0, 12, 4, 18, 11, 13, 6, 19, 8, 17, 14, 7, 9, 2, 1, 15, 5};
+//        buildPDB("2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
+//                new int[] {8, 19, 6, 13, 11, 2, 1, 9, 7, 14, 17, 0, 10, 15, 5, 3, 16, 12, 4, 18},
+//                20552.23
+//        ));
+        buildPDB("2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
+                new int[] {8, 19, 13, 18},
+                Double.NaN
+        ));
     }
 }
