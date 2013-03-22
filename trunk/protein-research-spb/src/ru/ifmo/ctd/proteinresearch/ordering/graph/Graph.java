@@ -11,16 +11,6 @@ import java.util.List;
 public interface Graph {
     public int getN();
 
-    /**
-     * Returns sub-graph for given mask
-     *
-     * @param numOfVertices which vertices are in sub-graph
-     * @return sub-graph
-     */
-    public Graph getSubGraph(boolean[] numOfVertices);
-
-    public Graph getSubGraph(long mask);
-
     public void addEdge(int from, int to, double w);
 
     public List<Edge> edges(int x);

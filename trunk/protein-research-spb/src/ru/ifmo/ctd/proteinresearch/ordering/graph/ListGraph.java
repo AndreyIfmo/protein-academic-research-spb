@@ -1,7 +1,5 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import ru.ifmo.ctd.proteinresearch.ordering.BitUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,44 +22,6 @@ public class ListGraph extends AbstractGraph {
     public ListGraph(List<List<Edge>> edges) {
         super(edges.size());
         this.edges = edges;
-    }
-
-    /**
-     * Returns sub-graph for given mask
-     *
-     * @param numOfVertices which vertices are in sub-graph
-     * @return sub-graph
-     */
-    @Override
-    public Graph getSubGraph(boolean[] numOfVertices) {
-        List<Edge> toRemove = new ArrayList<Edge>();
-        List<List<Edge>> copy = new ArrayList<List<Edge>>(edges.size());
-        for (List<Edge> itList : copy) {
-            toRemove.clear();
-            for (Edge it : itList) {
-                if (!numOfVertices[it.from] || !numOfVertices[it.to]) {
-                    toRemove.add(it);
-                }
-            }
-            itList.removeAll(toRemove);
-        }
-        return new ListGraph(copy);
-    }
-
-    @Override
-    public Graph getSubGraph(long mask) {
-        List<Edge> toRemove = new ArrayList<Edge>();
-        List<List<Edge>> copy = new ArrayList<List<Edge>>(edges.size());
-        for (List<Edge> itList : copy) {
-            toRemove.clear();
-            for (Edge it : itList) {
-                if (!BitUtils.getNBit(mask, it.from) || !BitUtils.getNBit(mask, it.to)) {
-                    toRemove.add(it);
-                }
-            }
-            itList.removeAll(toRemove);
-        }
-        return new ListGraph(copy);
     }
 
 
