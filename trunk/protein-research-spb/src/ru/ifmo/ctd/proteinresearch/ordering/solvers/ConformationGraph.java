@@ -17,7 +17,7 @@ public class ConformationGraph {
     public final Graph graph;
     public final ConformationChain[][] chains;
 
-    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException {
+    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException, StructureException {
         this.graph = GraphParser.parseMatrixGraphFromFile(matrixFileName);
         int n = graph.getN();
         chains = new ConformationChain[n][n];
@@ -31,6 +31,8 @@ public class ConformationGraph {
                 secondIndices.put(s, to);
             }
         }
+
+        ConformationChain[] roots = new ConformationChain[n];
 
         PDBFileReader in = new PDBFileReader();
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(zipArchive))) {
@@ -51,7 +53,17 @@ public class ConformationGraph {
                     }
                     Structure structure = in.getStructure(file);
                     chains[firstIndex][secondIndex] = new ConformationChain(structure);
+                    if (roots[firstIndex] == null) {
+                        roots[firstIndex] = chains[firstIndex][secondIndex];
+                    } else {
+                        chains[firstIndex][secondIndex] = chains[firstIndex][secondIndex].alignStarts(roots[firstIndex]);
+                    }
                     chains[secondIndex][firstIndex] = chains[firstIndex][secondIndex].reverse();
+                    if (roots[secondIndex] == null) {
+                        roots[secondIndex] = chains[secondIndex][firstIndex];
+                    } else {
+                        chains[secondIndex][firstIndex] = chains[secondIndex][firstIndex].alignStarts(roots[secondIndex]);
+                    }
                 }
                 input.closeEntry();
             }

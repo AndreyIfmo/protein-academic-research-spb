@@ -31,6 +31,37 @@ public class ConformationChain {
         return new ConformationChain(temp);
     }
 
+    public ConformationChain alignStarts(ConformationChain theChain) throws StructureException {
+        Structure temp = new StructureImpl();
+        Chain prev = theChain.storage.getModel(0).get(0);
+        for (int i = 0; i < storage.nrModels(); ++i) {
+            Chain curr = storage.getModel(i).get(0);
+            Chain aligned = align(prev, curr);
+            if (i == 0) {
+                for (int a = 0; a < aligned.getAtomLength(); ++a) {
+                    Group gSrc = prev.getAtomGroup(a);
+                    Group gTrg = aligned.getAtomGroup(a);
+                    for (int j = 0; j < gSrc.size(); ++j) {
+                        Atom aSrc = gSrc.getAtom(j);
+                        Atom aTrg = gTrg.getAtom(j);
+                        double[] sCoords = aSrc.getCoords();
+                        double[] tCoords = aTrg.getCoords();
+                        for (int k = 0; k < sCoords.length; ++k) {
+                            if (Math.abs(sCoords[k] - tCoords[k]) > 1e-2) {
+                                throw new AssertionError("Unaligned. " +
+                                        "src = " + Arrays.toString(sCoords) +
+                                        ", trg = " + Arrays.toString(tCoords));
+                            }
+                        }
+                    }
+                }
+            }
+            temp.addModel(Collections.singletonList(aligned));
+            prev = aligned;
+        }
+        return new ConformationChain(temp);
+    }
+
     public double[] getEdgeSourceTorsionAngleDiff() throws StructureException {
         if (storage.nrModels() < 2) {
             throw new IllegalStateException();
@@ -51,23 +82,14 @@ public class ConformationChain {
             a2.addAll(g.getAtoms());
         }
 
-        double[] diff = new double[a1.size() - 3];
-        double sumSq = 0;
-        for (int i = 0; i + 3 < a1.size(); ++i) {
-            double t1 = Calc.torsionAngle(a1.get(i), a1.get(i + 1), a1.get(i + 2), a1.get(i + 3));
-            double t2 = Calc.torsionAngle(a2.get(i), a2.get(i + 1), a2.get(i + 2), a2.get(i + 3));
-            double d = t1 - t2;
-            if (d > 180) {
-                d -= 360;
-            } else if (d <= -180) {
-                d += 360;
-            }
-            diff[i] = d;
-            sumSq += d * d;
-        }
-        sumSq = Math.sqrt(sumSq);
-        for (int i = 0; i < diff.length; ++i) {
-            diff[i] /= sumSq;
+        double[] diff = new double[a1.size() * 3];
+        for (int i = 0; i < a1.size(); ++i) {
+            double dx = a1.get(i).getX() - a2.get(i).getX();
+            double dy = a1.get(i).getY() - a2.get(i).getY();
+            double dz = a1.get(i).getZ() - a2.get(i).getZ();
+            diff[i * 3] = dx;
+            diff[i * 3 + 1] = dy;
+            diff[i * 3 + 2] = dz;
         }
         return diff;
     }
