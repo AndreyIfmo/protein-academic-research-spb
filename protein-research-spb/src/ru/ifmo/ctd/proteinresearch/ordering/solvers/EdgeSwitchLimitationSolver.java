@@ -13,32 +13,65 @@ public class EdgeSwitchLimitationSolver {
     public static void main(String[] args) throws IOException, StructureException {
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         int n = cg.graph.getN();
+        boolean[][] banned = new boolean[n][n];
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                banned[i][j] = false;
+                for (int k = 0; k < n; ++k) {
+                    banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
+                }
+                if (banned[i][j]) {
+                    System.out.println(i + " <-> " + j + " banned");
+                }
+            }
+        }
         boolean[][][] mayConnect = new boolean[n][n][n];
         for (int vertex = 0; vertex < n; ++vertex) {
             double[][] d = new double[n][];
+            int size = -1;
             for (int i = 0; i < n; ++i) {
-                if (i != vertex) {
+                if (i != vertex && !banned[vertex][i]) {
                     d[i] = cg.getEdgeSourceTorsionAngleDiff(vertex, i);
-
+                    size = d[i].length;
                 }
             }
-            d[vertex] = new double[d[vertex == 0 ? 1 : 0].length];
+            if (size == -1) {
+                throw new AssertionError("Not connected?");
+            }
+
+            d[vertex] = new double[size];
             double[][] sim = new double[n][n];
+            for (double[] t : sim) {
+                Arrays.fill(t, Double.POSITIVE_INFINITY);
+            }
             for (int i = 0; i < n; ++i) {
+                if (d[i] == null || vertex == i) continue;
                 for (int j = 0; j < n; ++j) {
-                    double sumSq = 0;
-                    for (int t = 0; t < d[i].length; ++t) {
-                        double dv = d[i][t] + d[j][t];
-                        sumSq += dv * dv;
+                    if (d[j] == null || i == j || vertex == j) continue;
+                    double max = 0;
+                    double lenI = cg.graph.getEdgeWeight(vertex, i);
+                    double lenJ = cg.graph.getEdgeWeight(vertex, j);
+                    for (int t = 0; t < d[i].length; t += 3) {
+                        double dx1 = d[i][t] / lenI;
+                        double dy1 = d[i][t + 1] / lenI;
+                        double dz1 = d[i][t + 2] / lenI;
+                        double dx2 = -d[j][t] / lenJ;
+                        double dy2 = -d[j][t + 1] / lenJ;
+                        double dz2 = -d[j][t + 2] / lenJ;
+                        double dx = dx1 - dx2;
+                        double dy = dy1 - dy2;
+                        double dz = dz1 - dz2;
+                        max = Math.max(max, Math.sqrt(dx * dx + dy * dy + dz * dz));
                     }
-                    sim[i][j] = Math.sqrt(sumSq);
+                    sim[i][j] = max;
                 }
+                sim[i][i] = 0.0;
             }
             System.out.println("Vertex " + vertex + ":");
             for (int i = 0; i < n; ++i) {
                 for (int j = 0; j < n; ++j) {
                     System.out.printf("%9f ", sim[i][j]);
-                    if (sim[i][j] < 1.4 && i != j && i != vertex && j != vertex) {
+                    if (sim[i][j] <= 0.0006 && i != j && i != vertex && j != vertex) {
                         mayConnect[vertex][i][j] = true;
                     }
                 }
@@ -72,7 +105,9 @@ public class EdgeSwitchLimitationSolver {
         //Edges from input edge vertices to output edge vertices
         for (int src = 0; src < n; ++src) {
             for (int trg = 0; trg < n; ++trg) {
-                limited.addEdge(2 * n + n * src + trg, 2 * n + n * n + n * src + trg, cg.graph.getEdgeWeight(src, trg));
+                if (!banned[src][trg]) {
+                    limited.addEdge(2 * n + n * src + trg, 2 * n + n * n + n * src + trg, cg.graph.getEdgeWeight(src, trg));
+                }
             }
         }
         //Edges from output edge vertices to input edge vertices, where allowed
@@ -93,6 +128,9 @@ public class EdgeSwitchLimitationSolver {
             System.out.print("From " + vx + ":");
             for (int i = 0; i < n; ++i) {
                 newShortest[vx][i] = shp.distance[i + n];
+                if (Double.isInfinite(newShortest[vx][i])) {
+                    continue;
+                }
                 if (vx == i) {
                     paths[vx][i] = new int[] {vx};
                 } else {
@@ -111,17 +149,28 @@ public class EdgeSwitchLimitationSolver {
                     }
                     paths[vx][i] = fromTo;
                 }
-                if (i != vx && !Double.isInfinite(shp.distance[i + n])) {
+                if (i != vx) {
                     System.out.printf("   %d:%.02f/%.02f/%.02f  |", i, shp.distance[i + n], cg.graph.getEdgeWeight(vx, i), shortest[vx][i]);
                 }
             }
             System.out.println();
         }
 
+        for (int vx = 0; vx < n; ++vx) {
+            for (int i = 0; i < n; ++i) {
+                if (Double.isInfinite(newShortest[vx][i])) {
+                    System.out.println("Infinite between " + vx + " and " + i);
+                }
+            }
+        }
         int maxI = 0, maxJ = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (newShortest[i][j] > newShortest[maxI][maxJ]) {
+//                if (newShortest[i][j] > newShortest[maxI][maxJ] && !Double.isInfinite(newShortest[i][j])) {
+//                    maxI = i;
+//                    maxJ = j;
+//                }
+                if (paths[i][j] != null && paths[i][j].length > paths[maxI][maxJ].length) {
                     maxI = i;
                     maxJ = j;
                 }
