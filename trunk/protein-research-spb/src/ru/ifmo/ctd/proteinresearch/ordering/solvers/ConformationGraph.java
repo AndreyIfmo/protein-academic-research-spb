@@ -28,6 +28,9 @@ public class ConformationGraph {
             try {
                 int firstIndex = Math.min(source, target);
                 int secondIndex = Math.max(source, target);
+                if (files[firstIndex][secondIndex] == null) {
+                    throw new IllegalArgumentException("Path is not computed");
+                }
                 Structure structure = fileReader.getStructure(files[firstIndex][secondIndex]);
                 chains[firstIndex][secondIndex] = new ConformationChain(structure);
                 if (roots[firstIndex] == null) {

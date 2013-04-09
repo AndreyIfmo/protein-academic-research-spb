@@ -19,16 +19,36 @@ public class ConformationChain {
         consumeStructure(inputStructure);
     }
 
-    public ConformationChain(ConformationChain source) {
-        this(source.storage);
-    }
-
     public ConformationChain reverse() {
         Structure temp = new StructureImpl();
         for (int i = storage.nrModels() - 1; i >= 0; --i) {
             temp.addModel(storage.getModel(i));
         }
         return new ConformationChain(temp);
+    }
+
+    public double weight() throws StructureException {
+        double sumSq = 0;
+        for (int i = 1; i < storage.nrModels(); ++i) {
+            Chain prev = storage.getModel(i - 1).get(0);
+            Chain next = storage.getModel(i).get(0);
+            List<Group> prevAtomGroups = prev.getAtomGroups();
+            List<Group> nextAtomGroups = next.getAtomGroups();
+            if (prevAtomGroups.size() != nextAtomGroups.size()) {
+                throw new AssertionError();
+            }
+            for (int g = 0; g < prevAtomGroups.size(); ++g) {
+                List<Atom> p = prevAtomGroups.get(g).getAtoms();
+                List<Atom> n = nextAtomGroups.get(g).getAtoms();
+                if (p.size() != n.size()) {
+                    throw new AssertionError();
+                }
+                for (int a = 0; a < p.size(); ++a) {
+                    sumSq += p.get(a).getElement().getAtomicMass() * Calc.getDistanceFast(p.get(a), n.get(a));
+                }
+            }
+        }
+        return sumSq;
     }
 
     public ConformationChain alignStarts(ConformationChain theChain) throws StructureException {
@@ -161,6 +181,9 @@ public class ConformationChain {
     private static Chain align(Chain reference, Chain argument) throws StructureException {
         Atom[] prev = StructureTools.getAtomCAArray(reference);
         Atom[] curr = StructureTools.getAtomCAArray(argument);
+        if (prev.length != curr.length) {
+            throw new IllegalArgumentException("reference.length = " + prev.length + " argument.length = " + curr.length);
+        }
 
         SVDSuperimposer poser = new SVDSuperimposer(prev, curr);
         Matrix rotation = poser.getRotation();
