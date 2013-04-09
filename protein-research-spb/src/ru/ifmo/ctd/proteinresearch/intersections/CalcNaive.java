@@ -1,4 +1,4 @@
-package ru.ifmo.ctd.proteinresearch.ordering.intersections;
+package ru.ifmo.ctd.proteinresearch.intersections;
 
 public class CalcNaive extends AbstractCalc{
 
