@@ -15,9 +15,49 @@ import java.util.zip.*;
  */
 public class ConformationGraph {
     public final Graph graph;
-    public final ConformationChain[][] chains;
+    private final ConformationChain[][] chains;
+    private final File[][] files;
+    private final ConformationChain[] roots;
+    private final PDBFileReader fileReader = new PDBFileReader();
 
-    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException, StructureException {
+    private final Queue<Integer> openChains = new ArrayDeque<>();
+
+    public ConformationChain getChain(int source, int target) {
+        if (source == target) throw new IllegalArgumentException("source == target");
+        if (chains[source][target] == null) {
+            try {
+                int firstIndex = Math.min(source, target);
+                int secondIndex = Math.max(source, target);
+                Structure structure = fileReader.getStructure(files[firstIndex][secondIndex]);
+                chains[firstIndex][secondIndex] = new ConformationChain(structure);
+                if (roots[firstIndex] == null) {
+                    roots[firstIndex] = chains[firstIndex][secondIndex];
+                } else {
+                    chains[firstIndex][secondIndex] = chains[firstIndex][secondIndex].alignStarts(roots[firstIndex]);
+                }
+                chains[secondIndex][firstIndex] = chains[firstIndex][secondIndex].reverse();
+                if (roots[secondIndex] == null) {
+                    roots[secondIndex] = chains[secondIndex][firstIndex];
+                } else {
+                    chains[secondIndex][firstIndex] = chains[secondIndex][firstIndex].alignStarts(roots[secondIndex]);
+                }
+                int chainID = firstIndex * chains.length + secondIndex;
+                openChains.add(chainID);
+                if (openChains.size() > chains.length) {
+                    int removedID = openChains.remove();
+                    int firstRemovedID = removedID / chains.length;
+                    int secondRemovedID = removedID % chains.length;
+                    chains[firstRemovedID][secondRemovedID] = null;
+                    chains[secondRemovedID][firstRemovedID] = null;
+                }
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return chains[source][target];
+    }
+
+    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException {
         this.graph = GraphParser.parseMatrixGraphFromFile(matrixFileName);
         int n = graph.getN();
         chains = new ConformationChain[n][n];
@@ -32,9 +72,10 @@ public class ConformationGraph {
             }
         }
 
-        ConformationChain[] roots = new ConformationChain[n];
+        roots = new ConformationChain[n];
 
-        PDBFileReader in = new PDBFileReader();
+        files = new File[n][n];
+
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(zipArchive))) {
             ZipEntry entry;
             while ((entry = input.getNextEntry()) != null) {
@@ -51,19 +92,7 @@ public class ConformationGraph {
                             out.write(buf, 0, size);
                         }
                     }
-                    Structure structure = in.getStructure(file);
-                    chains[firstIndex][secondIndex] = new ConformationChain(structure);
-                    if (roots[firstIndex] == null) {
-                        roots[firstIndex] = chains[firstIndex][secondIndex];
-                    } else {
-                        chains[firstIndex][secondIndex] = chains[firstIndex][secondIndex].alignStarts(roots[firstIndex]);
-                    }
-                    chains[secondIndex][firstIndex] = chains[firstIndex][secondIndex].reverse();
-                    if (roots[secondIndex] == null) {
-                        roots[secondIndex] = chains[secondIndex][firstIndex];
-                    } else {
-                        chains[secondIndex][firstIndex] = chains[secondIndex][firstIndex].alignStarts(roots[secondIndex]);
-                    }
+                    files[firstIndex][secondIndex] = file;
                 }
                 input.closeEntry();
             }
@@ -71,21 +100,13 @@ public class ConformationGraph {
     }
 
     public double[] getEdgeSourceTorsionAngleDiff(int source, int target) throws StructureException {
-        return chains[source][target].getEdgeSourceTorsionAngleDiff();
-    }
-
-    public double[] getEdgeTargetTorsionAngleDiff(int source, int target) throws StructureException {
-        double[] rv = getEdgeSourceTorsionAngleDiff(target, source);
-        for (int i = 0; i < rv.length; ++i) {
-            rv[i] = -rv[i];
-        }
-        return rv;
+        return getChain(source, target).getEdgeSourceTorsionAngleDiff();
     }
 
     public ConformationChain forPath(Path path) throws StructureException {
         ConformationChain rv = new ConformationChain();
         for (int i = 1; i < path.vertices.length; ++i) {
-            rv.append(chains[path.vertices[i - 1]][path.vertices[i]]);
+            rv.append(getChain(path.vertices[i - 1], path.vertices[i]));
         }
         return rv;
     }
