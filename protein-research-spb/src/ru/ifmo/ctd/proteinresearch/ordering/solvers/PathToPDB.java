@@ -14,6 +14,19 @@ public class PathToPDB {
         try (PrintWriter out = new PrintWriter(output)) {
             out.println(cg.forPath(path));
         }
+        for (int i = 0; i < cg.graph.getN(); ++i) {
+            for (int j = i + 1; j < cg.graph.getN(); ++j) {
+                try {
+                    double w0 = cg.graph.getEdgeWeight(i, j);
+                    double w1 = cg.getChain(i, j).weight();
+                    if (Math.abs(w0 - w1) / Math.max(w0, w1) > 0.1) {
+                        System.out.println(i + " -> " + j + ": orig = " + w0 + ", new = " + w1);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {
