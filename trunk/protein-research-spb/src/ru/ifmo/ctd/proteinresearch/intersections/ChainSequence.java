@@ -1,4 +1,4 @@
-package ru.ifmo.ctd.proteinresearch.ordering.intersections;
+package ru.ifmo.ctd.proteinresearch.intersections;
 
 public class ChainSequence {
 	PointsChain[] chains;
