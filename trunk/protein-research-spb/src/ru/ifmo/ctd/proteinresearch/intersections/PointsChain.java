@@ -9,6 +9,9 @@ public class PointsChain {
 	
 	public PointsChain(Point ... points){
 		this.chain=points;
+		for (int i=0;i!=chain.length;++i){
+			chain[i].inChainIndex = i;
+		}
 	}
 	
 }
