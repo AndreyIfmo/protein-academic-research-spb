@@ -10,7 +10,7 @@ import java.util.*;
 public class TSPSolver {
     public static void main(String[] args) throws IOException {
 //        Graph g2 = GraphParser.parseMatrixGraphFromFile("resources/table-2LJI.txt");
-        Graph g2 = GraphParser.parseMatrixGraphFromFile("resources/2LJI_optim_costs.txt");
+        Graph g2 = GraphParser.parseMatrixGraphFromFile("2LJI_optim_costs.txt");
 
         double[] bestCost = new double[4];
         int[] bestSource = new int[4];

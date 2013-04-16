@@ -178,7 +178,7 @@ public class ConformationChain {
         }
     }
 
-    private static Chain align(Chain reference, Chain argument) throws StructureException {
+    public static Chain align(Chain reference, Chain argument) throws StructureException {
         Atom[] prev = StructureTools.getAtomCAArray(reference);
         Atom[] curr = StructureTools.getAtomCAArray(argument);
         if (prev.length != curr.length) {
@@ -197,5 +197,8 @@ public class ConformationChain {
             newLast.addGroup(z);
         }
         return newLast;
+    }
+    public Structure getStructure() {
+        return this.storage;
     }
 }
