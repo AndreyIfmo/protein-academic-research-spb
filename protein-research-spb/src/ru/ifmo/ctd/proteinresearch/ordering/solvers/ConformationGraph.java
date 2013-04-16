@@ -22,6 +22,7 @@ public class ConformationGraph {
 
     private final Queue<Integer> openChains = new ArrayDeque<>();
 
+
     public ConformationChain getChain(int source, int target) {
         if (source == target) throw new IllegalArgumentException("source == target");
         if (chains[source][target] == null) {
@@ -29,7 +30,7 @@ public class ConformationGraph {
                 int firstIndex = Math.min(source, target);
                 int secondIndex = Math.max(source, target);
                 if (files[firstIndex][secondIndex] == null) {
-                    throw new IllegalArgumentException("Path is not computed");
+                    throw new IllegalArgumentException("Path is not computed" + firstIndex + " " +secondIndex);
                 }
                 Structure structure = fileReader.getStructure(files[firstIndex][secondIndex]);
                 chains[firstIndex][secondIndex] = new ConformationChain(structure);
