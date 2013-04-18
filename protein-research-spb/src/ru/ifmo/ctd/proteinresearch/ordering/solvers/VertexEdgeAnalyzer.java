@@ -51,17 +51,23 @@ public class VertexEdgeAnalyzer {
     public void run() throws IOException, StructureException {
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         int n = cg.graph.getN();
-        Container result = new Container(n, 2.0);
+        Container result = new Container(n, 1.2);
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = 0; k < n; k++) {
                     if ((k != i) && (k != j)) {
                         Structure chainStructure = cg.getChain(i, j).getStructure();
                         Chain baseChain = getBasicChain(cg, k);
-                        List<Chain> chainList = chainStructure.getChains();
-                        for (Chain chainIt : chainList) {
-                            double rmsd = RMSD(chainIt, baseChain);
-                            result.addResult(i, j, k, rmsd);
+                        int numberOfModelsInChain = chainStructure.nrModels();
+                        for (int it=0; it< numberOfModelsInChain; it++) {
+                        List<Chain> chainList = chainStructure.getModel(it);
+                            int cou=0;
+                            for (Chain chainIt : chainList) {
+                                double rmsd = RMSD(chainIt, baseChain);
+                                result.addResult(i, j, k, rmsd);
+                                cou++;
+                                if (cou>1) throw new AssertionError("More than one chain");
+                            }
                         }
                     }
                 }
