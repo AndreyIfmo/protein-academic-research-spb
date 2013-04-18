@@ -57,15 +57,7 @@ public class VertexEdgeAnalyzer {
                 for (int k = 0; k < n; k++) {
                     if ((k != i) && (k != j)) {
                         Structure chainStructure = cg.getChain(i, j).getStructure();
-                        Structure baseStructure;
-                        Chain baseChain;
-                        if (k != 0) {
-                            baseStructure = cg.getChain(k - 1, k).getStructure();
-                            baseChain = baseStructure.getModel(baseStructure.nrModels() - 1).get(0);
-                        } else {
-                            baseStructure = cg.getChain(0, 1).getStructure();
-                            baseChain = baseStructure.getModel(0).get(0);
-                        }
+                        Chain baseChain = getBasicChain(cg, k);
                         List<Chain> chainList = chainStructure.getChains();
                         for (Chain chainIt : chainList) {
                             double rmsd = RMSD(chainIt, baseChain);
@@ -93,6 +85,29 @@ public class VertexEdgeAnalyzer {
             }
             System.out.println();
         }
+        System.out.println("baseMatrix");
+        double[][] rmsdMatrix = new double[n][n];
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<n; j++) {
+                rmsdMatrix[i][j] = RMSD(getBasicChain(cg, i),getBasicChain(cg, j));
+                System.out.print((rmsdMatrix[i][j]<1.0e-10?0:rmsdMatrix[i][j])+" ");
+            }
+            System.out.println();
+        }
+
+    }
+
+    public Chain getBasicChain(ConformationGraph cg, int k) {
+        Structure baseStructure;
+        Chain baseChain;
+        if (k != 0) {
+            baseStructure = cg.getChain(k - 1, k).getStructure();
+            baseChain = baseStructure.getModel(baseStructure.nrModels() - 1).get(0);
+        } else {
+            baseStructure = cg.getChain(0, 1).getStructure();
+            baseChain = baseStructure.getModel(0).get(0);
+        }
+        return baseChain;
     }
 
     class ContainerEntry {
