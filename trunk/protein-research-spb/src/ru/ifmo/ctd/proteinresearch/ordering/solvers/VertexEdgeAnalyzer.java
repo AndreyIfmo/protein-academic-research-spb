@@ -1,9 +1,6 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import org.biojava.bio.structure.Atom;
-import org.biojava.bio.structure.Chain;
-import org.biojava.bio.structure.Group;
-import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +14,8 @@ import java.util.List;
  *         Time: 19:46
  */
 public class VertexEdgeAnalyzer {
-    public static double RMSD(Chain chain1, Chain chain2) {
+    public static double RMSD(Chain chain1, Chain chain2) throws StructureException {
+        chain2 = ConformationChain.align(chain1, chain2);
         List<Group> groupList1 = chain1.getAtomGroups();
         List<Group> groupList2 = chain2.getAtomGroups();
         List<Atom> allAtoms1 = new ArrayList<>();
@@ -46,14 +44,14 @@ public class VertexEdgeAnalyzer {
         return Math.sqrt(result / n);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, StructureException {
         new VertexEdgeAnalyzer().run();
     }
 
-    public void run() throws IOException {
+    public void run() throws IOException, StructureException {
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         int n = cg.graph.getN();
-        Container result = new Container(n, 10.0);
+        Container result = new Container(n, 2.0);
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = 0; k < n; k++) {
