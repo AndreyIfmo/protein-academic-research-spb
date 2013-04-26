@@ -7,7 +7,7 @@ public class CalcNaive extends AbstractCalc {
 	}
 
 	@Override
-	public int hasIntersections() {
+	public int hasIntersections() throws Exception {
 		PointsChain first;
 		PointsChain second = chains.chains[0];
 		PointsChain[] sequence = chains.chains;
