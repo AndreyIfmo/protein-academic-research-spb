@@ -2,6 +2,8 @@ package ru.ifmo.ctd.proteinresearch.intersections;
 
 public abstract class AbstractCalc implements Calc {
 	public ChainSequence chains;
+	public Point Omin = null;
+	public Point Omax = null;
 	private double eps = 0.0000000001;
 
 	public AbstractCalc(ChainSequence chains) {
@@ -108,13 +110,13 @@ public abstract class AbstractCalc implements Calc {
 			Point a2, Point b2, Point c1, Point c2, Point d1, Point d2)
 			throws Exception {
 		Point Oab1 = a1.add(b1);
-		Oab1.mult(0.5);
+		Oab1.multHere(0.5);
 		Point Oab2 = a2.add(b2);
-		Oab2.mult(0.5);
+		Oab2.multHere(0.5);
 		Point Ocd1 = c1.add(d1);
-		Ocd1.mult(0.5);
+		Ocd1.multHere(0.5);
 		Point Ocd2 = c2.add(d2);
-		Ocd2.mult(0.5);
+		Ocd2.multHere(0.5);
 
 		double diameter = a1.distance(b1);
 		//double diameter2 = c1.distance(d1);
@@ -128,9 +130,9 @@ public abstract class AbstractCalc implements Calc {
 		int maxStep = (int) (Math.max(abDist, cdDist) / diameter) + 1;
 
 		Point abDelta = Oab2.sub(Oab1);
-		abDelta.divide(maxStep);
+		abDelta.divideHere(maxStep);
 		Point cdDelta = Ocd2.sub(Ocd1);
-		cdDelta.divide(maxStep);
+		cdDelta.divideHere(maxStep);
 
 		diameter/=30;
 		

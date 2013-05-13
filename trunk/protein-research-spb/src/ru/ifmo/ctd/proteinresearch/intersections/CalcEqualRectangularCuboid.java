@@ -4,19 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class CalcEqualRectangularCuboid extends AbstractCalc {
-	private class TripleInt {
-		public int a;
-		public int b;
-		public int c;
-
-		public TripleInt(int a, int b, int c) {
-			this.a = a;
-			this.b = b;
-			this.c = c;
-		}
-	}
-
-	private static int minimalProportion = 4;
+	public int minimalProportion = 4;
 	private int xParts = 1;
 	private int yParts = 1;
 	private int zParts = 1;
@@ -28,17 +16,20 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 	private double widthZ;
 
 	private int step = 0;
-	private LinkedList<TripleInt> containsSmth;
+	private LinkedList<PointsList> containsSmth;
 
-	LinkedList<Point>[][][] cuboids;
+	PointsList[][][] cuboids;
+	PointsListElement[] points;
 
 	public CalcEqualRectangularCuboid(ChainSequence chains) {
 		super(chains);
 	}
 
 	public void Initalize(int xParts, int yParts, int zParts) throws Exception {
-		cuboids = new LinkedList[xParts][yParts][zParts];
-		containsSmth = new LinkedList<TripleInt>();
+		cuboids = new PointsList[xParts][yParts][zParts];
+		containsSmth = new LinkedList<PointsList>();
+		points = new PointsListElement[chains.chains[0].chain.length];
+
 		this.xParts = xParts;
 		this.yParts = yParts;
 		this.zParts = zParts;
@@ -46,7 +37,7 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 		for (int i = 0; i != xParts; ++i) {
 			for (int j = 0; j != yParts; ++j) {
 				for (int k = 0; k != zParts; ++k) {
-					cuboids[i][j][k] = new LinkedList<Point>();
+					cuboids[i][j][k] = new PointsList();
 				}
 			}
 		}
@@ -60,31 +51,44 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 		minZ = Double.POSITIVE_INFINITY;
 		double maxZ = Double.NEGATIVE_INFINITY;
 
-		for (int k = 0; k != chains.chains.length; ++k) {
-			for (int i = 0; i != chains.chains[k].chain.length; ++i) {
-				if (chains.chains[k].chain[i].x < minX) {
-					minX = chains.chains[k].chain[i].x;
-				} else if (chains.chains[k].chain[i].x > maxX) {
-					maxX = chains.chains[k].chain[i].x;
-				}
+		if ((Omin == null) && (Omax == null)) {
+			for (int k = 0; k != chains.chains.length; ++k) {
+				for (int i = 0; i != chains.chains[k].chain.length; ++i) {
+					if (k == 0) {
+						points[i] = new PointsListElement(chains.chains[k].chain[i]);
+					}
 
-				if (chains.chains[k].chain[i].y < minY) {
-					minY = chains.chains[k].chain[i].y;
-				} else if (chains.chains[k].chain[i].y > maxY) {
-					maxY = chains.chains[k].chain[i].y;
-				}
+					if (chains.chains[k].chain[i].x < minX) {
+						minX = chains.chains[k].chain[i].x;
+					} else if (chains.chains[k].chain[i].x > maxX) {
+						maxX = chains.chains[k].chain[i].x;
+					}
 
-				if (chains.chains[k].chain[i].z < minZ) {
-					minZ = chains.chains[k].chain[i].z;
-				} else if (chains.chains[k].chain[i].z > maxZ) {
-					maxZ = chains.chains[k].chain[i].z;
-				}
+					if (chains.chains[k].chain[i].y < minY) {
+						minY = chains.chains[k].chain[i].y;
+					} else if (chains.chains[k].chain[i].y > maxY) {
+						maxY = chains.chains[k].chain[i].y;
+					}
 
-				if (i != 0) {
-					dist = Math.max(dist, chains.chains[k].chain[i - 1]
-							.distance(chains.chains[k].chain[i]));
+					if (chains.chains[k].chain[i].z < minZ) {
+						minZ = chains.chains[k].chain[i].z;
+					} else if (chains.chains[k].chain[i].z > maxZ) {
+						maxZ = chains.chains[k].chain[i].z;
+					}
+
+					if (i != 0) {
+						dist = Math.max(dist, chains.chains[k].chain[i - 1].distance(chains.chains[k].chain[i]));
+					}
 				}
 			}
+		} else {
+			minX = Omin.x;
+			minY = Omin.y;
+			minZ = Omin.z;
+			maxX = Omax.x;
+			maxY = Omax.y;
+			maxZ = Omax.z;
+			dist = chains.chains[0].chain[1].distance(chains.chains[0].chain[0]);
 		}
 
 		dist *= minimalProportion;
@@ -103,21 +107,15 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 			if (posZ == zParts)
 				--posZ;
 			if (cuboids[posX][posY][posZ].isEmpty()) {
-				containsSmth.add(new TripleInt(posX, posY, posZ));
+				points[i].position = cuboids[posX][posY][posZ];
+				containsSmth.add(cuboids[posX][posY][posZ]);
 			}
-			cuboids[posX][posY][posZ].add(chains.chains[0].chain[i]);
+			cuboids[posX][posY][posZ].add(points[i]);
 		}
 	}
 
 	private void stepForward() {
 		TripleInt curr = new TripleInt(0, 0, 0);
-		for (Iterator<TripleInt> it = containsSmth.iterator(); it.hasNext(); curr = it
-				.next()) {
-			cuboids[curr.a][curr.b][curr.c].clear();
-		}
-
-		containsSmth.clear();
-
 		for (int i = 0; i != chains.chains[step].chain.length; ++i) {
 			int posX = (int) ((chains.chains[step].chain[i].x - minX) / widthX);
 			int posY = (int) ((chains.chains[step].chain[i].y - minY) / widthY);
@@ -128,10 +126,17 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 				--posY;
 			if (posZ == zParts)
 				--posZ;
-			if (cuboids[posX][posY][posZ].isEmpty()) {
-				containsSmth.add(new TripleInt(posX, posY, posZ));
+			if (cuboids[posX][posY][posZ] != points[i].position) {
+				points[i].deleteMyself();
+				cuboids[posX][posY][posZ].add(points[i]);
+				if (points[i].position.isEmpty()){
+					containsSmth.remove(points[i].position);
+				}
+				if (cuboids[posX][posY][posZ].isEmpty()) {
+					containsSmth.add(cuboids[posX][posY][posZ]);
+				}
 			}
-			cuboids[posX][posY][posZ].add(chains.chains[step].chain[i]);
+			points[i].point = chains.chains[step].chain[i];
 		}
 		++step;
 	}
@@ -159,17 +164,18 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 				--posY;
 			if (posZ == zParts)
 				--posZ;
-			LinkedList<Point> neighborPoints = cuboids[posX][posY][posZ];
+			PointsListElement neighborPoints = cuboids[posX][posY][posZ].first;
+			
 			Point tmpPoint = null;
-			Iterator<Point> iter = neighborPoints.iterator();
-			while (iter.hasNext()) {
-				tmpPoint = iter.next();
+			while (neighborPoints.next!=null) {
+				tmpPoint = neighborPoints.next.point;
 				if (tmpPoint != null)
 					if (result.contains(tmpPoint.inChainIndex)) {
 						break;
 					} else {
 						result.add(tmpPoint.inChainIndex);
 					}
+				neighborPoints = neighborPoints.next;
 			}
 		}
 		return result;
@@ -186,22 +192,13 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 			first = second;
 			second = sequence[step];
 			for (int j = 1; j != chainLength; ++j) {
-				LinkedList<Integer> neighbours = getNeighbors(
-						first.chain[j - 1], first.chain[j]);
+				LinkedList<Integer> neighbours = getNeighbors(first.chain[j - 1], first.chain[j]);
 
 				int currentNeighbor = 1;
-				for (Iterator<Integer> iter = neighbours.iterator(); iter
-						.hasNext(); currentNeighbor = iter.next()) {
-					if ((currentNeighbor == j - 1)
-							|| (currentNeighbor == j + 1)
-							|| (currentNeighbor == j) || (currentNeighbor == 0))
+				for (Iterator<Integer> iter = neighbours.iterator(); iter.hasNext(); currentNeighbor = iter.next()) {
+					if ((currentNeighbor == j - 1) || (currentNeighbor == j + 1) || (currentNeighbor == j) || (currentNeighbor == 0))
 						continue;
-					if (movingSegmentsIntersection2Spheres(first.chain[j - 1],
-							first.chain[j], second.chain[j - 1],
-							second.chain[j], first.chain[currentNeighbor - 1],
-							second.chain[currentNeighbor - 1],
-							first.chain[currentNeighbor],
-							second.chain[currentNeighbor]) == true) {
+					if (movingSegmentsIntersection2Spheres(first.chain[j - 1], first.chain[j], second.chain[j - 1], second.chain[j], first.chain[currentNeighbor - 1], second.chain[currentNeighbor - 1], first.chain[currentNeighbor], second.chain[currentNeighbor]) == true) {
 						return step;
 					}
 				}
