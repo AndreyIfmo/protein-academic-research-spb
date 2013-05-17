@@ -134,7 +134,7 @@ public abstract class AbstractCalc implements Calc {
 		Point cdDelta = Ocd2.sub(Ocd1);
 		cdDelta.divideHere(maxStep);
 
-		diameter/=30;
+		diameter/=3;
 		
 		for (int i = 0; i != maxStep; ++i) {
 			if (Oab1.distance(Ocd1)<diameter){
