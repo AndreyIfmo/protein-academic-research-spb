@@ -103,7 +103,7 @@ public class VertexEdgeAnalyzer {
 
     }
 
-    public Chain getBasicChain(ConformationGraph cg, int k) {
+    public static Chain getBasicChain(ConformationGraph cg, int k) {
         Structure baseStructure;
         Chain baseChain;
         if (k != 0) {
@@ -133,9 +133,8 @@ public class VertexEdgeAnalyzer {
             ContainerEntry that = (ContainerEntry) o;
 
             if (numberOfClosestConformation != that.numberOfClosestConformation) return false;
-            if (Double.compare(that.rmsd, rmsd) != 0) return false;
+            return Double.compare(that.rmsd, rmsd) == 0;
 
-            return true;
         }
 
         @Override
