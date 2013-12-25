@@ -1,5 +1,9 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
  *         Date: 15.11.12

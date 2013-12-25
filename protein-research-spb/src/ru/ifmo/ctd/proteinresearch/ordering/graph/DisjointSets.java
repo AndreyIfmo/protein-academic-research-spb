@@ -26,18 +26,23 @@ public class DisjointSets {
         }
     }
 
-    public void union(int root1, int root2) {
+    public boolean union(int root1, int root2) {
         root1 = find(root1);
         root2 = find(root2);
-        if (root1 != root2) {
-            if (rank[root1] == rank[root2]) {
-                ++rank[root1];
-            }
-            if (rank[root1] < rank[root2]) {
-                parent[root1] = root2;
-            } else {
-                parent[root2] = root1;
-            }
+        if (root1 == root2) {
+            return false;
         }
+        if (rank[root1] == rank[root2]) {
+            ++rank[root1];
+
+        }
+        if (rank[root1] < rank[root2]) {
+            parent[root1] = root2;
+        } else {
+            parent[root2] = root1;
+        }
+        return true;
     }
+
+
 }

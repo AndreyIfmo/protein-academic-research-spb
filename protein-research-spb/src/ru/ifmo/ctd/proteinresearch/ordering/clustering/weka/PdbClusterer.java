@@ -1,6 +1,7 @@
-package ru.ifmo.ctd.proteinresearch.ordering.clustering;
+package ru.ifmo.ctd.proteinresearch.ordering.clustering.weka;
 
 import org.biojava.bio.structure.*;
+import ru.ifmo.ctd.proteinresearch.ordering.clustering.ClusteringUtils;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.VertexEdgeAnalyzer;

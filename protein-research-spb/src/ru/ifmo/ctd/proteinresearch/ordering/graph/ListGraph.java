@@ -35,17 +35,7 @@ public class ListGraph extends AbstractGraph {
         return edges.get(x);
     }
 
-    @Override
-    public boolean removeEdge(int from, int to) {
-        for (int i = 0; i < edges.get(from).size(); i++) {
-            if (edges.get(from).get(i).to == to) {
-                edges.get(from).remove(i);
-                return true;
-            }
-        }
-        return false;
 
-    }
 
     @Override
     public double getEdgeWeight(int from, int to) {
