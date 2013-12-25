@@ -1,6 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
+import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,33 +16,7 @@ import java.util.List;
  */
 public class VertexEdgeAnalyzer {
     public static double RMSD(Chain chain1, Chain chain2) throws StructureException {
-        chain2 = ConformationChain.align(chain1, chain2);
-        List<Group> groupList1 = chain1.getAtomGroups();
-        List<Group> groupList2 = chain2.getAtomGroups();
-        List<Atom> allAtoms1 = new ArrayList<>();
-        List<Atom> allAtoms2 = new ArrayList<>();
-        if (groupList1.size() != groupList2.size()) {
-            throw new AssertionError("arg1.size()!=arg2.size()");
-        }
-        for (Group groupIt : groupList1) {
-            allAtoms1.addAll(groupIt.getAtoms());
-        }
-        for (Group groupIt : groupList2) {
-            allAtoms2.addAll(groupIt.getAtoms());
-        }
-        int n = allAtoms1.size();
-        if (n != allAtoms2.size()) {
-            throw new IllegalArgumentException("List sizes should be equals. List 1 size: " + groupList1.size() + "list 2 size:" + groupList2.size());
-        }
-        double result = 0.0;
-        for (int i = 0; i < n; i++) {
-
-            result += (allAtoms1.get(i).getX() - allAtoms2.get(i).getX()) * (allAtoms1.get(i).getX() - allAtoms2.get(i).getX()) +
-                    (allAtoms1.get(i).getY() - allAtoms2.get(i).getY()) * (allAtoms1.get(i).getY() - allAtoms2.get(i).getY()) +
-                    (allAtoms1.get(i).getZ() - allAtoms2.get(i).getZ()) * (allAtoms1.get(i).getZ() - allAtoms2.get(i).getZ());
-
-        }
-        return Math.sqrt(result / n);
+        return new RMSDDistance().distance(chain1, chain2);
     }
 
     public static void main(String[] args) throws IOException, StructureException {

@@ -27,9 +27,6 @@ public abstract class AbstractGraph implements Graph {
     public abstract List<Edge> edges(int x);
 
     @Override
-    public abstract boolean removeEdge(int from, int to);
-
-    @Override
     public abstract double getEdgeWeight(int from, int to);
 
     @Override

@@ -53,17 +53,6 @@ public class MatrixGraph extends AbstractGraph {
         return ans;
     }
 
-
-    @Override
-    public boolean removeEdge(int from, int to) {
-        if (hasEdge[from][to]) {
-            hasEdge[from][to] = false;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public double getEdgeWeight(int from, int to) {
         if (hasEdge[from][to]) {
