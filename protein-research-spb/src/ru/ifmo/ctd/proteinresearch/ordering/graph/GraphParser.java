@@ -13,6 +13,11 @@ import java.util.StringTokenizer;
  */
 public class GraphParser {
     public static Graph parseMatrixGraphFromFile(String fileName) throws IOException {
+        double[][] edges = parseGraphMatrix(fileName);
+        return new MatrixGraph(edges.length, edges);
+    }
+
+    public static double[][] parseGraphMatrix(String fileName) throws IOException {
         String curString;
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         boolean isFirst = true;
@@ -35,6 +40,6 @@ public class GraphParser {
 
         }
         br.close();
-        return new MatrixGraph(n, edges);
+        return edges;
     }
 }
