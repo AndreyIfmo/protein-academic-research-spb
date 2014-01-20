@@ -24,8 +24,9 @@ public class FuzzyClusterizerTest {
 
     @Test
     public void testEvaluate() throws Exception {
-        int numOfClusters = 5;
+        int numOfClusters = 2;
         FuzzyClusterizer clusterizer = new FuzzyClusterizer(matrix, numOfClusters);
+        clusterizer.exp = 1;
         double[][] similarity = clusterizer.evaluate();
         for (int i = 0; i < similarity.length; i++) {
             double controlSum = 0;
@@ -39,7 +40,7 @@ public class FuzzyClusterizerTest {
         System.out.print("Cluster centers:" + Arrays.toString(clusterizer.answerCenters));
         for (int i = 0; i < similarity.length; i++) {
             for (int j = 0; j < numOfClusters; j++) {
-                System.out.print(similarity[i][j] + " ");
+                System.out.print((similarity[i][j] > 0.1 ? similarity[i][j] : 0) + " ");
             }
             System.out.println();
         }
