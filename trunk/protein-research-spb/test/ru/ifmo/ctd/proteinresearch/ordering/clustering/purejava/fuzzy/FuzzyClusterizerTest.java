@@ -26,7 +26,7 @@ public class FuzzyClusterizerTest {
     public void testEvaluate() throws Exception {
         int numOfClusters = 2;
         FuzzyClusterizer clusterizer = new FuzzyClusterizer(matrix, numOfClusters);
-        clusterizer.exp = 1;
+        clusterizer.exp = 2;
         double[][] similarity = clusterizer.evaluate();
         for (int i = 0; i < similarity.length; i++) {
             double controlSum = 0;

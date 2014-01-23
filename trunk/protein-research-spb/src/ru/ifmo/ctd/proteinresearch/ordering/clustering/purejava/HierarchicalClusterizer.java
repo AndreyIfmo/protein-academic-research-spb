@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Andrey on 24.12.13.
  */
-public class HierarchicalClusterizer implements Clusterizer {
+public class HierarchicalClusterizer implements StructuralClusterizer {
     @Override
     public void evaluate(List<Chain> chains) {
         //TODO: Implement

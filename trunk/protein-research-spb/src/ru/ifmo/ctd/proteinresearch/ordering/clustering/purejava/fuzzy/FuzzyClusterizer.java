@@ -12,13 +12,14 @@ public class FuzzyClusterizer {
     private int[] centers;
     public int[] answerCenters;
     public double exp;
-    final double M = 2;
+    public double M;
 
     public FuzzyClusterizer(double[][] distanceMatrix, int numOfClusters) {
         this.distanceMatrix = distanceMatrix;
         this.numOfClusters = numOfClusters;
         this.answerCenters = new int[numOfClusters];
-        exp = 10;
+        exp = 2;
+        M = 2;
     }
 
     /**
@@ -36,7 +37,7 @@ public class FuzzyClusterizer {
 
     /**
      * Evaluates degree of  element belongs to cluster
-     */
+     */  /*
     public double w(int clusterNumber, int elementNumber) {
         double answer = 0;
         double sum = 0;
@@ -49,6 +50,19 @@ public class FuzzyClusterizer {
             sumOfSimilarity += Math.pow(1 - distance(centers[i], elementNumber) / sum, exp);
         }
         return answer / sumOfSimilarity;
+    }      */
+    public double w(int clusterNumber, int elementNumber) {
+        double answer = 0;
+        double sum = 0;
+        if (centers[clusterNumber] == elementNumber) {
+            return 1;
+        }
+        for (int i = 0; i < numOfClusters; i++) {
+            sum += Math.pow(distance(centers[clusterNumber], elementNumber) / distance(centers[i], elementNumber), 2 / (exp - 1));
+        }
+        answer = 1 / sum;
+
+        return answer;
     }
 
     public double distance(int entityNumber1, int entityNumber2) {

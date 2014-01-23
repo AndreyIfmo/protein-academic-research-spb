@@ -9,12 +9,14 @@ import ru.ifmo.ctd.proteinresearch.ordering.graph.MatrixGraph;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.MinimalSpanTreeFinder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Andrey on 24.12.13.
  */
-public class MSTClusterizer implements Clusterizer {
+public class MSTClusterizer implements StructuralClusterizer {
     double[][] distanceMatrix;
     int numberOfClusters;
     Graph mst;
@@ -54,12 +56,20 @@ public class MSTClusterizer implements Clusterizer {
 
     @Override
     public List<Cluster> getClusters() {
-        List<Cluster> clusters = new ArrayList<>(numberOfClusters);
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        List<Cluster> clusters = new ArrayList<Cluster>();
         for (int i = 0; i < mst.getN(); i++) {
             int numberOfCluster = sets.find(i);
-            System.out.println(i + " " + numberOfCluster);
+            // System.out.println(i + " " + numberOfCluster);
+            if (!map.containsKey(numberOfCluster)) {
+                map.put(numberOfCluster, new ArrayList<Integer>());
+            }
+            map.get(numberOfCluster).add(i);
 
         }
-        return null;
+        for (Map.Entry<Integer, List<Integer>> entry : map.entrySet()) {
+            clusters.add(new Cluster<>(entry.getValue()));
+        }
+        return clusters;
     }
 }
