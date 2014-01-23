@@ -37,10 +37,11 @@ public class FuzzyClusterizerTest {
             Assert.assertEquals(1.0, controlSum, 0.01);
 
         }
-        System.out.print("Cluster centers:" + Arrays.toString(clusterizer.answerCenters));
+        System.out.println("Cluster centers:" + Arrays.toString(clusterizer.answerCenters));
+
         for (int i = 0; i < similarity.length; i++) {
             for (int j = 0; j < numOfClusters; j++) {
-                System.out.print((similarity[i][j] > 0.1 ? similarity[i][j] : 0) + " ");
+                System.out.print(similarity[i][j] + " ");
             }
             System.out.println();
         }

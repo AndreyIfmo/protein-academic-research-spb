@@ -32,7 +32,7 @@ public class PureClusterizerRunner {
             clusterizer.evaluate(chains);
             int counter = 1;
             for (Cluster<Integer> it : clusterizer.getClusters()) {
-                System.out.println(counter++ + " " + Arrays.toString(it.chainSet.toArray()));
+                System.out.println(counter++ + ", " + Arrays.toString(it.chainSet.toArray()));
             }
             StructuralClusterizer clusterizer2 = new MSTClusterizer(i, new TMDistance());
             clusterizer2.evaluate(chains);
@@ -40,14 +40,14 @@ public class PureClusterizerRunner {
             System.out.println("----------1------------");
             counter = 1;
             for (Cluster<Integer> it : clusterizer2.getClusters()) {
-                System.out.println(counter++ + " " + Arrays.toString(it.chainSet.toArray()));
+                System.out.println(counter++ + ", " + Arrays.toString(it.chainSet.toArray()));
             }
             StructuralClusterizer clusterizer3 = new MSTClusterizer(i, new MatrixDistance("table-2LJI.txt"));
             clusterizer3.evaluate(chains);
             System.out.println("----------2------------");
             counter = 1;
             for (Cluster<Integer> it : clusterizer3.getClusters()) {
-                System.out.println(counter++ + " " + Arrays.toString(it.chainSet.toArray()));
+                System.out.println(counter++ + ", " + Arrays.toString(it.chainSet.toArray()));
             }
 
         }
