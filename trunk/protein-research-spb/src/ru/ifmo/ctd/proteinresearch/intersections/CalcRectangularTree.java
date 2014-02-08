@@ -10,6 +10,7 @@ public class CalcRectangularTree extends AbstractCalc {
 	public TreeElement tree;
 	public double dist = Double.NEGATIVE_INFINITY;
 	public int step = 0;
+	public int functionCalculations;
 	public PointsChain data;
 
 	public CalcRectangularTree(ChainSequence chains) {
@@ -124,8 +125,9 @@ public class CalcRectangularTree extends AbstractCalc {
 				for (Iterator<Integer> iter = neighbours.iterator(); iter.hasNext(); currentNeighbor = iter.next()) {
 					if ((currentNeighbor == j - 1) || (currentNeighbor == j + 1) || (currentNeighbor == j) || (currentNeighbor == 0))
 						continue;
+					++functionCalculations;
 					if (movingSegmentsIntersection2Spheres(first.chain[j - 1], first.chain[j], second.chain[j - 1], second.chain[j], first.chain[currentNeighbor - 1], second.chain[currentNeighbor - 1], first.chain[currentNeighbor], second.chain[currentNeighbor]) == true) {
-						return step;
+						//return step;
 					}
 				}
 			}

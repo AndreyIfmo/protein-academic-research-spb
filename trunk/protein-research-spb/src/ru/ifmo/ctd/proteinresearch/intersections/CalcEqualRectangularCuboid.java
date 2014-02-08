@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 public class CalcEqualRectangularCuboid extends AbstractCalc {
 	public int minimalProportion = 4;
+	public int functionCalculations = 0;
 	private int xParts = 1;
 	private int yParts = 1;
 	private int zParts = 1;
@@ -198,8 +199,9 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 				for (Iterator<Integer> iter = neighbours.iterator(); iter.hasNext(); currentNeighbor = iter.next()) {
 					if ((currentNeighbor == j - 1) || (currentNeighbor == j + 1) || (currentNeighbor == j) || (currentNeighbor == 0))
 						continue;
+					++functionCalculations;
 					if (movingSegmentsIntersection2Spheres(first.chain[j - 1], first.chain[j], second.chain[j - 1], second.chain[j], first.chain[currentNeighbor - 1], second.chain[currentNeighbor - 1], first.chain[currentNeighbor], second.chain[currentNeighbor]) == true) {
-						return step;
+						//return step;
 					}
 				}
 			}
