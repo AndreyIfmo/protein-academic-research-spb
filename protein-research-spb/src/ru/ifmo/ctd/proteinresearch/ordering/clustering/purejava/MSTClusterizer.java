@@ -29,6 +29,7 @@ public class MSTClusterizer implements StructuralClusterizer {
         this.numberOfClusters = numberOfClusters;
         this.matrixDistance = operator;
         this.isMatrix = true;
+        distanceMatrix = new double[operator.getN()][operator.getN()];
     }
 
     public MSTClusterizer(int numberOfClusters, Distance operator) {
@@ -37,18 +38,39 @@ public class MSTClusterizer implements StructuralClusterizer {
         this.isMatrix = false;
     }
 
+    // if metric is defined with matrix.
+    public void evaluateDistanceMatrix() {
+        if (isMatrix) {
+            for (int i=0; i<distanceMatrix.length; i++) {
+                for (int j=0; j<distanceMatrix.length; j++) {
+            distanceMatrix[i][j] = matrixDistance.distance(i, j);
+                }
+            }
+        }
+    }
     @Override
     public void evaluate(List<Chain> allignedChains) {
+        assert (isMatrix &&allignedChains== null) ||(!isMatrix && allignedChains!=null);
+        if (isMatrix) {
+            evaluateDistanceMatrix();
+        }else {
+            evaluateDistanceMatrix2(allignedChains);
+        }
+        clusterize();
+    }
+// if metric should be evaluated for given chains
+    private void evaluateDistanceMatrix2(List<Chain> allignedChains) {
         distanceMatrix = new double[allignedChains.size()][allignedChains.size()];
         for (int i = 0; i < allignedChains.size(); i++) {
             for (int j = 0; j < allignedChains.size(); j++) {
                 if (!isMatrix) {
                     distanceMatrix[i][j] = distance.distance(allignedChains.get(i), allignedChains.get(j));
-                } else {
-                    distanceMatrix[i][j] = matrixDistance.distance(i, j);
                 }
             }
         }
+    }
+
+    private void clusterize() {
         Graph g = new MatrixGraph(distanceMatrix.length, distanceMatrix);
         sets = new DisjointSets(g.getN());
         mst = new MinimalSpanTreeFinder().getPartMST(g, numberOfClusters, sets);

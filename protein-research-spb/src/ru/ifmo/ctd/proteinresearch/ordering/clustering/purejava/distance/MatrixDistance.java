@@ -20,4 +20,8 @@ public class MatrixDistance {
     public double distance(int i, int j) {
         return matrix[i][j];
     }
+
+    public int getN() {
+        return matrix.length;
+    }
 }

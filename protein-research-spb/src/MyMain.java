@@ -5,7 +5,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.text.NumberFormatter;
 
-import org.biojava.bio.*;
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureImpl;
 import org.biojava.bio.structure.io.PDBFileReader;
