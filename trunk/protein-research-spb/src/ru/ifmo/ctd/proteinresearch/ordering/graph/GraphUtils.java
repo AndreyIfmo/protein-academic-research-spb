@@ -2,6 +2,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
 import weka.core.pmml.Array;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,5 +36,25 @@ public class GraphUtils {
 
     private static boolean isSymmetric(Graph g, int i, int j, int k) {
         return (g.getEdgeWeight(i, j) == g.getEdgeWeight(j, i)) && (g.getEdgeWeight(k, j) == g.getEdgeWeight(j, k)) && (g.getEdgeWeight(i, k) == g.getEdgeWeight(k, i));
+    }
+
+    private static void sqrt(File matrixFile) throws IOException {
+        double [][] matrix = GraphParser.parseGraphMatrix(matrixFile.getName());
+        assert matrix.length== matrix[0].length;
+
+        File outputFile = new File("sqrt__" + matrixFile.getName());
+        PrintWriter pw = new PrintWriter(outputFile);
+        pw.println(matrix.length);
+        for (int i=0; i< matrix.length; i++) {
+            for (int j=0; j< matrix.length; j++) {
+                pw.print(Math.sqrt(matrix[i][j])+" ");
+            }
+            pw.println();
+        }
+        pw.close();
+    }
+
+    public static void main(String[]args) throws IOException {
+       sqrt(new File("2LJI_optim_costs.txt"));
     }
 }
