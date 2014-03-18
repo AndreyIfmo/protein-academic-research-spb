@@ -10,8 +10,15 @@ import java.util.*;
  * @author Maxim Buzdalov
  */
 public class EdgeSwitchLimitationSolver {
+    public ConformationGraph cg;
+    int[][][] paths;
+    double[][] newShortest;
     public static void main(String[] args) throws IOException, StructureException {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        new EdgeSwitchLimitationSolver().evaluate("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+    }
+
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException, StructureException {
+        cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
         int n = cg.graph.getN();
         boolean[][] banned = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
@@ -121,8 +128,10 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
         }
-        double[][] newShortest = new double[n][n];
-        int[][][] paths = new int[n][n][];
+
+
+        newShortest = new double[n][n];
+        paths = new int[n][n][];
         for (int vx = 0; vx < n; ++vx) {
             DijkstraResult shp = shortestPath(limited, vx);
             System.out.print("From " + vx + ":");
@@ -163,13 +172,13 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
         }
+        findMaxShortestPath(n);
+    }
+
+    private void findMaxShortestPath(int n) throws StructureException, FileNotFoundException {
         int maxI = 0, maxJ = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-//                if (newShortest[i][j] > newShortest[maxI][maxJ] && !Double.isInfinite(newShortest[i][j])) {
-//                    maxI = i;
-//                    maxJ = j;
-//                }
                 if (paths[i][j] != null && paths[i][j].length > paths[maxI][maxJ].length) {
                     maxI = i;
                     maxJ = j;
@@ -184,6 +193,7 @@ public class EdgeSwitchLimitationSolver {
             pdb.print(cg.forPath(new Path(paths[maxI][maxJ], newShortest[maxI][maxJ])));
         }
     }
+
 
     static class DijkstraResult {
         public final double[] distance;
@@ -225,5 +235,17 @@ public class EdgeSwitchLimitationSolver {
             }
         }
         return new DijkstraResult(currentShortest, back);
+    }
+
+    public int[] get (int from, int to) {
+        return paths[from][to];
+    }
+
+    public double weight (int from, int to) {
+        double distance=0;
+        for (int i=0; i<paths[from][to].length-1; i++) {
+            distance+=cg.graph.getEdgeWeight(paths[from][to][i], paths[from][to][i+1]);
+        }
+        return distance;
     }
 }

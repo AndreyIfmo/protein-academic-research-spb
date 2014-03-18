@@ -1,5 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
+import weka.core.pmml.Array;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
