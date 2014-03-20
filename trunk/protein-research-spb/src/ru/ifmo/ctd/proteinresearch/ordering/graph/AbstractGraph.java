@@ -10,10 +10,21 @@ import java.util.List;
  */
 public abstract class AbstractGraph implements Graph {
     protected final int n;
+    public final int[] numbers;
 
     public AbstractGraph(int number) {
         this.n = number;
+        numbers = new int[number];
+        for (int i=0; i<n;i++) {
+            numbers[i] = i;
+        }
     }
+
+    public AbstractGraph(int number, int[] numbers) {
+        this.n = number;
+        this.numbers = numbers.clone();
+    }
+
 
     @Override
     public int getN() {
