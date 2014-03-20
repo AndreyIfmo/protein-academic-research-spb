@@ -2,6 +2,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
@@ -65,6 +66,37 @@ public class MatrixGraph extends AbstractGraph {
     @Override
     public boolean hasEdge(int from, int to) {
         return hasEdge[from][to];
+    }
+
+    public MatrixGraph getSubgraph(Set<Integer> numOfVertices) {
+        double[][] edgesCopy = new double[this.edges.length][this.edges.length];
+        boolean[][] hasEdgeCopy = new boolean[this.hasEdge.length][this.hasEdge.length];
+        cloneMatrix(edgesCopy, edges);
+        cloneMatrix(hasEdgeCopy, hasEdge);
+        for (int i = 0; i < edges.length; i++) {
+            for (int j = 0; j < edges.length; j++) {
+                if (numOfVertices.contains(i)) {
+
+                }
+            }
+        }
+        return null;
+    }
+
+    public void cloneMatrix(double[][] newMatrix, double[][] oldMatrix) {
+        for (int i = 0; i < oldMatrix.length; i++) {
+            for (int j = 0; j < oldMatrix.length; j++) {
+                newMatrix[i][j] = oldMatrix[i][j];
+            }
+        }
+    }
+
+    public void cloneMatrix(boolean[][] newMatrix, boolean[][] oldMatrix) {
+        for (int i = 0; i < oldMatrix.length; i++) {
+            for (int j = 0; j < oldMatrix.length; j++) {
+                newMatrix[i][j] = oldMatrix[i][j];
+            }
+        }
     }
 
     @Override

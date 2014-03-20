@@ -3,9 +3,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.graph;
 import weka.core.pmml.Array;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}

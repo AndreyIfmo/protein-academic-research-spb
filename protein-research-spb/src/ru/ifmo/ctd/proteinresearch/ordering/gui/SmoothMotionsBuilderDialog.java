@@ -7,8 +7,6 @@ import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,19 +25,16 @@ public class SmoothMotionsBuilderDialog extends JFrame {
 
     }
 
-    private JLabel fromLabel;
+    private LabelTextField fromLabeledField;
     private JButton myBuildButton;
-    private JLabel toLabel;
-    private JTextField fromTextField;
-    private JTextField toTextField;
+    private LabelTextField toLabeledField;
+
 
     private void initComponents() {
         GridBagConstraints c = new GridBagConstraints();
 
-        fromTextField = new JTextField("0");
-        toTextField = new JTextField("0");
-        fromLabel = new JLabel("from");
-        toLabel = new JLabel("to");
+        fromLabeledField = new LabelTextField("from");
+        toLabeledField = new LabelTextField("to");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Smooth Motions Builder");
@@ -51,46 +46,37 @@ public class SmoothMotionsBuilderDialog extends JFrame {
         createBuildButton();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1;
-        add(fromLabel, c);
-        c.gridx++;
-        c.weightx = 1;
-        add(fromTextField, c);
-        c.gridx++;
-        c.weightx = 1;
-        add(toLabel, c);
-        c.gridx++;
-        c.weightx = 1;
-        add(toTextField, c);
-        c.gridy=1;
-        c.gridwidth=4;
+
+        add(fromLabeledField, c);
+        c.gridy++;
+        add(toLabeledField, c);
+
+        c.gridy++;
         JButton calc = new JButton("Calculate shortest smooth path");
         calc.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try (PrintWriter pdb = new PrintWriter("New.pdb")) {
-                    int fromNum = Integer.parseInt(fromTextField.getText());int toNum = Integer.parseInt(toTextField.getText());
+                    int fromNum = Integer.parseInt(fromLabeledField.textField.getText());int toNum = Integer.parseInt(toLabeledField.textField.getText());
                     pdb.print(solver.cg.forPath(new Path(solver.get(fromNum,toNum), solver.weight(fromNum, toNum))));
                     System.out.println(Arrays.toString(solver.get(fromNum,toNum)));
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                } catch (StructureException e1) {
+                } catch (FileNotFoundException | StructureException e1) {
                     e1.printStackTrace();
                 }
-                solver.get(Integer.parseInt(fromTextField.getText()), Integer.parseInt(toTextField.getText()));
+                solver.get(Integer.parseInt(fromLabeledField.textField.getText()), Integer.parseInt(toLabeledField.textField.getText()));
             }
         });
         add(calc,c);
         c.gridwidth=1;
         c.gridx = 0;
-        c.gridy = 2;
-        c.gridwidth = 2;
+        c.gridy++;
+        c.gridwidth = 1;
         c.weightx = 1;
         allFilesChooserPanel = new AllFilesChooserPanel();
         add(allFilesChooserPanel, c);
         c.gridx = 0;
-        c.gridy = 3;
-        c.gridwidth = 2;
+        c.gridy ++;
+        c.gridwidth = 1;
         c.weightx = 1;
         add(myBuildButton, c);
         setSize(600, 400);
@@ -107,9 +93,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
                 try {
                     solver.evaluate(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern());
 
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (StructureException e1) {
+                } catch (IOException | StructureException e1) {
                     e1.printStackTrace();
                 }
             }

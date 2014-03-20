@@ -17,19 +17,11 @@ public class FileChooserPanel extends JPanel {
         openFileButton = new JButton(fileName);
         fileTextField = new JTextField();
         setLayout(new GridLayout());
-        createChoseFilePanel(new GridBagConstraints());
+        createChoseFilePanel();
     }
-    private void createChoseFilePanel(final GridBagConstraints c) {
-        c.insets=new Insets(10, 10, 10, 10);
-        c.gridx=0;
-        c.gridy=0;
-
-        c.weightx=0.1;
-        c.fill = GridBagConstraints.BOTH;
-        add(openFileButton,c);
-        c.gridx=1;
-        c.weightx=1;
-        add(fileTextField,c);
+    private void createChoseFilePanel() {
+        add(openFileButton);
+        add(fileTextField);
         openFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
