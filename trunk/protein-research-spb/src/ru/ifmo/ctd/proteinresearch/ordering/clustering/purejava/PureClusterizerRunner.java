@@ -27,7 +27,8 @@ public class PureClusterizerRunner {
         for (int i = 1; i < numberOfVertices; i++) {
             chains.add(ConformationChain.align(reference, VertexEdgeAnalyzer.getBasicChain(cg, i)));
         }
-        MatrixDistance distanceMatrix = new MatrixDistance("2LXG/matrix.txt");
+        String filename = "2LJI_optim_costs.txt";
+        MatrixDistance distanceMatrix = new MatrixDistance(filename);
         for (int i = 2; i < 7; i++) {
 
             StructuralClusterizer clusterizer3 = new MSTClusterizer(i, distanceMatrix);
@@ -38,7 +39,7 @@ public class PureClusterizerRunner {
             }
 
         }
-        double[][] matrix = GraphParser.parseGraphMatrix("2LXG/matrix.txt");
+        double[][] matrix = GraphParser.parseGraphMatrix(filename);
         for (int numOfClusters=2; numOfClusters<=3; numOfClusters++) {
             FuzzyClusterizer fc = new FuzzyClusterizer(matrix, numOfClusters);
             double[][] similarity = fc.evaluate();

@@ -1,0 +1,4 @@
+ graph graphname {
+     a -- b[len = 10.0];
+     b -- d[len = 1.0];
+ }
