@@ -37,10 +37,10 @@ public class GraphUtils {
     }
 
     private static void sqrt(File matrixFile) throws IOException {
-        double [][] matrix = GraphParser.parseGraphMatrix(matrixFile.getName());
+        double [][] matrix = GraphParser.parseGraphMatrix(matrixFile.getPath());
         assert matrix.length== matrix[0].length;
 
-        File outputFile = new File("sqrt__" + matrixFile.getName());
+        File outputFile = new File(matrixFile.getParentFile().getPath()+"/sqrt__" + matrixFile.getName());
         PrintWriter pw = new PrintWriter(outputFile);
         pw.println(matrix.length);
         for (int i=0; i< matrix.length; i++) {
@@ -53,6 +53,6 @@ public class GraphUtils {
     }
 
     public static void main(String[]args) throws IOException {
-       sqrt(new File("2LJI_optim_costs.txt"));
+       sqrt(new File("2LXG/matrix.txt"));
     }
 }

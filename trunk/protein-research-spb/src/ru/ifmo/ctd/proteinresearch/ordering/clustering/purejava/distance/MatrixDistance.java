@@ -12,8 +12,8 @@ import java.io.IOException;
 public class MatrixDistance {
     double[][] matrix;
 
-    public MatrixDistance(String filename) throws IOException {
-        matrix = GraphParser.parseGraphMatrix(filename);
+    public MatrixDistance(String pathName) throws IOException {
+        matrix = GraphParser.parseGraphMatrix(pathName);
     }
 
 

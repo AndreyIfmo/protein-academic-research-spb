@@ -19,16 +19,9 @@ import java.util.List;
  */
 public class PureClusterizerRunner {
     public void run(String name) throws Exception {
-        ConformationGraph cg = new ConformationGraph(name + "_costs.txt", name + ".zip", name + "/2LJI_optim%d_%d.pdb");
-        int numberOfVertices = cg.graph.getN();
-        List<Chain> chains = new ArrayList<>();
-        Chain reference = VertexEdgeAnalyzer.getBasicChain(cg, 0);
-        chains.add(reference);
-        for (int i = 1; i < numberOfVertices; i++) {
-            chains.add(ConformationChain.align(reference, VertexEdgeAnalyzer.getBasicChain(cg, i)));
-        }
-        String filename = "2LJI_optim_costs.txt";
-        MatrixDistance distanceMatrix = new MatrixDistance(filename);
+
+        //String filename = "2LJI_optim_costs.txt";
+        MatrixDistance distanceMatrix = new MatrixDistance(name);
         for (int i = 2; i < 7; i++) {
 
             StructuralClusterizer clusterizer3 = new MSTClusterizer(i, distanceMatrix);
@@ -39,7 +32,7 @@ public class PureClusterizerRunner {
             }
 
         }
-        double[][] matrix = GraphParser.parseGraphMatrix(filename);
+        double[][] matrix = GraphParser.parseGraphMatrix(name);
         for (int numOfClusters=2; numOfClusters<=3; numOfClusters++) {
             FuzzyClusterizer fc = new FuzzyClusterizer(matrix, numOfClusters);
             double[][] similarity = fc.evaluate();
@@ -56,6 +49,6 @@ public class PureClusterizerRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new PureClusterizerRunner().run("2LJI_optim");
+        new PureClusterizerRunner().run("2LXG/sqrt__matrix.txt");
     }
 }
