@@ -1,7 +1,10 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
+import ru.ifmo.ctd.proteinresearch.ordering.algorithms.Function;
+import ru.ifmo.ctd.proteinresearch.ordering.algorithms.OptMethod;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.util.IntPair;
 
 import java.io.*;
 import java.util.*;
@@ -11,16 +14,26 @@ import java.util.*;
  */
 public class EdgeSwitchLimitationSolver {
     public ConformationGraph cg;
-    int[][][] paths;
-    double[][] newShortest;
-    public static void main(String[] args) throws IOException, StructureException {
-        new EdgeSwitchLimitationSolver().evaluate("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+
+    private int[][][] paths;
+    private double[][] newShortest;
+
+    public int[][][] getPaths() {
+        return paths;
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException, StructureException {
+    public double[][] getNewShortest() {
+        return newShortest;
+    }
+
+    public static void main(String[] args) throws IOException, StructureException {
+        new EdgeSwitchLimitationSolver().evaluate("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0.000001, 0.5, 7);
+    }
+
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue, int pathLength) throws IOException, StructureException {
         cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
-        int n = cg.graph.getN();
-        boolean[][] banned = new boolean[n][n];
+        final int n = cg.graph.getN();
+        final boolean[][] banned = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 banned[i][j] = false;
@@ -32,60 +45,31 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
         }
-        boolean[][][] mayConnect = new boolean[n][n][n];
-        for (int vertex = 0; vertex < n; ++vertex) {
-            double[][] d = new double[n][];
-            int size = -1;
-            for (int i = 0; i < n; ++i) {
-                if (i != vertex && !banned[vertex][i]) {
-                    d[i] = cg.getEdgeSourceTorsionAngleDiff(vertex, i);
-                    size = d[i].length;
-                }
-            }
-            if (size == -1) {
-                throw new AssertionError("Not connected?");
-            }
 
-            d[vertex] = new double[size];
-            double[][] sim = new double[n][n];
-            for (double[] t : sim) {
-                Arrays.fill(t, Double.POSITIVE_INFINITY);
-            }
-            for (int i = 0; i < n; ++i) {
-                if (d[i] == null || vertex == i) continue;
-                for (int j = 0; j < n; ++j) {
-                    if (d[j] == null || i == j || vertex == j) continue;
-                    double max = 0;
-                    double lenI = cg.graph.getEdgeWeight(vertex, i);
-                    double lenJ = cg.graph.getEdgeWeight(vertex, j);
-                    for (int t = 0; t < d[i].length; t += 3) {
-                        double dx1 = d[i][t] / lenI;
-                        double dy1 = d[i][t + 1] / lenI;
-                        double dz1 = d[i][t + 2] / lenI;
-                        double dx2 = -d[j][t] / lenJ;
-                        double dy2 = -d[j][t + 1] / lenJ;
-                        double dz2 = -d[j][t + 2] / lenJ;
-                        double dx = dx1 - dx2;
-                        double dy = dy1 - dy2;
-                        double dz = dz1 - dz2;
-                        max = Math.max(max, Math.sqrt(dx * dx + dy * dy + dz * dz));
-                    }
-                    sim[i][j] = max;
-                }
-                sim[i][i] = 0.0;
-            }
-            System.out.println("Vertex " + vertex + ":");
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    System.out.printf("%9f ", sim[i][j]);
-                    if (sim[i][j] <= 0.0006 && i != j && i != vertex && j != vertex) {
-                        mayConnect[vertex][i][j] = true;
-                    }
-                }
-                System.out.println();
-            }
-        }
+        double left = minDiffValue;
+        double right = maxDiffValue;
+        double delta = 0.0000001;
 
+        double value = OptMethod.triSearch(new Function<Double, Double>() {
+            @Override
+            public Double apply(Double argument) {
+                try {
+                    boolean[][][] mayConnect = new boolean[n][n][n];
+                    evaluateMayConnectMatrix(n, banned, mayConnect, argument);
+                    calculatePaths(n, banned, mayConnect);
+                    IntPair pathIndexes = findMaxShortestPath(n);
+                    int[] path = paths[pathIndexes.first][pathIndexes.second];
+                    System.out.print(Double.valueOf(path.length));
+                    return Double.valueOf(path.length);
+                } catch (Exception e) {
+                    throw new AssertionError();
+                }
+            }
+        },left, right, delta);
+        System.out.print(value);
+    }
+
+    private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
         double[][] shortest = new double[n][];
         for (int i = 0; i < n; ++i) {
             shortest[i] = shortestPath(cg.graph, i).distance;
@@ -172,7 +156,10 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
         }
-        //findMaxShortestPath(n);
+        //printAllPaths(n);
+    }
+
+    private void printAllPaths(int n) {
         for (int i = 0; i<n; i++) {
             for (int j = 0; j<n; j++) {
                 System.out.println(Arrays.toString(paths[i][j]));
@@ -181,7 +168,63 @@ public class EdgeSwitchLimitationSolver {
         }
     }
 
-    private void findMaxShortestPath(int n) throws StructureException, FileNotFoundException {
+    private void evaluateMayConnectMatrix(int n, boolean[][] banned, boolean[][][] mayConnect, double border) throws StructureException {
+        for (int vertex = 0; vertex < n; ++vertex) {
+            double[][] d = new double[n][];
+            int size = -1;
+            for (int i = 0; i < n; ++i) {
+                if (i != vertex && !banned[vertex][i]) {
+                    d[i] = cg.getEdgeSourceTorsionAngleDiff(vertex, i);
+                    size = d[i].length;
+                }
+            }
+            if (size == -1) {
+                throw new AssertionError("Not connected?");
+            }
+
+            d[vertex] = new double[size];
+            double[][] sim = new double[n][n];
+            for (double[] t : sim) {
+                Arrays.fill(t, Double.POSITIVE_INFINITY);
+            }
+            for (int i = 0; i < n; ++i) {
+                if (d[i] == null || vertex == i) continue;
+                for (int j = 0; j < n; ++j) {
+                    if (d[j] == null || i == j || vertex == j) continue;
+                    double max = 0;
+                    double lenI = cg.graph.getEdgeWeight(vertex, i);
+                    double lenJ = cg.graph.getEdgeWeight(vertex, j);
+                    for (int t = 0; t < d[i].length; t += 3) {
+                        double dx1 = d[i][t] / lenI;
+                        double dy1 = d[i][t + 1] / lenI;
+                        double dz1 = d[i][t + 2] / lenI;
+                        double dx2 = -d[j][t] / lenJ;
+                        double dy2 = -d[j][t + 1] / lenJ;
+                        double dz2 = -d[j][t + 2] / lenJ;
+                        double dx = dx1 - dx2;
+                        double dy = dy1 - dy2;
+                        double dz = dz1 - dz2;
+                        max = Math.max(max, Math.sqrt(dx * dx + dy * dy + dz * dz));
+                    }
+                    sim[i][j] = max;
+                }
+                sim[i][i] = 0.0;
+            }
+            //System.out.println("Vertex " + vertex + ":");
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < n; ++j) {
+             //       System.out.printf("%9f ", sim[i][j]);
+
+                    if (sim[i][j] <= border && i != j && i != vertex && j != vertex) {
+                        mayConnect[vertex][i][j] = true;
+                    }
+                }
+             //   System.out.println();
+            }
+        }
+    }
+
+    private IntPair findMaxShortestPath(int n) throws StructureException, FileNotFoundException {
         int maxI = 0, maxJ = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -191,6 +234,10 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
         }
+        return new IntPair(maxI, maxJ);
+    }
+
+    private void printPath(int maxI, int maxJ) throws StructureException, FileNotFoundException {
         System.out.println("Longest shortest path:");
         System.out.println(Arrays.toString(paths[maxI][maxJ]));
         System.out.println("Length: " + newShortest[maxI][maxJ]);
@@ -254,4 +301,6 @@ public class EdgeSwitchLimitationSolver {
         }
         return distance;
     }
+
+
 }
