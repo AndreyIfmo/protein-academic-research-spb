@@ -91,7 +91,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    solver.evaluate(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern());
+                    solver.evaluate(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern(), 0.001, 10, 7);
 
                 } catch (IOException | StructureException e1) {
                     e1.printStackTrace();
