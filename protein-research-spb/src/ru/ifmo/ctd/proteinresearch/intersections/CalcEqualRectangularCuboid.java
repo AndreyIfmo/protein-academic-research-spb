@@ -116,7 +116,6 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 	}
 
 	private void stepForward() {
-		TripleInt curr = new TripleInt(0, 0, 0);
 		for (int i = 0; i != chains.chains[step].chain.length; ++i) {
 			int posX = (int) ((chains.chains[step].chain[i].x - minX) / widthX);
 			int posY = (int) ((chains.chains[step].chain[i].y - minY) / widthY);
@@ -208,4 +207,5 @@ public class CalcEqualRectangularCuboid extends AbstractCalc {
 		}
 		return -1;
 	}
+
 }

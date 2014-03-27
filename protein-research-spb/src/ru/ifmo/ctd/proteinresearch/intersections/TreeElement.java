@@ -24,14 +24,14 @@ public class TreeElement {
 		this.minimumSegments = Math.max(1, maximumSegments / 4);
 		Omin = new Point(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		Omax = new Point(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		for (Point p : points) {
-			Math.max(p.x, Omax.x);
-			Math.max(p.y, Omax.y);
-			Math.max(p.z, Omax.z);
-			Math.min(p.x, Omin.x);
-			Math.min(p.y, Omin.y);
-			Math.min(p.z, Omin.z);
-		}
+//		for (Point p : points) {
+//			Omax.x = Math.max(p.x, Omax.x);
+//			Omax.y = Math.max(p.y, Omax.y);
+//			Omax.z = Math.max(p.z, Omax.z);
+//			Omin.x = Math.min(p.x, Omin.x);
+//			Omin.y = Math.min(p.y, Omin.y);
+//			Omin.z = Math.min(p.z, Omin.z);
+//		}
 	}
 
 	public String toString() {

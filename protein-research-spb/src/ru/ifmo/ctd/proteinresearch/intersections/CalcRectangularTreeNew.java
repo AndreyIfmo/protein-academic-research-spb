@@ -1,9 +1,10 @@
 package ru.ifmo.ctd.proteinresearch.intersections;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class CalcRectangularTree extends AbstractCalc {
+public class CalcRectangularTreeNew extends AbstractCalc {
 	public int minimalProportion = 4;
 	public int maximumSegments = 20;
 	public int minimumSegments = 5;
@@ -13,7 +14,7 @@ public class CalcRectangularTree extends AbstractCalc {
 	public int functionCalculations;
 	public PointsChain data;
 
-	public CalcRectangularTree(ChainSequence chains) {
+	public CalcRectangularTreeNew(ChainSequence chains) {
 		super(chains);
 	}
 
@@ -59,26 +60,14 @@ public class CalcRectangularTree extends AbstractCalc {
 		} else {
 			dist = chains.chains[0].chain[1].distance(chains.chains[0].chain[0]);
 		}
-		tree = new TreeElement(Omin, Omax, minimumSegments,maximumSegments);
+		tree = new TreeElement(Omin, Omax, minimumSegments, maximumSegments);
 		for (int i = 0; i != data.chain.length; ++i) {
 			tree.addElement(data.chain[i]);
 		}
 	}
 
-	private void stepForward() {
-		for (int i = 0; i != chains.chains[step].chain.length; ++i) {
-			if (tree.removeIfLocationChanged(data.chain[i], chains.chains[step].chain[i])) {
-				data.chain[i].x = chains.chains[step].chain[i].x;
-				data.chain[i].y = chains.chains[step].chain[i].y;
-				data.chain[i].z = chains.chains[step].chain[i].z;
-				tree.addElement(data.chain[i]);
-			}
-		}
-		++step;
-	}
-
-	private LinkedList<Integer> getNeighbors(Point a, Point b) {
-		LinkedList<Integer> result = new LinkedList<Integer>();
+	private ArrayList<Integer> getNeighbors(Point a, Point b) {
+		ArrayList<Integer> result = new ArrayList<Integer>();
 		Point[] points = new Point[8];
 		points[0] = a;
 		points[1] = b;
@@ -91,7 +80,7 @@ public class CalcRectangularTree extends AbstractCalc {
 
 		for (int i = 0; i != 8; ++i) {
 			LinkedList<Point> current = tree.getAllInLocation(points[i]);
-			if (current == null){
+			if (current == null) {
 				continue;
 			}
 			Iterator<Point> iter = current.iterator();
@@ -110,21 +99,18 @@ public class CalcRectangularTree extends AbstractCalc {
 	}
 
 	public int hasIntersections() throws Exception {
-		PointsChain first;
-		PointsChain second = chains.chains[0];
-		PointsChain[] sequence = chains.chains;
+		PointsChain first = chains.chains[0];
+		PointsChain second = chains.chains[1];
 		int chainLength = second.chain.length;
-
 		int intersections = 0;
+		int skipped = 0;
 		
-		for (step = 1; step != sequence.length; stepForward()) {
-			first = second;
-			second = sequence[step];
-			for (int j = 1; j != chainLength; ++j) {
-				LinkedList<Integer> neighbours = getNeighbors(first.chain[j - 1], first.chain[j]);
+		for (int j = 1; j != chainLength; ++j) {
+			if (!movingTooFar(first.chain[j - 1], first.chain[j], second.chain[j - 1], second.chain[j])) {
+				ArrayList<Integer> neighbours = getNeighbors(first.chain[j - 1], first.chain[j]);
 
-				int currentNeighbor = 1;
-				for (Iterator<Integer> iter = neighbours.iterator(); iter.hasNext(); currentNeighbor = iter.next()) {
+				for (int k = 0; k < neighbours.size(); k++) {
+					int currentNeighbor = neighbours.get(k);
 					if ((currentNeighbor == j - 1) || (currentNeighbor == j + 1) || (currentNeighbor == j) || (currentNeighbor == 0))
 						continue;
 					++functionCalculations;
@@ -132,6 +118,9 @@ public class CalcRectangularTree extends AbstractCalc {
 						++intersections;
 					}
 				}
+			}else{
+				++skipped;
+				intersections += intersectAll(j, first.chain, second.chain);
 			}
 		}
 		return intersections;
