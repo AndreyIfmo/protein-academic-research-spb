@@ -7,6 +7,7 @@ import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 import ru.ifmo.ctd.proteinresearch.ordering.util.IntPair;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -50,7 +51,7 @@ public class EdgeSwitchLimitationSolver {
         double right = maxDiffValue;
         double delta = 0.0000001;
 
-        double value = OptMethod.triSearch(new Function<Double, Double>() {
+        double border = OptMethod.triSearch(new Function<Double, Double>() {
             @Override
             public Double apply(Double argument) {
                 try {
@@ -59,14 +60,15 @@ public class EdgeSwitchLimitationSolver {
                     calculatePaths(n, banned, mayConnect);
                     IntPair pathIndexes = findMaxShortestPath(n);
                     int[] path = paths[pathIndexes.first][pathIndexes.second];
-                    System.out.print(Double.valueOf(path.length));
+                    System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
                     return Double.valueOf(path.length);
                 } catch (Exception e) {
                     throw new AssertionError();
                 }
             }
         },left, right, delta);
-        System.out.print(value);
+        System.out.println("Value: " + border);
+
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
