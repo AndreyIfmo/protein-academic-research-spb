@@ -27,11 +27,11 @@ public class EdgeSwitchLimitationSolver {
         return newShortest;
     }
 
-    public static void main(String[] args) throws IOException, StructureException {
+    public static void main(String[] args) throws Exception {
         new EdgeSwitchLimitationSolver().evaluate("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0.000001, 0.5, 7);
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue, int pathLength) throws IOException, StructureException {
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue, int pathLength) throws Exception {
         cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
         final int n = cg.graph.getN();
         final boolean[][] banned = new boolean[n][n];
@@ -44,6 +44,17 @@ public class EdgeSwitchLimitationSolver {
                 if (banned[i][j]) {
                     System.out.println(i + " <-> " + j + " banned");
                 }
+            }
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = i+1; j < n; ++j) {
+                if (IntersectionUtils.checkFile(cg.files[i][j].getPath())>0) {
+                    banned[i][j]=true;
+                    banned[j][i]=true;
+                    System.out.println(i + " <-> " + j + " self-intersected");
+                }
+
             }
         }
 

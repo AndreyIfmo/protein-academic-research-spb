@@ -16,7 +16,7 @@ import java.util.zip.*;
 public class ConformationGraph {
     public final Graph graph;
     private final ConformationChain[][] chains;
-    private final File[][] files;
+    public final File[][] files;
     private final ConformationChain[] roots;
     private final PDBFileReader fileReader = new PDBFileReader();
 
@@ -82,13 +82,14 @@ public class ConformationGraph {
 
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(zipArchive))) {
             ZipEntry entry;
+            int counter =0;
             while ((entry = input.getNextEntry()) != null) {
                 String name = entry.getName();
                 Integer firstIndex = firstIndices.get(name);
                 Integer secondIndex = secondIndices.get(name);
                 if (firstIndex != null && secondIndex != null) {
-                    File file = File.createTempFile("fuck-bio-java-", ".pdb");
-                    file.deleteOnExit();
+                    File file = new File("fuck-bio-java-"+counter++);
+                  //  file.deleteOnExit();
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         byte[] buf = new byte[2048];
                         int size;

@@ -93,7 +93,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
                 try {
                     solver.evaluate(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern(), 0.001, 10, 7);
 
-                } catch (IOException | StructureException e1) {
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
