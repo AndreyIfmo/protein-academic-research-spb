@@ -40,7 +40,7 @@ public class PathUtil {
                 Double.NaN
         ));*/
      buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
-                   new int[] {4, 6, 8, 2, 17, 10, 11, 7, 14},
+                   new int[] {0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
              Double.NaN
           ));
 //        buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim2.pdb", new Path(
