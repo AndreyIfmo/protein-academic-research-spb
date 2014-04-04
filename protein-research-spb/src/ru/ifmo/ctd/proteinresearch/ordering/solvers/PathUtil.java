@@ -1,8 +1,11 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
+import org.biojava.bio.structure.ChainImpl;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Maxim Buzdalov
@@ -31,18 +34,16 @@ public class PathUtil {
 
 
 
-
-
     public static void main(String[] args) throws Exception {
        /* buildPDB("table-1BTB.txt", "1BTB.zip", "1BTB/%02d-%02d/Result.pdb", "ResultLong.pdb", new Path(
                 new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
                 Double.NaN
         ));*/
-     buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
-                   new int[] {0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
-             Double.NaN
-          ));
+        buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
+                new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
+                Double.NaN
+        ));
 //        buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim2.pdb", new Path(
 //                new int[] {8, 19, 13, 18},
 //                Double.NaN
