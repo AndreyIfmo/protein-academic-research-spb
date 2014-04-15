@@ -1,7 +1,9 @@
 package ru.ifmo.ctd.proteinresearch.ordering.algorithms;
 
+import ru.ifmo.ctd.proteinresearch.ordering.util.Function;
+
 /**
- * Created by AndreyS on 26.03.14.
+ * ansokolmail@gmail.com
  */
 public class OptMethod {
 

@@ -1,13 +1,12 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
-import ru.ifmo.ctd.proteinresearch.ordering.algorithms.Function;
+import ru.ifmo.ctd.proteinresearch.ordering.util.Function;
 import ru.ifmo.ctd.proteinresearch.ordering.algorithms.OptMethod;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 import ru.ifmo.ctd.proteinresearch.ordering.util.IntPair;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**

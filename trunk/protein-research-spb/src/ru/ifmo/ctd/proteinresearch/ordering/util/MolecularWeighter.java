@@ -1,23 +1,24 @@
 package ru.ifmo.ctd.proteinresearch.ordering.util;
 
 import org.biojava.bio.structure.*;
-import ru.ifmo.ctd.proteinresearch.intersections.Point;
-import ru.ifmo.ctd.proteinresearch.intersections.PointsChain;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.DistanceUtils;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
+import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by AndreyS on 04.04.14.
+ * ansokolmail@gmail.com
  */
 public class MolecularWeighter {
     private static final Map<String, Double> myMap;
 
     static {
-        myMap = new HashMap<String, Double>();
+        myMap = new HashMap<>();
         myMap.put("ala", 71.0779);
         myMap.put("arg", 156.1857);
         myMap.put("asn", 114.1026);
@@ -61,7 +62,7 @@ public class MolecularWeighter {
         List<Group> atomGroups2 = chain2.getAtomGroups();
         assert size == atomGroups2.size();
         boolean isFirst = true;
-        boolean isLast = false;
+        boolean isLast;
         double totalWeight = 0;
         for (int i = 0; i < atomGroups1.size(); i++) {
             isLast = (i == atomGroups1.size() - 1);
@@ -98,5 +99,50 @@ public class MolecularWeighter {
             default:
                 throw new IllegalArgumentException(atomName);
         }
+    }
+
+    public static double[] weightPath(Path path, ConformationGraph cg) throws StructureException {
+        ConformationChain chain = cg.forPath(path);
+        Structure structure = chain.getStructure();
+        int n = structure.nrModels();
+        double[] weights = new double[n];
+        for (int i = 1; i < n; i++) {
+            weights[i] = weights[i-1] + energy(structure.getModel(i-1).get(0), structure.getModel(i).get(0));
+        }
+        return weights;
+    }
+
+    public static void main(String[] args) throws IOException, StructureException {
+        int n=500;
+        run(n);
+    }
+
+    public static int section(double[] weights, double point) {
+        int first = 0;
+        int last = weights.length;
+        while (first < last) {
+           int mid = first + (last - first) / 2;
+            if (point <= weights[mid]) {
+                last = mid;
+            } else {
+                first = mid + 1;
+            }
+        }
+        return last;
+    }
+
+    private static void run(int n) throws IOException, StructureException {
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        Path path = new Path(new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14}, Double.NaN);
+        double[] weights = weightPath(path, cg);
+        double range = weights[weights.length-1] - weights[0];
+        double step = range/n;
+        double current=0;
+        for (int i = 0; i < n; i++) {
+            System.out.print(section(weights, current) + " ");
+            current+=step;
+        }
+        //System.out.print(section(weights, 5000.0));
+        //System.out.print(Arrays.toString(weights));
     }
 }
