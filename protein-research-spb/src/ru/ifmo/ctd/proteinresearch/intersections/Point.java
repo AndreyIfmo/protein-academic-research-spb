@@ -1,5 +1,8 @@
 package ru.ifmo.ctd.proteinresearch.intersections;
 
+
+import org.biojava.bio.structure.Atom;
+
 /**
  * 
  * @author Smetannikov
@@ -17,6 +20,10 @@ public class Point {
 		this.z = z;
 		inChainIndex = -1;
 	}
+
+    public Point(Atom atom) {
+        this(atom.getX(), atom.getY(), atom.getZ());
+    }
 
 	public Point add(Point b) {
 		return new Point(this.x + b.x, this.y + b.y, this.z + b.z);
@@ -78,6 +85,7 @@ public class Point {
 		return x * b.x + y * b.y + z * b.z;
 	}
 
+    public  Point normalized () {return new Point(this.x/distance(), this.y/distance(), this.z/distance());}
 	public String toString() {
 		return ("(" + Double.toString(x) + ", " + Double.toString(y) + ", " + Double.toString(z) + ")");
 	}
