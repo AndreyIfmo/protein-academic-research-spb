@@ -28,7 +28,7 @@ public class EvaluatedChain {
         this.planarAngles = getPlanarAngles(points);
     }
 
-    private static List<Point> toPoints(List<Atom> atoms) {
+    public static List<Point> toPoints(List<Atom> atoms) {
         return FunctionalUtils.map(atoms, new Function<Atom, Point>() {
             @Override
             public Point apply(Atom argument) {
@@ -52,7 +52,7 @@ public class EvaluatedChain {
     public static List<SinCos> getTorsionAngles(List<Atom> atoms) throws StructureException {
         List<Double> list = new ArrayList<>();
         for (int i = 0; i < atoms.size()-3; i++) {
-            list.add(Calc.torsionAngle(atoms.get(i), atoms.get(i + 1), atoms.get(i + 2), atoms.get(i + 3)));
+            list.add(Math.toRadians(Calc.torsionAngle(atoms.get(i), atoms.get(i + 1), atoms.get(i + 2), atoms.get(i + 3))));
         }
         return FunctionalUtils.map(list, new Function<Double, SinCos>() {
             @Override
@@ -84,7 +84,7 @@ public class EvaluatedChain {
         answer.add(0 , new Point(0,0,0));
         answer.add(0 , new Point(lengths.get(0),0,0));
         answer.add(0 , new Point(lengths.get(0)+lengths.get(1) * planarAngles.get(0).cos, lengths.get(1) * planarAngles.get(0).sin,0));
-        for (int i = 3; i<atoms.size(); i++) {
+        for (int i = 3; i < atoms.size(); i++) {
             double r = lengths.get(i - 1);
             SinCos p = planarAngles.get(i - 2);
             SinCos t = torsionAngles.get(i - 3);
