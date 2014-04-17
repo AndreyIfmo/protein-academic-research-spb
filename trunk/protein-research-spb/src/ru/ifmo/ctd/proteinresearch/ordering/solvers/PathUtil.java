@@ -4,13 +4,7 @@ import org.biojava.bio.structure.*;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 /**
  * @author Maxim Buzdalov
@@ -38,29 +32,18 @@ public class PathUtil {
 
 
     public Chain getInterpolatedChain(Chain from, Chain to, double k ) {
-        getAtoms(from);
+        EvaluatedChain.getAtoms(from);
         return null;
     }
 
-    public static List<Atom> getAtoms(Chain from) {
-        Chain interpolatedChain = new ChainImpl();
-        List<Group> atomGroups1 = from.getAtomGroups();
 
-        List<Atom> atoms = new ArrayList<>();
-        for (Group group:atomGroups1) {
-            atoms.addAll(group.getAtoms());
-        }
-        return atoms;
-    }
 
-    public static List<Double> getTorsionAngles(List<Atom> atoms) throws StructureException {
-        int length = atoms.size();
-        List<Double> list = new ArrayList<>();
-        for (int i = 0; i < atoms.size()-3; i++) {
-            list.add(Calc.torsionAngle(atoms.get(i), atoms.get(i + 1), atoms.get(i + 2), atoms.get(i + 3)));
-        }
-        return list;
-    }
+    /*List<Point> restoreCoords(Structure structure, List<Double> torsionAngles, List<Double> planarAngles)  {
+        List<Atom> atoms = EvaluatedChain.getAtoms(structure.getChain(0));
+
+        List<Double> lengths = EvaluatedChain.getLengths(points);
+
+    }*/
 
 
     public static void main(String[] args) throws Exception {
@@ -71,7 +54,7 @@ public class PathUtil {
         ));*/
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         ConformationChain cc = cg.getChain(0,1);
-        System.out.print(Arrays.toString(getTorsionAngles(getAtoms(cc.getStructure().getChain(0))).toArray()));
+        System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
 
         buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
                 new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
