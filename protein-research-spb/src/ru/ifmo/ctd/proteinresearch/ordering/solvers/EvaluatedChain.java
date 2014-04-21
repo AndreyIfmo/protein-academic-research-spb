@@ -65,8 +65,8 @@ public class EvaluatedChain {
 
     public static List<SinCos> getPlanarAngles(List<Point> points) {
         List<SinCos> list = new ArrayList<>();
-        for (int i=0; i<points.size()-1; i++) {
-            list.add(new SinCos(points.get(i), points.get(i+1)));
+        for (int i=0; i<points.size()-2; i++) {
+            list.add(new SinCos(points.get(i+1).sub(points.get(i)), points.get(i+2).sub(points.get(i+1))));
         }
         return list;
     }
