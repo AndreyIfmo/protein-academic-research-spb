@@ -104,7 +104,7 @@ public class PathUtil {
                 new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
                 Double.NaN
-        ));*//*
+        ));*/
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         ConformationChain cc = cg.getChain(0,1);
         System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
@@ -112,20 +112,16 @@ public class PathUtil {
         buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
                 new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
                 Double.NaN
-        ));*/
+        ));
 
-//        buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim2.pdb", new Path(
-//                new int[] {8, 19, 13, 18},
-//                Double.NaN
-//        ));
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+      /*  ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         ConformationChain cc = cg.getChain(0,9);
         Structure structure = cc.getStructure();
         Chain chain1 = structure.getModel(0).get(0);
         Chain chain2 = structure.getModel(1).get(0);
         List<Chain> chainList = PathUtil.getInterpolatedChains(chain1, chain2, 50);
         align(chainList);
-        PathUtil.toPDB("test.pdb", chainList);
+        PathUtil.toPDB("test.pdb", chainList);*/
     }
 
     public static void align(List<Chain> chains) throws StructureException {

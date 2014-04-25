@@ -113,7 +113,7 @@ public class MolecularWeighter {
     }
 
     public static void main(String[] args) throws IOException, StructureException {
-        int n=500;
+        int n=5000;
         run(n);
     }
 
