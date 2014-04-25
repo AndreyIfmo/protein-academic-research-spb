@@ -236,7 +236,7 @@ public class EdgeSwitchLimitationSolver {
         }
     }
 
-    private IntPair findMaxShortestPath(int n) throws StructureException, FileNotFoundException {
+    public IntPair findMaxShortestPath(int n) throws StructureException, FileNotFoundException {
         int maxI = 0, maxJ = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {

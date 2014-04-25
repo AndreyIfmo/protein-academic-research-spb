@@ -3,12 +3,12 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui;
 import org.biojava.bio.structure.StructureException;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
+import ru.ifmo.ctd.proteinresearch.ordering.util.IntPair;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
@@ -57,9 +57,20 @@ public class SmoothMotionsBuilderDialog extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try (PrintWriter pdb = new PrintWriter("New.pdb")) {
-                    int fromNum = Integer.parseInt(fromLabeledField.textField.getText());int toNum = Integer.parseInt(toLabeledField.textField.getText());
-                    pdb.print(solver.cg.forPath(new Path(solver.get(fromNum,toNum), solver.weight(fromNum, toNum))));
-                    System.out.println(Arrays.toString(solver.get(fromNum,toNum)));
+                    int fromNum = Integer.parseInt(fromLabeledField.textField.getText());
+                    int toNum = Integer.parseInt(toLabeledField.textField.getText());
+                    if (!(fromNum==toNum)) {
+                        pdb.print(solver.cg.forPath(new Path(solver.get(fromNum, toNum), solver.weight(fromNum, toNum))));
+                        System.out.println(Arrays.toString(solver.get(fromNum, toNum)));
+                    } else {
+                        IntPair pair = solver.findMaxShortestPath(solver.cg.graph.getN());
+                        fromNum = pair.first;
+                        toNum = pair.second;
+                        fromLabeledField.textField.setText(""+fromNum);
+                        toLabeledField.textField.setText(""+toNum);
+                        pdb.print(solver.cg.forPath(new Path(solver.get(fromNum, toNum), solver.weight(fromNum, toNum))));
+                        System.out.println(Arrays.toString(solver.get(fromNum, toNum)));
+                    }
                 } catch (FileNotFoundException | StructureException e1) {
                     e1.printStackTrace();
                 }
