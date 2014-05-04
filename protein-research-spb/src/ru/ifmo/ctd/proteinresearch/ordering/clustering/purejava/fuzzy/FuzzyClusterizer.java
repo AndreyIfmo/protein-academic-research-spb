@@ -1,5 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.fuzzy;
 
+import ru.ifmo.ctd.proteinresearch.ordering.clustering.ClusteringUtils;
+
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
  *         Date: 19.01.14
@@ -74,8 +76,8 @@ public class FuzzyClusterizer {
         double min = Double.MAX_VALUE;
         boolean[] vector = new boolean[distanceMatrix.length];
         do {
-            if ((numOfElements(vector) == numOfClusters)) {
-                centers = getCenters(vector);
+            if ((ClusteringUtils.numOfElements(vector) == numOfClusters)) {
+                centers = ClusteringUtils.getCenters(vector, numOfClusters);
                 double errorFuncValue = errorFunc(centers);
                 if (errorFuncValue < min) {
                     min = errorFuncValue;
@@ -89,42 +91,8 @@ public class FuzzyClusterizer {
                     }
                 }
             }
-        } while (next(vector));
+        } while (ClusteringUtils.next(vector));
         return similarity;
     }
 
-    public boolean next(boolean[] vector) {
-        int i = distanceMatrix.length - 1;
-        while (vector[i] && i > 0) {
-            vector[i] = false;
-            i--;
-        }
-        if (i == 0 && vector[i]) {
-            return false;
-        }
-        vector[i] = true;
-        return true;
-    }
-
-    public int[] getCenters(boolean[] vector) {
-        int[] centers = new int[numOfClusters];
-        int counter = 0;
-        for (int i = 0; i < vector.length; i++) {
-            if (vector[i]) {
-                centers[counter] = i;
-                counter++;
-            }
-        }
-        return centers;
-    }
-
-    public int numOfElements(boolean[] vector) {
-        int counter = 0;
-        for (int i = 0; i < vector.length; i++) {
-            if (vector[i]) {
-                counter++;
-            }
-        }
-        return counter;
-    }
 }

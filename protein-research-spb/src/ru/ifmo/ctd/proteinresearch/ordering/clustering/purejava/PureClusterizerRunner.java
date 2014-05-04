@@ -49,6 +49,6 @@ public class PureClusterizerRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new PureClusterizerRunner().run("2LXG/sqrt__matrix.txt");
+        new PureClusterizerRunner().run("matrixes/2m3mMatrix.txt");
     }
 }
