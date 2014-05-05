@@ -37,7 +37,7 @@ public class PathUtil {
     }
 
 
-    public static List<Chain> getInterpolatedChains(Chain from, Chain to, int k ) throws StructureException {
+    public static List<Chain> getInterpolatedChains(Chain from, Chain to, int k ) throws Exception {
         EvaluatedChain ec1 = new EvaluatedChain(from);
         EvaluatedChain ec2 = new EvaluatedChain(to);
         List<Chain> chains = new ArrayList<>();

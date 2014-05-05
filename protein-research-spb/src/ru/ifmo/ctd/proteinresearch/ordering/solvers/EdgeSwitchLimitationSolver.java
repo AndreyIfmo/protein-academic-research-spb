@@ -27,44 +27,49 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver().evaluate("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0.000001, 0.5, 7);
+        new EdgeSwitchLimitationSolver().evaluate("matrixes/2m3m.txt", "2m3m.zip", "2m3m/%02d-%02d/opt-result.pdb", 0.000001, 0.5);
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue, int pathLength) throws Exception {
-        cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
-        final int n = cg.graph.getN();
-        final boolean[][] banned = new boolean[n][n];
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                banned[i][j] = false;
-                for (int k = 0; k < n; ++k) {
-                    banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
-                }
-                if (banned[i][j]) {
-                    System.out.println(i + " <-> " + j + " banned");
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue)  {
+        try {
+            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
+            final int n = cg.graph.getN();
+            final boolean[][] banned = new boolean[n][n];
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < n; ++j) {
+                    banned[i][j] = false;
+                    for (int k = 0; k < n; ++k) {
+                        banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
+                    }
+                    if (banned[i][j]) {
+                        System.out.println(i + " <-> " + j + " banned");
+                    }
                 }
             }
-        }
 
-        for (int i = 0; i < n; ++i) {
-            for (int j = i+1; j < n; ++j) {
-                if (IntersectionUtils.checkFile(cg.files[i][j].getPath())>0) {
-                    banned[i][j]=true;
-                    banned[j][i]=true;
-                    System.out.println(i + " <-> " + j + " self-intersected");
+            for (int i = 0; i < n; ++i) {
+                for (int j = i + 1; j < n; ++j) {
+                    try {
+                        if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
+                            banned[i][j] = true;
+                            banned[j][i] = true;
+                            System.out.println(i + " <-> " + j + " self-intersected");
+                        }
+                    } catch (NullPointerException npe) {
+                        System.out.println(i + " " + j);
+                        npe.printStackTrace();
+                    }
+
                 }
-
             }
-        }
 
-        double left = minDiffValue;
-        double right = maxDiffValue;
-        double delta = 0.0000001;
+            double left = minDiffValue;
+            double right = maxDiffValue;
+            double delta = 0.0000001;
 
-        double border = OptMethod.triSearch(new Function<Double, Double>() {
-            @Override
-            public Double apply(Double argument) {
-                try {
+            double border = OptMethod.triSearch(new Function<Double, Double>() {
+                @Override
+                public Double apply(Double argument) throws StructureException, FileNotFoundException {
                     boolean[][][] mayConnect = new boolean[n][n][n];
                     evaluateMayConnectMatrix(n, banned, mayConnect, argument);
                     calculatePaths(n, banned, mayConnect);
@@ -72,12 +77,14 @@ public class EdgeSwitchLimitationSolver {
                     int[] path = paths[pathIndexes.first][pathIndexes.second];
                     System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
                     return Double.valueOf(path.length);
-                } catch (Exception e) {
-                    throw new AssertionError();
                 }
-            }
-        },left, right, delta);
-        System.out.println("Value: " + border);
+            }, left, right, delta);
+            System.out.println("Value: " + border);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cg.cleanUp();
+        }
 
     }
 

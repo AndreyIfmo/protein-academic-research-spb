@@ -60,7 +60,7 @@ public class ConformationGraph {
         }
         return chains[source][target];
     }
-
+///
     public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException {
         this.graph = GraphParser.parseMatrixGraphFromFile(matrixFileName);
         int n = graph.getN();
@@ -70,7 +70,7 @@ public class ConformationGraph {
         Map<String, Integer> secondIndices = new HashMap<>();
         for (int from = 0; from < n; ++from) {
             for (int to = from + 1; to < n; ++to) {
-                String s = String.format(fileNamePattern, from + 1, to + 1);
+                String s = String.format(fileNamePattern, from, to);
                 firstIndices.put(s, from);
                 secondIndices.put(s, to);
             }
@@ -88,8 +88,8 @@ public class ConformationGraph {
                 Integer firstIndex = firstIndices.get(name);
                 Integer secondIndex = secondIndices.get(name);
                 if (firstIndex != null && secondIndex != null) {
-                    File file = new File("fuck-bio-java-"+counter++);
-                  //  file.deleteOnExit();
+                    File file = new File("temp-"+counter++);
+                    file.deleteOnExit();
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         byte[] buf = new byte[2048];
                         int size;
@@ -114,5 +114,13 @@ public class ConformationGraph {
             rv.append(getChain(path.vertices[i - 1], path.vertices[i]));
         }
         return rv;
+    }
+
+    public void cleanUp() {
+        for (File[] filesIt:files) {
+            for (File it:filesIt) {
+                it.delete();
+            }
+        }
     }
 }
