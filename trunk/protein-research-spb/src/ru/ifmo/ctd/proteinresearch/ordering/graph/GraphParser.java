@@ -39,6 +39,12 @@ public class GraphParser {
             }
 
         }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                edges[i][j] = Math.max(edges[i][j], edges[j][i]);
+                edges[j][i] = edges[i][j];
+            }
+        }
         br.close();
         return edges;
     }
