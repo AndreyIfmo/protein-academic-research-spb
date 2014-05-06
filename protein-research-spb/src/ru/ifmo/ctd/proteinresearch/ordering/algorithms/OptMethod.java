@@ -7,7 +7,9 @@ import ru.ifmo.ctd.proteinresearch.ordering.util.Function;
  */
 public class OptMethod {
 
-
+    public static double upgradedTriSearch(Function<Double, Double> f, double left, double right, double tolerance) {
+        return 0;
+    }
     public static double triSearch(Function<Double, Double> f, double left, double right, double tolerance) throws Exception {
         boolean returnRight = false;
         while (right - left > tolerance) {

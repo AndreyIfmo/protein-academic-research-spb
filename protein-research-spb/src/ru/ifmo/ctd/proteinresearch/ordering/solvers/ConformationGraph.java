@@ -70,7 +70,7 @@ public class ConformationGraph {
         Map<String, Integer> secondIndices = new HashMap<>();
         for (int from = 0; from < n; ++from) {
             for (int to = from + 1; to < n; ++to) {
-                String s = String.format(fileNamePattern, from, to);
+                String s = String.format(fileNamePattern, from+1, to+1);
                 firstIndices.put(s, from);
                 secondIndices.put(s, to);
             }
