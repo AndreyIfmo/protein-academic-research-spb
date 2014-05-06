@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.biojava.bio.structure.Structure;
@@ -34,7 +35,8 @@ public class SimpleJmolExample {
         try {
 
             PDBFileReader pdbr = new PDBFileReader();
-            pdbr.setPath("D:\\protein\\protein-research-spb\\resources");
+            File f = new File("tmp");
+            pdbr.setPath(f.getCanonicalPath().replace("tmp", ""));
 
             String pdbCode = "Result_optim";
 
@@ -76,14 +78,12 @@ public class SimpleJmolExample {
         JmolViewer viewer = jmolPanel.getViewer();
 
         // Jmol could also read the file directly from your file system
-        //viewer.openFile("/Path/To/PDB/1tim.pdb");
+        viewer.openFile("Result_optim.pdb");
 
         // send the PDB file to Jmol.
         // there are also other ways to interact with Jmol, but they require more
         // code. See the link to SPICE above...
-        viewer.openStringInline(pdb);
-        viewer.evalString("select 1; spacefill off; wireframe off; backbone 0.4;  ");
-        viewer.evalString("color chain;  ");
+
         this.viewer = viewer;
 
     }

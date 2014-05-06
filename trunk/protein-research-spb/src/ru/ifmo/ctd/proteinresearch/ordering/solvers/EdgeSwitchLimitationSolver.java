@@ -5,6 +5,7 @@ import ru.ifmo.ctd.proteinresearch.ordering.util.Function;
 import ru.ifmo.ctd.proteinresearch.ordering.algorithms.OptMethod;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 import ru.ifmo.ctd.proteinresearch.ordering.util.IntPair;
+import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 
 import java.io.*;
 import java.util.*;
@@ -27,65 +28,81 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver().evaluate("matrixes/2m3m.txt", "2m3m.zip", "2m3m/%02d-%02d/opt-result.pdb", 0.000001, 0.5);
+        new EdgeSwitchLimitationSolver().evaluate("2LJI.properties", 0.000001, 0.5);
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue)  {
+    public void evaluate(String propertiesFileName, double minDiffValue, double maxDiffValue)  {
         try {
-            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
-            final int n = cg.graph.getN();
-            final boolean[][] banned = new boolean[n][n];
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    banned[i][j] = false;
-                    for (int k = 0; k < n; ++k) {
-                        banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
-                    }
-                    if (banned[i][j]) {
-                        System.out.println(i + " <-> " + j + " banned");
-                    }
-                }
-            }
-
-            for (int i = 0; i < n; ++i) {
-                for (int j = i + 1; j < n; ++j) {
-                    try {
-                        if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
-                            banned[i][j] = true;
-                            banned[j][i] = true;
-                            System.out.println(i + " <-> " + j + " self-intersected");
-                        }
-                    } catch (NullPointerException npe) {
-                        System.out.println(i + " " + j);
-                        npe.printStackTrace();
-                    }
-
-                }
-            }
-
-            double left = minDiffValue;
-            double right = maxDiffValue;
-            double delta = 0.0000001;
-
-            double border = OptMethod.triSearch(new Function<Double, Double>() {
-                @Override
-                public Double apply(Double argument) throws StructureException, FileNotFoundException {
-                    boolean[][][] mayConnect = new boolean[n][n][n];
-                    evaluateMayConnectMatrix(n, banned, mayConnect, argument);
-                    calculatePaths(n, banned, mayConnect);
-                    IntPair pathIndexes = findMaxShortestPath(n);
-                    int[] path = paths[pathIndexes.first][pathIndexes.second];
-                    System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
-                    return Double.valueOf(path.length);
-                }
-            }, left, right, delta);
-            System.out.println("Value: " + border);
+            cg = PropertiesParser.getGraphData(propertiesFileName);
+            run(minDiffValue, maxDiffValue);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             cg.cleanUp();
         }
 
+    }
+
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue)  {
+        try {
+            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
+            run(minDiffValue, maxDiffValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cg.cleanUp();
+        }
+
+    }
+
+    private void run(double minDiffValue, double maxDiffValue) throws Exception {
+        final int n = cg.graph.getN();
+        final boolean[][] banned = new boolean[n][n];
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                banned[i][j] = false;
+                for (int k = 0; k < n; ++k) {
+                    banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
+                }
+                if (banned[i][j]) {
+                    System.out.println(i + " <-> " + j + " banned");
+                }
+            }
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                try {
+                    if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
+                        banned[i][j] = true;
+                        banned[j][i] = true;
+                        System.out.println(i + " <-> " + j + " self-intersected");
+                    }
+                } catch (NullPointerException npe) {
+                    System.out.println(i + " " + j);
+                    npe.printStackTrace();
+                }
+
+            }
+        }
+
+        double left = minDiffValue;
+        double right = maxDiffValue;
+        double delta = 0.0000001;
+
+        double border = OptMethod.triSearch(new Function<Double, Double>() {
+            @Override
+            public Double apply(Double argument) throws StructureException, FileNotFoundException {
+                boolean[][][] mayConnect = new boolean[n][n][n];
+                evaluateMayConnectMatrix(n, banned, mayConnect, argument);
+                calculatePaths(n, banned, mayConnect);
+                IntPair pathIndexes = findMaxShortestPath(n);
+                int[] path = paths[pathIndexes.first][pathIndexes.second];
+                System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
+                return Double.valueOf(path.length);
+            }
+        }, left, right, delta);
+        System.out.println("Value: " + border);
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
