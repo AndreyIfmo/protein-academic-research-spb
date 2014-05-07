@@ -42,4 +42,6 @@ public abstract class AbstractGraph implements Graph {
 
     @Override
     public abstract boolean hasEdge(int from, int to);
+    @Override
+    public abstract void removeEdge(int from, int to);
 }

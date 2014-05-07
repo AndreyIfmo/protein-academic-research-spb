@@ -16,7 +16,9 @@ public interface Graph {
     public List<Edge> edges(int x);
 
     public double getEdgeWeight(int from, int to);
-
+    public void setEdgeWeight(int from, int to, double weight);
     public boolean hasEdge(int from, int to);
+    public void removeEdge(int from, int to);
+
 
 }
