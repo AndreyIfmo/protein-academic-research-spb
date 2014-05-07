@@ -15,6 +15,6 @@ public class PropertiesParser {
         proteinProperties.load(new FileInputStream(fileName));
         return new ConformationGraph(proteinProperties.getProperty("matrix"),
         proteinProperties.getProperty("archive"),
-        proteinProperties.getProperty("mask"), proteinProperties.getProperty("banned"));
+        proteinProperties.getProperty("mask"), proteinProperties.getProperty("banned").split(","));
     }
 }

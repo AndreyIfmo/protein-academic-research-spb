@@ -38,7 +38,7 @@ public class EdgeSwitchLimitationSolver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            cg.cleanUp();
+           // cg.cleanUp();
         }
 
     }
@@ -62,7 +62,7 @@ public class EdgeSwitchLimitationSolver {
             for (int j = 0; j < n; ++j) {
                 banned[i][j] = false;
                 for (int k = 0; k < n; ++k) {
-                    banned[i][j] |= cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
+                    banned[i][j] = banned[i][j] || !cg.graph.hasEdge(i,j) || cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
                 }
                 if (banned[i][j]) {
                     System.out.println(i + " <-> " + j + " banned");
@@ -89,8 +89,7 @@ public class EdgeSwitchLimitationSolver {
         double left = minDiffValue;
         double right = maxDiffValue;
         double delta = 0.0000001;
-
-        double border = OptMethod.triSearch(new Function<Double, Double>() {
+    Function<Double, Double> f = new Function<Double, Double>() {
             @Override
             public Double apply(Double argument) throws StructureException, FileNotFoundException {
                 boolean[][][] mayConnect = new boolean[n][n][n];
@@ -101,8 +100,12 @@ public class EdgeSwitchLimitationSolver {
                 System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
                 return Double.valueOf(path.length);
             }
-        }, left, right, delta);
+        };
+        double border = OptMethod.upgradedTriSearch(f, left, right, delta, 2);
         System.out.println("Value: " + border);
+        System.out.println("ANSWER");
+        System.out.println(f.apply(border));
+
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
@@ -154,7 +157,7 @@ public class EdgeSwitchLimitationSolver {
         paths = new int[n][n][];
         for (int vx = 0; vx < n; ++vx) {
             DijkstraResult shp = shortestPath(limited, vx);
-            System.out.print("From " + vx + ":");
+            //System.out.print("From " + vx + ":");
             for (int i = 0; i < n; ++i) {
                 newShortest[vx][i] = shp.distance[i + n];
                 if (Double.isInfinite(newShortest[vx][i])) {
@@ -179,10 +182,10 @@ public class EdgeSwitchLimitationSolver {
                     paths[vx][i] = fromTo;
                 }
                 if (i != vx) {
-                    System.out.printf("   %d:%.02f/%.02f/%.02f  |", i, shp.distance[i + n], cg.graph.getEdgeWeight(vx, i), shortest[vx][i]);
+                   // System.out.printf("   %d:%.02f/%.02f/%.02f  |", i, shp.distance[i + n], cg.graph.getEdgeWeight(vx, i), shortest[vx][i]);
                 }
             }
-            System.out.println();
+            //System.out.println();
         }
 
         for (int vx = 0; vx < n; ++vx) {

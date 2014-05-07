@@ -19,7 +19,7 @@ public class ConformationGraph {
     public final File[][] files;
     private final ConformationChain[] roots;
     private final PDBFileReader fileReader = new PDBFileReader();
-
+    private final List<String> bannedFileNames;
     private final Queue<Integer> openChains = new ArrayDeque<>();
 
 
@@ -61,7 +61,9 @@ public class ConformationGraph {
         return chains[source][target];
     }
 ///
-    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern) throws IOException {
+
+    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern, String... bannedEdges) throws IOException {
+        bannedFileNames = Arrays.asList(bannedEdges);
         this.graph = GraphParser.parseMatrixGraphFromFile(matrixFileName);
         int n = graph.getN();
         chains = new ConformationChain[n][n];
@@ -70,7 +72,7 @@ public class ConformationGraph {
         Map<String, Integer> secondIndices = new HashMap<>();
         for (int from = 0; from < n; ++from) {
             for (int to = from + 1; to < n; ++to) {
-                String s = String.format(fileNamePattern, from+1, to+1);
+                String s = String.format(fileNamePattern, from + 1, to + 1);
                 firstIndices.put(s, from);
                 secondIndices.put(s, to);
             }
@@ -98,6 +100,12 @@ public class ConformationGraph {
                         }
                     }
                     files[firstIndex][secondIndex] = file;
+                    files[secondIndex][firstIndex] = file;
+                    if (bannedFileNames.contains(name)) {
+                        System.out.print("deleted" + name+ " " + "first index:" + " " +firstIndex + "second index: " + secondIndex);
+                        graph.removeEdge(firstIndex, secondIndex);
+                        graph.removeEdge(secondIndex, firstIndex);
+                    }
                 }
                 input.closeEntry();
             }
@@ -115,6 +123,7 @@ public class ConformationGraph {
         }
         return rv;
     }
+
 
     public void cleanUp() {
         for (File[] filesIt:files) {

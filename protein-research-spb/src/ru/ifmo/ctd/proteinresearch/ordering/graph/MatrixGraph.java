@@ -55,12 +55,19 @@ public class MatrixGraph extends AbstractGraph {
     }
 
     @Override
+    public void setEdgeWeight(int from, int to, double weight) {
+        hasEdge[from][to] = false;
+        hasEdge[to][from] = false;
+    }
+
+    @Override
     public double getEdgeWeight(int from, int to) {
-        if (hasEdge[from][to]) {
-            return edges[from][to];
-        } else {
-            throw new IllegalArgumentException(String.format("no edge from vertex %d to vertex %d ", from, to));
-        }
+        return edges[from][to];
+    }
+
+    @Override
+    public void removeEdge(int from, int to) {
+        hasEdge[from][to] = false;
     }
 
     @Override
