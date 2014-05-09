@@ -13,8 +13,14 @@ public class PropertiesParser {
     public static ConformationGraph getGraphData (String fileName) throws IOException {
         Properties proteinProperties = new Properties();
         proteinProperties.load(new FileInputStream(fileName));
+        String banned=proteinProperties.getProperty("banned");
+        String indexOffsetString = proteinProperties.getProperty("indexOffset");
+        int indexOffset = 0;
+        if (indexOffsetString != null) {
+            indexOffset = Integer.parseInt(indexOffsetString);
+        }
         return new ConformationGraph(proteinProperties.getProperty("matrix"),
         proteinProperties.getProperty("archive"),
-        proteinProperties.getProperty("mask"), proteinProperties.getProperty("banned").split(","));
+        proteinProperties.getProperty("mask"), indexOffset ,banned!=null? banned.split(","):new String[0]);
     }
 }

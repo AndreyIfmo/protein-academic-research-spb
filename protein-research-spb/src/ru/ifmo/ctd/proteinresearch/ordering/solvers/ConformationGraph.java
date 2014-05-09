@@ -19,9 +19,11 @@ public class ConformationGraph {
     public final File[][] files;
     private final ConformationChain[] roots;
     private final PDBFileReader fileReader = new PDBFileReader();
-    private final List<String> bannedFileNames;
     private final Queue<Integer> openChains = new ArrayDeque<>();
-
+    public final String matrixFileName;
+    public final String zipArchive;
+    public final String fileNamePattern;
+    public final int indexOffset;
 
     public ConformationChain getChain(int source, int target) {
         if (source == target) throw new IllegalArgumentException("source == target");
@@ -55,6 +57,7 @@ public class ConformationGraph {
                     chains[secondRemovedID][firstRemovedID] = null;
                 }
             } catch (Exception ex) {
+                System.out.println("INDEXES: " + source+" "+target);
                 throw new RuntimeException(ex);
             }
         }
@@ -62,8 +65,12 @@ public class ConformationGraph {
     }
 ///
 
-    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern, String... bannedEdges) throws IOException {
-        bannedFileNames = Arrays.asList(bannedEdges);
+    public ConformationGraph(String matrixFileName, String zipArchive, String fileNamePattern, int indexOffset, String... bannedEdges) throws IOException {
+        this.matrixFileName = matrixFileName;
+        this.zipArchive = zipArchive;
+        this.fileNamePattern = fileNamePattern;
+        this.indexOffset = indexOffset;
+        List<String> bannedFileNames = Arrays.asList(bannedEdges);
         this.graph = GraphParser.parseMatrixGraphFromFile(matrixFileName);
         int n = graph.getN();
         chains = new ConformationChain[n][n];
@@ -72,7 +79,7 @@ public class ConformationGraph {
         Map<String, Integer> secondIndices = new HashMap<>();
         for (int from = 0; from < n; ++from) {
             for (int to = from + 1; to < n; ++to) {
-                String s = String.format(fileNamePattern, from + 1, to + 1);
+                String s = String.format(fileNamePattern, from + indexOffset, to + indexOffset);
                 firstIndices.put(s, from);
                 secondIndices.put(s, to);
             }

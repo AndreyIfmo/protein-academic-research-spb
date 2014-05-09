@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class PdbClusterer {
     public void run (String name) throws Exception {
-        ConformationGraph cg = new ConformationGraph(name+"_costs.txt", name+".zip", name+"/2LJI_optim%d_%d.pdb");
+        ConformationGraph cg = new ConformationGraph(name+"_costs.txt", name+".zip", name+"/2LJI_optim%d_%d.pdb",0);
         buildDataSet(cg);
         //Instances instances = new Instances();
     }
