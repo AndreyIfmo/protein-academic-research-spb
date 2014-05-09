@@ -24,7 +24,7 @@ public class VertexEdgeAnalyzer {
     }
 
     public void run() throws IOException, StructureException {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0);
         int n = cg.graph.getN();
         Container result = new Container(n, 1.2);
         for (int i = 0; i < n; i++) {

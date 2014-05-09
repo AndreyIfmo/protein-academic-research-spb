@@ -4,6 +4,7 @@ import org.biojava.bio.structure.*;
 import org.biojava.bio.structure.io.FileConvert;
 import ru.ifmo.ctd.proteinresearch.intersections.Point;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 import ru.ifmo.ctd.proteinresearch.ordering.util.SinCos;
 
 import java.io.*;
@@ -16,8 +17,8 @@ import java.util.List;
  * @author Maxim Buzdalov
  */
 public class PathUtil {
-    public static void buildPDB(String costFile, String archive, String pathExpression, String output, Path path) throws Exception {
-        ConformationGraph cg = new ConformationGraph(costFile, archive, pathExpression);
+    public static void buildPDB(String costFile, String archive, String pathExpression,int indexOffset, String output, Path path) throws Exception {
+        ConformationGraph cg = new ConformationGraph(costFile, archive, pathExpression, indexOffset);
         try (PrintWriter out = new PrintWriter(output)) {
             out.println(cg.forPath(path));
         }
@@ -105,6 +106,12 @@ public class PathUtil {
                            10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
                 Double.NaN
         ));*/
+        ConformationGraph cg = PropertiesParser.getGraphData("1CFC.properties");
+        ConformationChain cc = cg.getChain(0,1);
+        System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
+        buildPDB(cg.matrixFileName, cg.zipArchive, cg.fileNamePattern, cg.indexOffset, "Result_optim.pdb", new Path(
+                new int[]{7, 22, 5, 14, 0, 20, 13},
+                Double.NaN));/*
         ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         ConformationChain cc = cg.getChain(0,1);
         System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
@@ -112,7 +119,7 @@ public class PathUtil {
         buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
                 new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
                 Double.NaN
-        ));
+        ));*/
 
       /*  ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         ConformationChain cc = cg.getChain(0,9);

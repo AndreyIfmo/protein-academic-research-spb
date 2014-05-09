@@ -132,7 +132,7 @@ public class MolecularWeighter {
     }
 
     private static void run(int n) throws IOException, StructureException {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb",0);
         Path path = new Path(new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14}, Double.NaN);
         double[] weights = weightPath(path, cg);
         double range = weights[weights.length-1] - weights[0];

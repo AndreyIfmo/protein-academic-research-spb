@@ -28,7 +28,7 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver().evaluate("2LJI.properties", 0.000001, 0.5);
+        new EdgeSwitchLimitationSolver().evaluate("2LXG.properties", 0.000001, 0.5);
     }
 
     public void evaluate(String propertiesFileName, double minDiffValue, double maxDiffValue)  {
@@ -43,9 +43,21 @@ public class EdgeSwitchLimitationSolver {
 
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue)  {
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern,double minDiffValue, double maxDiffValue)  {
         try {
-            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern);
+            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, 0);
+            run(minDiffValue, maxDiffValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cg.cleanUp();
+        }
+
+    }
+
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern,int indexOffset, double minDiffValue, double maxDiffValue)  {
+        try {
+            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, indexOffset);
             run(minDiffValue, maxDiffValue);
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,7 +230,9 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
             if (size == -1) {
-                throw new AssertionError("Not connected?");
+                System.out.print("Not connected? "  +vertex);
+
+                continue;
             }
 
             d[vertex] = new double[size];
