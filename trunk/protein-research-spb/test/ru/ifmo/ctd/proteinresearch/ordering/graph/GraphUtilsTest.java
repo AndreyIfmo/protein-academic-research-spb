@@ -16,7 +16,7 @@ public class GraphUtilsTest {
 
     @Before
     public void constructGraph() throws IOException {
-        graph = GraphParser.parseMatrixGraphFromFile("resources/table-1BTB.txt");
+        graph = GraphParser.parseMatrixGraphFromFile("resources/1BTB.txt");
     }
 
     @Test

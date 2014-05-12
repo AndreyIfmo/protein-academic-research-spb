@@ -101,7 +101,7 @@ public class PathUtil {
         pw.close();
     }
     public static void main(String[] args) throws Exception {
-       /* buildPDB("table-1BTB.txt", "1BTB.zip", "1BTB/%02d-%02d/Result.pdb", "ResultLong.pdb", new Path(
+       /* buildPDB("1BTB.txt", "1BTB.zip", "1BTB/%02d-%02d/Result.pdb", "ResultLong.pdb", new Path(
                 new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                            10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
                 Double.NaN

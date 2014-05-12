@@ -28,22 +28,22 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver().evaluate("2LXG.properties", 0.000001, 0.5);
+        new EdgeSwitchLimitationSolver().evaluate("1BTB.properties", 0.000001, 0.5);
     }
 
-    public void evaluate(String propertiesFileName, double minDiffValue, double maxDiffValue)  {
+    public void evaluate(String propertiesFileName, double minDiffValue, double maxDiffValue) {
         try {
             cg = PropertiesParser.getGraphData(propertiesFileName);
             run(minDiffValue, maxDiffValue);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-           // cg.cleanUp();
+            // cg.cleanUp();
         }
 
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern,double minDiffValue, double maxDiffValue)  {
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue) {
         try {
             cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, 0);
             run(minDiffValue, maxDiffValue);
@@ -55,7 +55,7 @@ public class EdgeSwitchLimitationSolver {
 
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern,int indexOffset, double minDiffValue, double maxDiffValue)  {
+    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, int indexOffset, double minDiffValue, double maxDiffValue) {
         try {
             cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, indexOffset);
             run(minDiffValue, maxDiffValue);
@@ -74,7 +74,7 @@ public class EdgeSwitchLimitationSolver {
             for (int j = 0; j < n; ++j) {
                 banned[i][j] = false;
                 for (int k = 0; k < n; ++k) {
-                    banned[i][j] = banned[i][j] || !cg.graph.hasEdge(i,j) || cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
+                    banned[i][j] = banned[i][j] || !cg.graph.hasEdge(i, j) || cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
                 }
                 if (banned[i][j]) {
                     System.out.println(i + " <-> " + j + " banned");
@@ -85,6 +85,12 @@ public class EdgeSwitchLimitationSolver {
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
                 try {
+                    if (cg.files[i][j] == null) {
+                        banned[i][j] = true;
+                        banned[j][i] = true;
+                        System.out.println(i + "<->" + j + "Not computed");
+                        continue;
+                    }
                     if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
                         banned[i][j] = true;
                         banned[j][i] = true;
@@ -101,7 +107,7 @@ public class EdgeSwitchLimitationSolver {
         double left = minDiffValue;
         double right = maxDiffValue;
         double delta = 0.0000001;
-    Function<Double, Double> f = new Function<Double, Double>() {
+        Function<Double, Double> f = new Function<Double, Double>() {
             @Override
             public Double apply(Double argument) throws StructureException, FileNotFoundException {
                 boolean[][][] mayConnect = new boolean[n][n][n];
@@ -158,7 +164,7 @@ public class EdgeSwitchLimitationSolver {
                 for (int next = 0; next < n; ++next) {
                     if (mayConnect[vx][prev][next]) {
                         limited.addEdge(2 * n + n * n + n * prev + vx,
-                                        2 * n + n * vx + next, 0);
+                                2 * n + n * vx + next, 0);
                     }
                 }
             }
@@ -176,7 +182,7 @@ public class EdgeSwitchLimitationSolver {
                     continue;
                 }
                 if (vx == i) {
-                    paths[vx][i] = new int[] {vx};
+                    paths[vx][i] = new int[]{vx};
                 } else {
                     List<Integer> path = new ArrayList<>();
                     int cur = i + n;
@@ -194,7 +200,7 @@ public class EdgeSwitchLimitationSolver {
                     paths[vx][i] = fromTo;
                 }
                 if (i != vx) {
-                   // System.out.printf("   %d:%.02f/%.02f/%.02f  |", i, shp.distance[i + n], cg.graph.getEdgeWeight(vx, i), shortest[vx][i]);
+                    // System.out.printf("   %d:%.02f/%.02f/%.02f  |", i, shp.distance[i + n], cg.graph.getEdgeWeight(vx, i), shortest[vx][i]);
                 }
             }
             //System.out.println();
@@ -211,8 +217,8 @@ public class EdgeSwitchLimitationSolver {
     }
 
     private void printAllPaths(int n) {
-        for (int i = 0; i<n; i++) {
-            for (int j = 0; j<n; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 System.out.println(Arrays.toString(paths[i][j]));
             }
 
@@ -230,7 +236,7 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
             if (size == -1) {
-                System.out.print("Not connected? "  +vertex);
+                System.out.print("Not connected? " + vertex);
 
                 continue;
             }
@@ -241,9 +247,13 @@ public class EdgeSwitchLimitationSolver {
                 Arrays.fill(t, Double.POSITIVE_INFINITY);
             }
             for (int i = 0; i < n; ++i) {
-                if (d[i] == null || vertex == i) continue;
+                if (d[i] == null || vertex == i) {
+                    continue;
+                }
                 for (int j = 0; j < n; ++j) {
-                    if (d[j] == null || i == j || vertex == j) continue;
+                    if (d[j] == null || i == j || vertex == j) {
+                        continue;
+                    }
                     double max = 0;
                     double lenI = cg.graph.getEdgeWeight(vertex, i);
                     double lenJ = cg.graph.getEdgeWeight(vertex, j);
@@ -266,13 +276,13 @@ public class EdgeSwitchLimitationSolver {
             //System.out.println("Vertex " + vertex + ":");
             for (int i = 0; i < n; ++i) {
                 for (int j = 0; j < n; ++j) {
-             //       System.out.printf("%9f ", sim[i][j]);
+                    //       System.out.printf("%9f ", sim[i][j]);
 
                     if (sim[i][j] <= border && i != j && i != vertex && j != vertex) {
                         mayConnect[vertex][i][j] = true;
                     }
                 }
-             //   System.out.println();
+                //   System.out.println();
             }
         }
     }
@@ -343,14 +353,14 @@ public class EdgeSwitchLimitationSolver {
         return new DijkstraResult(currentShortest, back);
     }
 
-    public int[] get (int from, int to) {
+    public int[] get(int from, int to) {
         return paths[from][to];
     }
 
-    public double weight (int from, int to) {
-        double distance=0;
-        for (int i=0; i<paths[from][to].length-1; i++) {
-            distance+=cg.graph.getEdgeWeight(paths[from][to][i], paths[from][to][i+1]);
+    public double weight(int from, int to) {
+        double distance = 0;
+        for (int i = 0; i < paths[from][to].length - 1; i++) {
+            distance += cg.graph.getEdgeWeight(paths[from][to][i], paths[from][to][i + 1]);
         }
         return distance;
     }
