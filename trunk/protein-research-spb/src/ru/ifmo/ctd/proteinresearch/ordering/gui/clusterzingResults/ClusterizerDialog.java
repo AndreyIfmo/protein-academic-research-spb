@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * Created by AndreyS on 21.03.14.
  */
-public class ClusterizerDialog extends JFrame{
+public class ClusterizerDialog extends JFrame {
     public ClusterizerDialog() throws HeadlessException {
         add(new ClusterizerPanel());
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);

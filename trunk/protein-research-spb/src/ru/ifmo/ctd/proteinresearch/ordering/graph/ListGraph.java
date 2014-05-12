@@ -40,7 +40,7 @@ public class ListGraph extends AbstractGraph {
     public void setEdgeWeight(int from, int to, double weight) {
         for (Edge it : edges.get(from)) {
             if (it.to == to) {
-               it.setWeight(weight);
+                it.setWeight(weight);
             }
         }
     }
@@ -68,7 +68,7 @@ public class ListGraph extends AbstractGraph {
     @Override
     public void removeEdge(int from, int to) {
         List<Edge> edgeList = edges.get(from);
-        for (int i=0; i< edgeList.size(); i++) {
+        for (int i = 0; i < edgeList.size(); i++) {
             if (edgeList.get(i).to == to) {
                 edgeList.remove(i);
             }

@@ -39,10 +39,10 @@ public class TMDistance implements Distance {
             throw new IllegalArgumentException("List sizes should be equals. List 1 size: " + groupList1.size() + "list 2 size:" + groupList2.size());
         }
         double result = 0.0;
-        double d0 = 1.24*Math.pow(n-15,1/3)-1.8;
+        double d0 = 1.24 * Math.pow(n - 15, 1 / 3) - 1.8;
         for (int i = 0; i < n; i++) {
-            result+=(1/(1+(DistanceUtils.distanceSquared(allAtoms1.get(i),allAtoms2.get(i))/(d0*d0))));
+            result += (1 / (1 + (DistanceUtils.distanceSquared(allAtoms1.get(i), allAtoms2.get(i)) / (d0 * d0))));
         }
-        return result/n;
+        return result / n;
     }
 }

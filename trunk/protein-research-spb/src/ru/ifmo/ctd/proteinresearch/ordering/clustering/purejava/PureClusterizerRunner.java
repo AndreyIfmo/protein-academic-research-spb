@@ -33,7 +33,7 @@ public class PureClusterizerRunner {
 
         }
         double[][] matrix = GraphParser.parseGraphMatrix(name);
-        for (int numOfClusters=2; numOfClusters<=3; numOfClusters++) {
+        for (int numOfClusters = 2; numOfClusters <= 3; numOfClusters++) {
             FuzzyClusterizer fc = new FuzzyClusterizer(matrix, numOfClusters);
             double[][] similarity = fc.evaluate();
 

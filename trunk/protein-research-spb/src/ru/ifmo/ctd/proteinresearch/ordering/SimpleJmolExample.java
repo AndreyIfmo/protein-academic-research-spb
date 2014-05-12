@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.io.PDBFileReader;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
@@ -29,9 +30,9 @@ public class SimpleJmolExample {
     Structure structure;
 
     JmolPanel jmolPanel;
-    JFrame frame ;
+    JFrame frame;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
 
             PDBFileReader pdbr = new PDBFileReader();
@@ -46,7 +47,7 @@ public class SimpleJmolExample {
             ex.setStructure(struc);
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -58,13 +59,14 @@ public class SimpleJmolExample {
         Container contentPane = frame.getContentPane();
         jmolPanel = new JmolPanel();
 
-        jmolPanel.setPreferredSize(new Dimension(500,500));
+        jmolPanel.setPreferredSize(new Dimension(500, 500));
         contentPane.add(jmolPanel);
 
         frame.pack();
         frame.setVisible(true);
 
     }
+
     public void setStructure(Structure s) {
 
         frame.setName(s.getPDBCode());
@@ -88,11 +90,11 @@ public class SimpleJmolExample {
 
     }
 
-    public void setTitle(String label){
+    public void setTitle(String label) {
         frame.setTitle(label);
     }
 
-    public JmolViewer getViewer(){
+    public JmolViewer getViewer() {
 
         return jmolPanel.getViewer();
     }
@@ -111,6 +113,7 @@ public class SimpleJmolExample {
         private static final long serialVersionUID = -3661941083797644242L;
         JmolViewer viewer;
         JmolAdapter adapter;
+
         JmolPanel() {
             adapter = new SmarterJmolAdapter();
             viewer = JmolViewer.allocateViewer(this, adapter);
@@ -121,7 +124,7 @@ public class SimpleJmolExample {
             return viewer;
         }
 
-        public void executeCmd(String rasmolScript){
+        public void executeCmd(String rasmolScript) {
             viewer.evalString(rasmolScript);
         }
 

@@ -13,11 +13,11 @@ import java.util.List;
 public class MinimalSpanTreeFinder {
     public Graph getMST(Graph g) {
         DisjointSets sets = new DisjointSets(g.getN());
-        return getPartMST(g,1,sets);
+        return getPartMST(g, 1, sets);
     }
 
     public Graph getPartMST(Graph g, int components, DisjointSets sets) {
-        if (components<=0 || components>g.getN()) {
+        if (components <= 0 || components > g.getN()) {
             throw new IllegalArgumentException();
         }
         List<List<Edge>> answer = new ArrayList<List<Edge>>(g.getN());
@@ -43,6 +43,7 @@ public class MinimalSpanTreeFinder {
         }
         return new ListGraph(answer);
     }
+
     class EdgeComparator implements Comparator<Edge> {
         @Override
         public int compare(Edge o1, Edge o2) {

@@ -41,24 +41,26 @@ public class MSTClusterizer implements StructuralClusterizer {
     // if metric is defined with matrix.
     public void evaluateDistanceMatrix() {
         if (isMatrix) {
-            for (int i=0; i<distanceMatrix.length; i++) {
-                for (int j=0; j<distanceMatrix.length; j++) {
-            distanceMatrix[i][j] = matrixDistance.distance(i, j);
+            for (int i = 0; i < distanceMatrix.length; i++) {
+                for (int j = 0; j < distanceMatrix.length; j++) {
+                    distanceMatrix[i][j] = matrixDistance.distance(i, j);
                 }
             }
         }
     }
+
     @Override
     public void evaluate(List<Chain> allignedChains) {
-        assert (isMatrix &&allignedChains== null) ||(!isMatrix && allignedChains!=null);
+        assert (isMatrix && allignedChains == null) || (!isMatrix && allignedChains != null);
         if (isMatrix) {
             evaluateDistanceMatrix();
-        }else {
+        } else {
             evaluateDistanceMatrix2(allignedChains);
         }
         clusterize();
     }
-// if metric should be evaluated for given chains
+
+    // if metric should be evaluated for given chains
     private void evaluateDistanceMatrix2(List<Chain> allignedChains) {
         distanceMatrix = new double[allignedChains.size()][allignedChains.size()];
         for (int i = 0; i < allignedChains.size(); i++) {

@@ -32,7 +32,6 @@ public class ClusteringUtils {
     }
 
     /**
-     *
      * @param vector mask
      * @return next mask 1001 -> 1010
      */
@@ -51,6 +50,7 @@ public class ClusteringUtils {
 
     /**
      * return centers
+     *
      * @param vector - mask
      * @return center array
      */
@@ -68,7 +68,6 @@ public class ClusteringUtils {
     }
 
     /**
-     *
      * @param vector - vector
      * @return number Of 1
      */
@@ -101,7 +100,7 @@ public class ClusteringUtils {
 
     public static boolean isAll1(int[] arg, int base) {
 
-        for (int i:arg) {
+        for (int i : arg) {
             if (i != base) {
                 return false;
             }

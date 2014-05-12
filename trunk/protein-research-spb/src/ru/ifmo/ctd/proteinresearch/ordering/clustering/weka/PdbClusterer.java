@@ -17,40 +17,39 @@ import java.util.List;
  * ansokolmail@gmail.com
  */
 public class PdbClusterer {
-    public void run (String name) throws Exception {
-        ConformationGraph cg = new ConformationGraph(name+"_costs.txt", name+".zip", name+"/2LJI_optim%d_%d.pdb",0);
+    public void run(String name) throws Exception {
+        ConformationGraph cg = new ConformationGraph(name + "_costs.txt", name + ".zip", name + "/2LJI_optim%d_%d.pdb", 0);
         buildDataSet(cg);
         //Instances instances = new Instances();
     }
 
     private Instances buildDataSet(ConformationGraph cg) throws Exception {
 
-        ConformationChain confChain = cg.getChain(0,1);
-        int numberOfVertices= cg.graph.getN();
-        Structure structure= confChain.getStructure();
+        ConformationChain confChain = cg.getChain(0, 1);
+        int numberOfVertices = cg.graph.getN();
+        Structure structure = confChain.getStructure();
         Chain someChain = structure.getModel(structure.nrModels() - 1).get(0);
         int n = someChain.getAtomLength();
         ArrayList<Attribute> atts = new ArrayList<>(n);
-        for (int i=0; i<3*n; i++) {
-            atts.add(new Attribute("x"+i));
-            atts.add(new Attribute("y"+i));
-            atts.add(new Attribute("z"+i));
+        for (int i = 0; i < 3 * n; i++) {
+            atts.add(new Attribute("x" + i));
+            atts.add(new Attribute("y" + i));
+            atts.add(new Attribute("z" + i));
         }
-        Instances data = new Instances("graph",atts, 100);
+        Instances data = new Instances("graph", atts, 100);
         List<Chain> chains = new ArrayList<>();
         Chain reference = VertexEdgeAnalyzer.getBasicChain(cg, 0);
         chains.add(reference);
-        for (int i=1; i<numberOfVertices; i++) {
+        for (int i = 1; i < numberOfVertices; i++) {
             chains.add(ConformationChain.align(reference, VertexEdgeAnalyzer.getBasicChain(cg, i)));
         }
         List<Instance> instances = new ArrayList<>();
-        for (int i=0; i<numberOfVertices; i++) {
-            Instance instance=createInstance(chains.get(i), data);
+        for (int i = 0; i < numberOfVertices; i++) {
+            Instance instance = createInstance(chains.get(i), data);
             instances.add(instance);
             data.add(instance);
         }
         HierarchicalClusterer HC = new HierarchicalClusterer();
-
 
 
         //HC.setLinkType(new SelectedTag(tagNr,TAGS_LINK_TYPE));
@@ -59,7 +58,7 @@ public class PdbClusterer {
         HC.setPrintNewick(true);
         HC.setDistanceIsBranchLength(false);
         HC.buildClusterer(data);
-        int counter=0;
+        int counter = 0;
         for (Instance instance : instances) {
 
             System.out.println(counter + " " + HC.clusterInstance(instance));
@@ -68,6 +67,7 @@ public class PdbClusterer {
 
         return data;
     }
+
     private Instance createInstance(Chain chain, Instances data) throws IOException, StructureException {
         // ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
         double[] array = ClusteringUtils.toArray(chain);
@@ -75,7 +75,6 @@ public class PdbClusterer {
         instance.setDataset(data);
         return instance;
     }
-
 
 
     public static void main(String[] args) throws Exception {

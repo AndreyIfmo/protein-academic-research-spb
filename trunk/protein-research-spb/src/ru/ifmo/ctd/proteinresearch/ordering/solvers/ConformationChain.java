@@ -13,7 +13,8 @@ import java.util.*;
 public class ConformationChain {
     private Structure storage = new StructureImpl();
 
-    public ConformationChain() {}
+    public ConformationChain() {
+    }
 
     public ConformationChain(Structure inputStructure) {
         consumeStructure(inputStructure);
@@ -198,6 +199,7 @@ public class ConformationChain {
         }
         return newLast;
     }
+
     public Structure getStructure() {
         return this.storage;
     }

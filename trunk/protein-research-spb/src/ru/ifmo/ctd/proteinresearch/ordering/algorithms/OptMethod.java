@@ -10,8 +10,8 @@ public class OptMethod {
     public static double upgradedTriSearch(Function<Double, Double> f, double left, double right, double tolerance, int n) throws Exception {
         double max = 0;
         double answer = right;
-        double step = ((left + right) / n)-left;
-        for (double i = left; i<right;i+=step) {
+        double step = ((left + right) / n) - left;
+        for (double i = left; i < right; i += step) {
             double curArg = triSearch(f, i, i + step, tolerance);
             double curVal = f.apply(curArg);
             if (max < curVal) {
@@ -29,13 +29,13 @@ public class OptMethod {
                     m2 = right - (right - left) / 3;
             if (f.apply(m1) < f.apply(m2)) {
                 left = m1;
-                returnRight=false;
+                returnRight = false;
             } else {
                 right = m2;
-                returnRight=true;
+                returnRight = true;
             }
         }
-        return returnRight?right:left;
+        return returnRight ? right : left;
     }
 
 }
