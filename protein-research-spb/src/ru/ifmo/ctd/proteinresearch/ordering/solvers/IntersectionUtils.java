@@ -29,7 +29,8 @@ public class IntersectionUtils {
 
         PrintWriter timings = new PrintWriter("fullCalcTreeTimingsNew");
         PrintWriter intersections = new PrintWriter("intersections");
-        File dir = new File("2LJI_optim_filtered"); dir.mkdir();
+        File dir = new File("2LJI_optim_filtered");
+        dir.mkdir();
         for (int currentFile = 0; currentFile != files.length; ++currentFile) {
             System.out.println("Working on: " + files[currentFile]);
             int result = checkFile(files[currentFile]);
@@ -39,8 +40,9 @@ public class IntersectionUtils {
 
             // intersections.println(result);
 
-            if (result != -1)
+            if (result != -1) {
                 System.out.println(files[currentFile] + " --- result: " + result);
+            }
         }
         pw.close();
         timings.close();
@@ -80,12 +82,12 @@ public class IntersectionUtils {
         int functionCalculations = 0;
         for (int i = 1; i < length; i++) {
             PointsChain[] newChains = new PointsChain[2];
-            newChains[0] = pointsChains[i-1];
+            newChains[0] = pointsChains[i - 1];
             newChains[1] = pointsChains[i];
             calc = new CalcRectangularTreeNew(new ChainSequence(newChains));
             calc.initalize();
             result += calc.hasIntersections();
-            System.err.print(result+" ");
+            System.err.print(result + " ");
 
             functionCalculations += calc.functionCalculations;
         }

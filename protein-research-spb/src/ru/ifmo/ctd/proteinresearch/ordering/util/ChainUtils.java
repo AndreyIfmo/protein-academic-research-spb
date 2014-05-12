@@ -10,7 +10,7 @@ import java.util.List;
  * ansokolmail@gmail.com
  */
 public class ChainUtils {
-    public static List<Atom> toAtomList (Chain chain) {
+    public static List<Atom> toAtomList(Chain chain) {
         List<Group> groups = chain.getAtomGroups();
         return null;
     }

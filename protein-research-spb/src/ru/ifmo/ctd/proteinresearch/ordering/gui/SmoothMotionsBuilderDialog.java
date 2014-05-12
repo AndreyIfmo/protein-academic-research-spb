@@ -19,6 +19,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
 
     private AllFilesChooserPanel allFilesChooserPanel;
     EdgeSwitchLimitationSolver solver;
+
     public SmoothMotionsBuilderDialog() {
         solver = new EdgeSwitchLimitationSolver();
         initComponents();
@@ -41,7 +42,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
         setLayout(new GridBagLayout());
 
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets=new Insets(10, 10, 10, 10);
+        c.insets = new Insets(10, 10, 10, 10);
 
         createBuildButton();
         c.gridx = 0;
@@ -59,15 +60,15 @@ public class SmoothMotionsBuilderDialog extends JFrame {
                 try (PrintWriter pdb = new PrintWriter("New.pdb")) {
                     int fromNum = Integer.parseInt(fromLabeledField.textField.getText());
                     int toNum = Integer.parseInt(toLabeledField.textField.getText());
-                    if (!(fromNum==toNum)) {
+                    if (!(fromNum == toNum)) {
                         pdb.print(solver.cg.forPath(new Path(solver.get(fromNum, toNum), solver.weight(fromNum, toNum))));
                         System.out.println(Arrays.toString(solver.get(fromNum, toNum)));
                     } else {
                         IntPair pair = solver.findMaxShortestPath(solver.cg.graph.getN());
                         fromNum = pair.first;
                         toNum = pair.second;
-                        fromLabeledField.textField.setText(""+fromNum);
-                        toLabeledField.textField.setText(""+toNum);
+                        fromLabeledField.textField.setText("" + fromNum);
+                        toLabeledField.textField.setText("" + toNum);
                         pdb.print(solver.cg.forPath(new Path(solver.get(fromNum, toNum), solver.weight(fromNum, toNum))));
                         System.out.println(Arrays.toString(solver.get(fromNum, toNum)));
                     }
@@ -77,8 +78,8 @@ public class SmoothMotionsBuilderDialog extends JFrame {
                 solver.get(Integer.parseInt(fromLabeledField.textField.getText()), Integer.parseInt(toLabeledField.textField.getText()));
             }
         });
-        add(calc,c);
-        c.gridwidth=1;
+        add(calc, c);
+        c.gridwidth = 1;
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 1;
@@ -86,7 +87,7 @@ public class SmoothMotionsBuilderDialog extends JFrame {
         allFilesChooserPanel = new AllFilesChooserPanel();
         add(allFilesChooserPanel, c);
         c.gridx = 0;
-        c.gridy ++;
+        c.gridy++;
         c.gridwidth = 1;
         c.weightx = 1;
         add(myBuildButton, c);

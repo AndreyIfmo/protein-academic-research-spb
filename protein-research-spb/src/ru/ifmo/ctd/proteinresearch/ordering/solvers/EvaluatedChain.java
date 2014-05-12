@@ -19,11 +19,12 @@ public class EvaluatedChain {
     public final List<Point> points;
     public final List<SinCos> planarAngles;
     public List<SinCos> torsionAngles;
+
     public EvaluatedChain(Chain chain) throws Exception {
         this.chain = chain;
-        this.atoms=getAtoms(chain);
+        this.atoms = getAtoms(chain);
         this.points = toPoints(atoms);
-        this.lengths=getLengths(points);
+        this.lengths = getLengths(points);
         this.torsionAngles = getTorsionAngles(atoms);
         this.planarAngles = getPlanarAngles(points);
     }
@@ -43,7 +44,7 @@ public class EvaluatedChain {
         List<Group> atomGroups1 = from.getAtomGroups();
 
         List<Atom> atoms = new ArrayList<>();
-        for (Group group:atomGroups1) {
+        for (Group group : atomGroups1) {
             atoms.addAll(group.getAtoms());
         }
         return atoms;
@@ -51,10 +52,10 @@ public class EvaluatedChain {
 
     public static List<SinCos> getTorsionAngles(List<Atom> atoms) throws Exception {
         List<Double> list = new ArrayList<>();
-        for (int i = 0; i < atoms.size()-3; i++) {
+        for (int i = 0; i < atoms.size() - 3; i++) {
             list.add(Math.toRadians(Calc.torsionAngle(atoms.get(i), atoms.get(i + 1), atoms.get(i + 2), atoms.get(i + 3))));
         }
-        return FunctionalUtils.map(list,    new Function<Double, SinCos>() {
+        return FunctionalUtils.map(list, new Function<Double, SinCos>() {
             @Override
             public SinCos apply(Double argument) {
                 return new SinCos(argument);
@@ -65,8 +66,8 @@ public class EvaluatedChain {
 
     public static List<SinCos> getPlanarAngles(List<Point> points) {
         List<SinCos> list = new ArrayList<>();
-        for (int i=0; i<points.size()-2; i++) {
-            list.add(new SinCos(points.get(i+1).sub(points.get(i)), points.get(i+2).sub(points.get(i+1))));
+        for (int i = 0; i < points.size() - 2; i++) {
+            list.add(new SinCos(points.get(i + 1).sub(points.get(i)), points.get(i + 2).sub(points.get(i + 1))));
         }
         return list;
     }
@@ -74,16 +75,16 @@ public class EvaluatedChain {
     public static List<Double> getLengths(List<Point> points) {
         List<Double> lengths = new ArrayList<>();
         for (int i = 1; i < points.size(); i++) {
-            lengths.add(points.get(i-1).distance(points.get(i)));
+            lengths.add(points.get(i - 1).distance(points.get(i)));
         }
         return lengths;
     }
 
     public List<Point> restorePoints() {
         List<Point> answer = new ArrayList<>();
-        answer.add(0 , new Point(0,0,0));
-        answer.add(1 , new Point(lengths.get(0),0,0));
-        answer.add(2 , new Point(lengths.get(0)+lengths.get(1) * planarAngles.get(0).cos, lengths.get(1) * planarAngles.get(0).sin,0));
+        answer.add(0, new Point(0, 0, 0));
+        answer.add(1, new Point(lengths.get(0), 0, 0));
+        answer.add(2, new Point(lengths.get(0) + lengths.get(1) * planarAngles.get(0).cos, lengths.get(1) * planarAngles.get(0).sin, 0));
         for (int i = 3; i < atoms.size(); i++) {
             double r = lengths.get(i - 1);
             SinCos p = planarAngles.get(i - 2);
@@ -102,7 +103,6 @@ public class EvaluatedChain {
         }
         return answer;
     }
-
 
 
 }

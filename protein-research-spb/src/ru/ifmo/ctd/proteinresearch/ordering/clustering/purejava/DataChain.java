@@ -12,24 +12,30 @@ import java.util.Arrays;
 public class DataChain {
     Chain chain;
 
-    private boolean equals (Chain chain1, Chain chain2) throws StructureException {
+    private boolean equals(Chain chain1, Chain chain2) throws StructureException {
         return Arrays.equals(ClusteringUtils.toArray(chain1), ClusteringUtils.toArray(chain2));
     }
 
-    private int hashCode (Chain inputChain) throws StructureException {
+    private int hashCode(Chain inputChain) throws StructureException {
         return Arrays.hashCode(ClusteringUtils.toArray(inputChain));
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DataChain dataChain = (DataChain) o;
 
         try {
-            if (chain != null ? !equals(chain, dataChain.chain) : dataChain.chain != null) return false;
+            if (chain != null ? !equals(chain, dataChain.chain) : dataChain.chain != null) {
+                return false;
+            }
         } catch (StructureException e) {
             e.printStackTrace();
         }

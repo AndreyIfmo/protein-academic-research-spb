@@ -34,14 +34,16 @@ public class VertexEdgeAnalyzer {
                         Structure chainStructure = cg.getChain(i, j).getStructure();
                         Chain baseChain = getBasicChain(cg, k);
                         int numberOfModelsInChain = chainStructure.nrModels();
-                        for (int it=0; it< numberOfModelsInChain; it++) {
-                        List<Chain> chainList = chainStructure.getModel(it);
-                            int cou=0;
+                        for (int it = 0; it < numberOfModelsInChain; it++) {
+                            List<Chain> chainList = chainStructure.getModel(it);
+                            int cou = 0;
                             for (Chain chainIt : chainList) {
                                 double rmsd = RMSD(chainIt, baseChain);
                                 result.addResult(i, j, k, rmsd);
                                 cou++;
-                                if (cou>1) throw new AssertionError("More than one chain");
+                                if (cou > 1) {
+                                    throw new AssertionError("More than one chain");
+                                }
                             }
                         }
                     }
@@ -50,16 +52,20 @@ public class VertexEdgeAnalyzer {
         }
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (result.minimalRmsdTable[i][j].size()>0) {
-                System.out.print(i + " " + j + " " + Collections.min(result.minimalRmsdTable[i][j], new Comparator<ContainerEntry>() {
-                    @Override
-                    public int compare(ContainerEntry o1, ContainerEntry o2) {
-                        if (o1.rmsd < o2.rmsd) return -1;
-                        if (o1.rmsd > o2.rmsd) return 1;
-                        return 0;
-                    }
+                if (result.minimalRmsdTable[i][j].size() > 0) {
+                    System.out.print(i + " " + j + " " + Collections.min(result.minimalRmsdTable[i][j], new Comparator<ContainerEntry>() {
+                        @Override
+                        public int compare(ContainerEntry o1, ContainerEntry o2) {
+                            if (o1.rmsd < o2.rmsd) {
+                                return -1;
+                            }
+                            if (o1.rmsd > o2.rmsd) {
+                                return 1;
+                            }
+                            return 0;
+                        }
 
-                }) + " ");
+                    }) + " ");
                 } else {
                     System.out.print(i + " " + j + " null ");
                 }
@@ -68,10 +74,10 @@ public class VertexEdgeAnalyzer {
         }
         System.out.println("baseMatrix");
         double[][] rmsdMatrix = new double[n][n];
-        for (int i=0; i<n; i++) {
-            for (int j=0; j<n; j++) {
-                rmsdMatrix[i][j] = RMSD(getBasicChain(cg, i),getBasicChain(cg, j));
-                System.out.print((rmsdMatrix[i][j]<1.0e-10?0:rmsdMatrix[i][j])+" ");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                rmsdMatrix[i][j] = RMSD(getBasicChain(cg, i), getBasicChain(cg, j));
+                System.out.print((rmsdMatrix[i][j] < 1.0e-10 ? 0 : rmsdMatrix[i][j]) + " ");
             }
             System.out.println();
         }
@@ -102,12 +108,18 @@ public class VertexEdgeAnalyzer {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof ContainerEntry)) return false;
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ContainerEntry)) {
+                return false;
+            }
 
             ContainerEntry that = (ContainerEntry) o;
 
-            if (numberOfClosestConformation != that.numberOfClosestConformation) return false;
+            if (numberOfClosestConformation != that.numberOfClosestConformation) {
+                return false;
+            }
             return Double.compare(that.rmsd, rmsd) == 0;
 
         }

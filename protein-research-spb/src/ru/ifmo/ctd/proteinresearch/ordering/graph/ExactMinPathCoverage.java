@@ -18,7 +18,8 @@ public final class ExactMinPathCoverage {
 
     /**
      * Builds the coverage object for the given graph and the start vertex.
-     * @param g the graph.
+     *
+     * @param g           the graph.
      * @param startVertex the starting vertex.
      */
     public ExactMinPathCoverage(Graph g, int startVertex) {
@@ -117,7 +118,7 @@ public final class ExactMinPathCoverage {
                 for (int t = 1; t < second.length; ++t) {
                     secondLength += graph[second[t - 1]][second[t]];
                 }
-                return new Path[] {new Path(first, firstLength), new Path(second, secondLength)};
+                return new Path[]{new Path(first, firstLength), new Path(second, secondLength)};
             }
         }
         throw new AssertionError("!!!");
@@ -141,6 +142,7 @@ public final class ExactMinPathCoverage {
     /**
      * Returns k paths, 1 &lt;= k &lt=; 4, each starting at the starting vertex and ending at the given target vertex.
      * The paths cover the entire graph and have only the starting and the target vertices in common.
+     *
      * @param k the number of paths (1..4).
      * @return the array of paths.
      */
@@ -152,7 +154,7 @@ public final class ExactMinPathCoverage {
         }
         switch (k) {
             case 1: {
-                return new Path[] {eatPath(maskAll, target)};
+                return new Path[]{eatPath(maskAll, target)};
             }
             case 2: {
                 LoopValues best = bestLoop(maskAll);
@@ -179,7 +181,7 @@ public final class ExactMinPathCoverage {
                 } while (currPathMask != 0);
                 Path[] loop = eatPathsFromLoop(maskEnds | (maskNoEnds & ~bestPathMask), bestLoopTarget, target);
                 Path path = eatPath(maskEnds | bestPathMask, target);
-                return new Path[] {path, loop[0], loop[1]};
+                return new Path[]{path, loop[0], loop[1]};
             }
             case 4: {
                 int maskEnds = (1 << startVertex) ^ (1 << target);
@@ -204,9 +206,10 @@ public final class ExactMinPathCoverage {
                 } while (currMask1 != 0);
                 Path[] loop1 = eatPathsFromLoop(bestLoop1Mask | maskEnds, bestLoop1Target, target);
                 Path[] loop2 = eatPathsFromLoop((maskNoEnds & ~bestLoop1Mask) | maskEnds, bestLoop2Target, target);
-                return new Path[] { loop1[0], loop1[1], loop2[0], loop2[1]};
+                return new Path[]{loop1[0], loop1[1], loop2[0], loop2[1]};
             }
-            default: throw new IllegalArgumentException("k = " + k + " is unsupported");
+            default:
+                throw new IllegalArgumentException("k = " + k + " is unsupported");
         }
     }
 

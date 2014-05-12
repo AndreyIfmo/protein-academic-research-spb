@@ -15,7 +15,7 @@ public class AllFilesChooserPanel extends JPanel {
         setLayout(new GridBagLayout());
         filePatternTextField = new JTextField(FILE_NAME_PATTERN);
         GridBagConstraints c = new GridBagConstraints();
-        c.insets=new Insets(10, 10, 10, 10);
+        c.insets = new Insets(10, 10, 10, 10);
 
         c.gridx = 0;
         c.gridy = 0;
@@ -26,8 +26,8 @@ public class AllFilesChooserPanel extends JPanel {
         panels[1] = new FileChooserPanel("Zip Archive file");
         c.gridy = 1;
         add(panels[1], c);
-        c.weightx=1;
-        c.gridy=2;
+        c.weightx = 1;
+        c.gridy = 2;
         add(createFilePatternPanel(), c);
 
     }
@@ -35,14 +35,14 @@ public class AllFilesChooserPanel extends JPanel {
     private static JPanel createFilePatternPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.insets=new Insets(10, 10, 10, 10);
+        c.insets = new Insets(10, 10, 10, 10);
 
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JButton("Reset file pattern"),c);
-        c.gridx=1;
+        panel.add(new JButton("Reset file pattern"), c);
+        c.gridx = 1;
         panel.add(filePatternTextField, c);
         return panel;
     }

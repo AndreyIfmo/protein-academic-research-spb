@@ -11,6 +11,7 @@ public class DistanceUtils {
                 (atom1.getY() - atom2.getY()) * (atom1.getY() - atom2.getY()) +
                 (atom1.getZ() - atom2.getZ()) * (atom1.getZ() - atom2.getZ());
     }
+
     public static double distance(Atom atom1, Atom atom2) {
         return Math.sqrt(distanceSquared(atom1, atom2));
     }

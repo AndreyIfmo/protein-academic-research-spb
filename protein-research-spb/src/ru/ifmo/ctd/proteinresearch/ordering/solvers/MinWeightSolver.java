@@ -58,7 +58,9 @@ public class MinWeightSolver {
         for (int i = 0; i < g.getN(); ++i) {
             for (int j = 0; j < g.getN(); ++j) {
                 for (int k = 0; k < g.getN(); ++k) {
-                    if (i == j || i == k || j == k) continue;
+                    if (i == j || i == k || j == k) {
+                        continue;
+                    }
                     if (g.hasEdge(i, j) && g.hasEdge(j, k) && g.hasEdge(i, k) && g.getEdgeWeight(i, k) > g.getEdgeWeight(i, j) + g.getEdgeWeight(j, k)) {
                         System.out.println("Non-triangle");
                         System.out.printf("    %d -> %d: %f%n", i, j, g.getEdgeWeight(i, j));

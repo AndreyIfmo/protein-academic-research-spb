@@ -19,6 +19,7 @@ public class FileChooserPanel extends JPanel {
         setLayout(new GridLayout());
         createChoseFilePanel();
     }
+
     private void createChoseFilePanel() {
         add(openFileButton);
         add(fileTextField);

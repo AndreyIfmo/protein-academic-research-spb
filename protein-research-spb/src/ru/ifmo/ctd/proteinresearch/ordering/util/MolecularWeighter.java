@@ -107,13 +107,13 @@ public class MolecularWeighter {
         int n = structure.nrModels();
         double[] weights = new double[n];
         for (int i = 1; i < n; i++) {
-            weights[i] = weights[i-1] + energy(structure.getModel(i-1).get(0), structure.getModel(i).get(0));
+            weights[i] = weights[i - 1] + energy(structure.getModel(i - 1).get(0), structure.getModel(i).get(0));
         }
         return weights;
     }
 
     public static void main(String[] args) throws IOException, StructureException {
-        int n=5000;
+        int n = 5000;
         run(n);
     }
 
@@ -121,7 +121,7 @@ public class MolecularWeighter {
         int first = 0;
         int last = weights.length;
         while (first < last) {
-           int mid = first + (last - first) / 2;
+            int mid = first + (last - first) / 2;
             if (point <= weights[mid]) {
                 last = mid;
             } else {
@@ -132,15 +132,15 @@ public class MolecularWeighter {
     }
 
     private static void run(int n) throws IOException, StructureException {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb",0);
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0);
         Path path = new Path(new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14}, Double.NaN);
         double[] weights = weightPath(path, cg);
-        double range = weights[weights.length-1] - weights[0];
-        double step = range/n;
-        double current=0;
+        double range = weights[weights.length - 1] - weights[0];
+        double step = range / n;
+        double current = 0;
         for (int i = 0; i < n; i++) {
             System.out.print(section(weights, current) + " ");
-            current+=step;
+            current += step;
         }
         //System.out.print(section(weights, 5000.0));
         //System.out.print(Arrays.toString(weights));

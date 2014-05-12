@@ -17,8 +17,8 @@ import java.io.File;
  * Created by AndreyS on 21.03.14.
  */
 public class ClusterizerPanel extends JPanel {
-    private static final int HGAP =10;
-    private static final int WGAP =10;
+    private static final int HGAP = 10;
+    private static final int WGAP = 10;
     JPanel bottomPanel;
     JPanel topPanel;
     private FileChooserPanel fileChooserPanel;
@@ -28,6 +28,7 @@ public class ClusterizerPanel extends JPanel {
         buildBottomPanel();
         //GraphModel
     }
+
     private void buildBottomPanel() {
         topPanel = new JPanel();
         bottomPanel = new JPanel();

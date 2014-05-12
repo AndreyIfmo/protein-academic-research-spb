@@ -88,7 +88,9 @@ public class BadPathRemovalSolver {
         boolean[][] faultyEdges = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (i == j) continue;
+                if (i == j) {
+                    continue;
+                }
                 for (int k = 0; k < n; ++k) {
                     if (i == k || j == k) {
                         continue;

@@ -26,13 +26,15 @@ public class ConformationGraph {
     public final int indexOffset;
 
     public ConformationChain getChain(int source, int target) {
-        if (source == target) throw new IllegalArgumentException("source == target");
+        if (source == target) {
+            throw new IllegalArgumentException("source == target");
+        }
         if (chains[source][target] == null) {
             try {
                 int firstIndex = Math.min(source, target);
                 int secondIndex = Math.max(source, target);
                 if (files[firstIndex][secondIndex] == null) {
-                    throw new IllegalArgumentException("Path is not computed" + firstIndex + " " +secondIndex);
+                    throw new IllegalArgumentException("Path is not computed" + firstIndex + " " + secondIndex);
                 }
                 Structure structure = fileReader.getStructure(files[firstIndex][secondIndex]);
                 chains[firstIndex][secondIndex] = new ConformationChain(structure);
@@ -57,7 +59,7 @@ public class ConformationGraph {
                     chains[secondRemovedID][firstRemovedID] = null;
                 }
             } catch (Exception ex) {
-                System.out.println("INDEXES: " + source+" "+target);
+                System.out.println("INDEXES: " + source + " " + target);
                 throw new RuntimeException(ex);
             }
         }
@@ -91,13 +93,13 @@ public class ConformationGraph {
 
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(zipArchive))) {
             ZipEntry entry;
-            int counter =0;
+            int counter = 0;
             while ((entry = input.getNextEntry()) != null) {
                 String name = entry.getName();
                 Integer firstIndex = firstIndices.get(name);
                 Integer secondIndex = secondIndices.get(name);
                 if (firstIndex != null && secondIndex != null) {
-                    File file = new File("temp-"+counter++);
+                    File file = new File("temp-" + counter++);
                     file.deleteOnExit();
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         byte[] buf = new byte[2048];
@@ -109,7 +111,7 @@ public class ConformationGraph {
                     files[firstIndex][secondIndex] = file;
                     files[secondIndex][firstIndex] = file;
                     if (bannedFileNames.contains(name)) {
-                        System.out.print("deleted" + name+ " " + "first index:" + " " +firstIndex + "second index: " + secondIndex);
+                        System.out.print("deleted" + name + " " + "first index:" + " " + firstIndex + "second index: " + secondIndex);
                         graph.removeEdge(firstIndex, secondIndex);
                         graph.removeEdge(secondIndex, firstIndex);
                     }
@@ -133,8 +135,8 @@ public class ConformationGraph {
 
 
     public void cleanUp() {
-        for (File[] filesIt:files) {
-            for (File it:filesIt) {
+        for (File[] filesIt : files) {
+            for (File it : filesIt) {
                 it.delete();
             }
         }

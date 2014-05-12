@@ -9,14 +9,15 @@ public class SinCos {
     public final double cos;
     public final double sin;
     public final double angle;
+
     public SinCos(Point a, Point b) {
-        cos = (a.scalarMult(b)/(a.distance()*b.distance()));
-        sin = 1-cos*cos;
+        cos = (a.scalarMult(b) / (a.distance() * b.distance()));
+        sin = 1 - cos * cos;
         angle = Math.acos(cos);
     }
 
     public SinCos(double angle) {
-        this.angle=angle;
+        this.angle = angle;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
     }

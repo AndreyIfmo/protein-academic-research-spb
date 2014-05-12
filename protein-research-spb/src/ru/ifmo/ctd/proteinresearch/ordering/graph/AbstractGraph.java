@@ -15,7 +15,7 @@ public abstract class AbstractGraph implements Graph {
     public AbstractGraph(int number) {
         this.n = number;
         numbers = new int[number];
-        for (int i=0; i<n;i++) {
+        for (int i = 0; i < n; i++) {
             numbers[i] = i;
         }
     }
@@ -42,6 +42,7 @@ public abstract class AbstractGraph implements Graph {
 
     @Override
     public abstract boolean hasEdge(int from, int to);
+
     @Override
     public abstract void removeEdge(int from, int to);
 }

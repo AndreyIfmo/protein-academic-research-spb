@@ -11,9 +11,9 @@ import java.util.List;
  * ansokolmail@gmail.com
  */
 public class FunctionalUtils {
-    public static <E, R> List<R> map (Collection<E> collection, Function<E, R> function) throws Exception {
+    public static <E, R> List<R> map(Collection<E> collection, Function<E, R> function) throws Exception {
         List<R> list = new ArrayList<>();
-        for (E iterator:collection) {
+        for (E iterator : collection) {
             list.add(function.apply(iterator));
         }
         return list;

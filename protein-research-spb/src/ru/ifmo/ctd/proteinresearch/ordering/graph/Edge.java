@@ -24,8 +24,12 @@ public class Edge {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Edge)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Edge)) {
+            return false;
+        }
         Edge edge = (Edge) o;
         return from == edge.from && to == edge.to && Double.compare(edge.weight, weight) == 0;
 

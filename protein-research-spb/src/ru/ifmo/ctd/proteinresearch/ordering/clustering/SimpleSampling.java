@@ -39,7 +39,7 @@ public class SimpleSampling {
         double maxOfDist = Double.MIN_VALUE;
         int[] vector = new int[numOfClusters];
         int[] curCenters;
-        while (!ClusteringUtils.isAll1(vector, distanceMatrix.length-1)) {
+        while (!ClusteringUtils.isAll1(vector, distanceMatrix.length - 1)) {
             curCenters = vector;
             for (int i = 0; i < distanceMatrix.length; i++) {
                 double distI = dist(i, curCenters);
