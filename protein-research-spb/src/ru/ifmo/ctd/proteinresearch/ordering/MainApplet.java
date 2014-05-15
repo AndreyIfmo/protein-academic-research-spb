@@ -45,7 +45,7 @@ public class MainApplet {
         frame.addWindowListener(new ApplicationCloser());
         Container contentPane = frame.getContentPane();
         jmolPanel = new JmolPanel();
-        jmolPanel.setPreferredSize(new Dimension(500, 500));
+        jmolPanel.setPreferredSize(new Dimension(600, 600));
         mainPanel.setLayout(new BorderLayout());
 
         mainPanel.add(jmolPanel, BorderLayout.EAST);
@@ -95,7 +95,7 @@ public class MainApplet {
         public void paint(Graphics g) {
             getSize(currentSize);
             g.getClipBounds(rectClip);
-            viewer.renderScreenImage(g, 500, 500);
+            viewer.renderScreenImage(g, 600, 600);
         }
     }
 

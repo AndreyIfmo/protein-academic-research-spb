@@ -24,6 +24,25 @@ public class EdgeSwitchLimitationSolver {
         return paths;
     }
 
+    public int[] getDistribution() {
+        int[] answer = new int[getN()];
+        for (int i = 0; i < getN(); i++) {
+            for (int j = 0; j < getN(); j++) {
+                int[] path = paths[i][j];
+                if (path != null && path.length > 1) {
+                    for (int k = 1; k < path.length - 1; k++) {
+                        answer[path[k]]++;
+                    }
+                }
+            }
+        }
+        return answer;
+    }
+
+    private int getN() {
+        return cg.graph.getN();
+    }
+
     public double[][] getNewShortest() {
         return newShortest;
     }
@@ -35,7 +54,7 @@ public class EdgeSwitchLimitationSolver {
     Function<Double, Double> f = new Function<Double, Double>() {
         @Override
         public Double apply(Double argument) throws StructureException, FileNotFoundException {
-            int n=cg.graph.getN();
+            int n= getN();
             boolean[][][] mayConnect = new boolean[n][n][n];
             evaluateMayConnectMatrix(n, banned, mayConnect, argument);
             calculatePaths(n, banned, mayConnect);
@@ -82,12 +101,12 @@ public class EdgeSwitchLimitationSolver {
 
 
     public void run(double border) throws Exception {
-        banned = getBannedEdges(cg.graph.getN());
+        banned = getBannedEdges(getN());
         f.apply(border);
     }
 
     public void run(double minDiffValue, double maxDiffValue) throws Exception {
-        banned = getBannedEdges(cg.graph.getN());
+        banned = getBannedEdges(getN());
         findOptimalValue(minDiffValue, maxDiffValue);
     }
 
