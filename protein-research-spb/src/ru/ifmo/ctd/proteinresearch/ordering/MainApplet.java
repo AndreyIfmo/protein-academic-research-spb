@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
@@ -39,22 +40,17 @@ public class MainApplet {
     public MainApplet() {
         frame = new JFrame();
         frame.setTitle("Protein laboratory");
-        mainPanel = new JPanel();
+        mainPanel = new JPanel(new BorderLayout());
         extension = new JmolExtensionPanel(this);
         frame.addWindowListener(new ApplicationCloser());
         Container contentPane = frame.getContentPane();
         jmolPanel = new JmolPanel();
-        jmolPanel.setPreferredSize(new Dimension(500,500));
-        mainPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        mainPanel.add(jmolPanel);
-        gbc.gridy = 1;
-        gbc.weighty=5;
-        mainPanel.add(extension);
+        jmolPanel.setPreferredSize(new Dimension(500, 500));
+        mainPanel.setLayout(new BorderLayout());
+
+        mainPanel.add(jmolPanel, BorderLayout.EAST);
+
+        mainPanel.add(extension, BorderLayout.WEST);
         contentPane.add(mainPanel);
         frame.pack();
         frame.setVisible(true);
