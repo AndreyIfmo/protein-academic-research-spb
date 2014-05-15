@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 /**
- * Created by AndreyS on 15.05.2014.
+ * Created by Andrey Sokolov on 15.05.2014.
  */
 public class ProteinEvaluationPanel extends JPanel {
     public JButton buildButton;
@@ -32,8 +32,8 @@ public class ProteinEvaluationPanel extends JPanel {
         textArea.setEditable(false);
         textArea.setColumns(30);
         textArea.setRows(30);
-        textArea.setPreferredSize(new Dimension(500,500));
-        textArea.setMinimumSize(new Dimension(500,500));
+        textArea.setPreferredSize(new Dimension(500, 500));
+        textArea.setMinimumSize(new Dimension(500, 500));
         gbc.gridx=1;
         gbc.gridy=0;
         gbc.gridheight=1;
@@ -42,18 +42,29 @@ public class ProteinEvaluationPanel extends JPanel {
         gbc.gridy=2;
         gbc.gridwidth=2;
         gbc.gridheight=2;
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        final JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setMinimumSize(textArea.getMinimumSize());
 
-        add(scrollPane, gbc);
+        //add(scrollPane, gbc);
 
         buildButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EdgeSwitchLimitationSolver esls = new EdgeSwitchLimitationSolver(panel.cg);
                 try {
-                    esls.run(Double.parseDouble(textField.textField.getText()));
+                    String borderText = textField.textField.getText();
+
+                    double border = 0;
+                    try {
+                        border = Double.parseDouble(borderText);
+                    } catch (NumberFormatException e1) {
+                        JOptionPane.showMessageDialog(mainPanel, "border value is not a number");
+                    }
+                    //magic is here!
+                    esls.run(border);
+
                     int[][][]paths = esls.getPaths();
+                    int [] distribution = esls.getDistribution();
                     int n = esls.cg.graph.getN();
                     textArea.setRows(textArea.getRows()+n*n);
                     for (int i = 0; i < n; i++) {
@@ -61,6 +72,12 @@ public class ProteinEvaluationPanel extends JPanel {
                             textArea.append(Arrays.toString(paths[i][j])+"\n");
                         }
                     }
+                    JFrame pathFrame = new JFrame();
+                    pathFrame.add(scrollPane);
+                    pathFrame.setVisible(true);
+
+                    JFrame distributionFrame = new HistogramFrame("Distribution", distribution);
+                    distributionFrame.setVisible(true);
 
                 } catch (Exception e1) {
                    e1.printStackTrace();
