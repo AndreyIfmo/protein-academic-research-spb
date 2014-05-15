@@ -15,6 +15,7 @@ import java.util.*;
  */
 public class EdgeSwitchLimitationSolver {
     public ConformationGraph cg;
+    boolean[][] banned;
 
     private int[][][] paths;
     private double[][] newShortest;
@@ -28,13 +29,37 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver().evaluate("1BTB.properties", 0.000001, 0.5);
+        new EdgeSwitchLimitationSolver("1BTB.properties").run(0.000001, 0.5);
     }
 
-    public void evaluate(String propertiesFileName, double minDiffValue, double maxDiffValue) {
+    Function<Double, Double> f = new Function<Double, Double>() {
+        @Override
+        public Double apply(Double argument) throws StructureException, FileNotFoundException {
+            int n=cg.graph.getN();
+            boolean[][][] mayConnect = new boolean[n][n][n];
+            evaluateMayConnectMatrix(n, banned, mayConnect, argument);
+            calculatePaths(n, banned, mayConnect);
+            IntPair pathIndexes = findMaxShortestPath(n);
+            int[] path = paths[pathIndexes.first][pathIndexes.second];
+            System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
+            return Double.valueOf(path.length);
+        }
+    };
+
+    public EdgeSwitchLimitationSolver(ConformationGraph cg) {
+        try {
+            this.cg = cg;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // cg.cleanUp();
+        }
+
+    }
+    public EdgeSwitchLimitationSolver(String propertiesFileName) {
         try {
             cg = PropertiesParser.getGraphData(propertiesFileName);
-            run(minDiffValue, maxDiffValue);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -43,10 +68,9 @@ public class EdgeSwitchLimitationSolver {
 
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, double minDiffValue, double maxDiffValue) {
+    public EdgeSwitchLimitationSolver(String matrixFileName, String zipArchive, String fileNamePattern) {
         try {
             cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, 0);
-            run(minDiffValue, maxDiffValue);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -55,21 +79,28 @@ public class EdgeSwitchLimitationSolver {
 
     }
 
-    public void evaluate(String matrixFileName, String zipArchive, String fileNamePattern, int indexOffset, double minDiffValue, double maxDiffValue) {
-        try {
-            cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, indexOffset);
-            run(minDiffValue, maxDiffValue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            cg.cleanUp();
-        }
 
+
+    public void run(double border) throws Exception {
+        banned = getBannedEdges(cg.graph.getN());
+        f.apply(border);
     }
 
-    private void run(double minDiffValue, double maxDiffValue) throws Exception {
-        final int n = cg.graph.getN();
-        final boolean[][] banned = new boolean[n][n];
+    public void run(double minDiffValue, double maxDiffValue) throws Exception {
+        banned = getBannedEdges(cg.graph.getN());
+        findOptimalValue(minDiffValue, maxDiffValue);
+    }
+
+    private void findOptimalValue(double minDiffValue, double maxDiffValue) throws Exception {
+        double delta = 0.0000001;
+        double border = OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 2);
+        System.out.println("Value: " + border);
+        System.out.println("ANSWER");
+        System.out.println(f.apply(border));
+    }
+
+    private boolean[][] getBannedEdges(int n) throws Exception {
+        banned = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 banned[i][j] = false;
@@ -103,27 +134,7 @@ public class EdgeSwitchLimitationSolver {
 
             }
         }
-
-        double left = minDiffValue;
-        double right = maxDiffValue;
-        double delta = 0.0000001;
-        Function<Double, Double> f = new Function<Double, Double>() {
-            @Override
-            public Double apply(Double argument) throws StructureException, FileNotFoundException {
-                boolean[][][] mayConnect = new boolean[n][n][n];
-                evaluateMayConnectMatrix(n, banned, mayConnect, argument);
-                calculatePaths(n, banned, mayConnect);
-                IntPair pathIndexes = findMaxShortestPath(n);
-                int[] path = paths[pathIndexes.first][pathIndexes.second];
-                System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
-                return Double.valueOf(path.length);
-            }
-        };
-        double border = OptMethod.upgradedTriSearch(f, left, right, delta, 2);
-        System.out.println("Value: " + border);
-        System.out.println("ANSWER");
-        System.out.println(f.apply(border));
-
+        return banned;
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
