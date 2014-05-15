@@ -19,12 +19,12 @@ public class ProteinEvaluationPanel extends JPanel {
     public ProteinEvaluationPanel(final ProteinPanel panel) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        mainPanel=panel;
+        mainPanel = panel;
         buildButton = new JButton("Build graph of paths");
         gbc.gridx=0;
         gbc.gridy=0;
-        gbc.weightx=1;
-        gbc.weighty=1;
+        gbc.gridwidth=1;
+        gbc.gridheight=1;
         add(buildButton, gbc);
         textField = new LabelTextField(10, "Border");
         textArea = new JTextArea();
@@ -36,10 +36,12 @@ public class ProteinEvaluationPanel extends JPanel {
         textArea.setMinimumSize(new Dimension(500,500));
         gbc.gridx=1;
         gbc.gridy=0;
-        gbc.weighty=1;
+        gbc.gridheight=1;
         add(textField, gbc);
+        gbc.gridx=0;
         gbc.gridy=2;
-        gbc.weighty=3;
+        gbc.gridwidth=2;
+        gbc.gridheight=2;
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setMinimumSize(textArea.getMinimumSize());
 
