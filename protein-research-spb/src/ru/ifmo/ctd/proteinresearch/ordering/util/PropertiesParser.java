@@ -3,6 +3,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.util;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -22,5 +23,11 @@ public class PropertiesParser {
         return new ConformationGraph(proteinProperties.getProperty("matrix"),
                 proteinProperties.getProperty("archive"),
                 proteinProperties.getProperty("mask"), indexOffset, banned != null ? banned.split(",") : new String[0]);
+    }
+
+    public static double getBorderValue(String fileName) throws IOException {
+        Properties proteinProperties = new Properties();
+        proteinProperties.load(new FileInputStream(fileName));
+        return Double.parseDouble(proteinProperties.getProperty("border"));
     }
 }

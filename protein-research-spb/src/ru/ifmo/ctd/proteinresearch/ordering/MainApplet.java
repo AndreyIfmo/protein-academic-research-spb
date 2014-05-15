@@ -7,95 +7,65 @@ You can get it from http://jmol.sourceforge.net
 
 */
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.biojava.bio.structure.Structure;
-import org.biojava.bio.structure.io.PDBFileReader;
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
 import org.jmol.api.JmolSimpleViewer;
 import org.jmol.api.JmolViewer;
+import ru.ifmo.ctd.proteinresearch.ordering.gui.JmolExtensionPanel;
 
 
-public class SimpleJmolExample {
+public class MainApplet {
     JmolSimpleViewer viewer;
-    Structure structure;
-
+    JPanel mainPanel;
     JmolPanel jmolPanel;
     JFrame frame;
+    JmolExtensionPanel extension;
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         try {
-
-            PDBFileReader pdbr = new PDBFileReader();
-            File f = new File("tmp");
-            pdbr.setPath(f.getCanonicalPath().replace("tmp", ""));
-
-            String pdbCode = "Result_optim";
-
-            Structure struc = pdbr.getStructureById(pdbCode);
-
-            SimpleJmolExample ex = new SimpleJmolExample();
-            ex.setStructure(struc);
-
-
-        } catch (Exception e) {
+            MainApplet ex = new MainApplet();
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
 
 
-    public SimpleJmolExample() {
+    public MainApplet() {
         frame = new JFrame();
+        frame.setTitle("Protein laboratory");
+        mainPanel = new JPanel();
+        extension = new JmolExtensionPanel(this);
         frame.addWindowListener(new ApplicationCloser());
         Container contentPane = frame.getContentPane();
         jmolPanel = new JmolPanel();
-
-        jmolPanel.setPreferredSize(new Dimension(500, 500));
-        contentPane.add(jmolPanel);
-
+        jmolPanel.setPreferredSize(new Dimension(500,500));
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        mainPanel.add(jmolPanel);
+        gbc.gridy = 1;
+        gbc.weighty=5;
+        mainPanel.add(extension);
+        contentPane.add(mainPanel);
         frame.pack();
         frame.setVisible(true);
-
     }
-
-    public void setStructure(Structure s) {
-
-        frame.setName(s.getPDBCode());
-
-        // actually this is very simple
-        // just convert the structure to a PDB file
-
-        String pdb = s.toPDB();
-
-        structure = s;
+    public void setStructure(String fileName) {
         JmolViewer viewer = jmolPanel.getViewer();
-
-        // Jmol could also read the file directly from your file system
-        viewer.openFile("Result_optim.pdb");
-
-        // send the PDB file to Jmol.
-        // there are also other ways to interact with Jmol, but they require more
-        // code. See the link to SPICE above...
-
+        viewer.openFile(fileName);
         this.viewer = viewer;
-
     }
 
-    public void setTitle(String label) {
-        frame.setTitle(label);
-    }
-
-    public JmolViewer getViewer() {
-
+    public JmolViewer getViewer(){
         return jmolPanel.getViewer();
     }
 
@@ -113,7 +83,6 @@ public class SimpleJmolExample {
         private static final long serialVersionUID = -3661941083797644242L;
         JmolViewer viewer;
         JmolAdapter adapter;
-
         JmolPanel() {
             adapter = new SmarterJmolAdapter();
             viewer = JmolViewer.allocateViewer(this, adapter);
@@ -123,11 +92,6 @@ public class SimpleJmolExample {
         public JmolViewer getViewer() {
             return viewer;
         }
-
-        public void executeCmd(String rasmolScript) {
-            viewer.evalString(rasmolScript);
-        }
-
 
         final Dimension currentSize = new Dimension();
         final Rectangle rectClip = new Rectangle();

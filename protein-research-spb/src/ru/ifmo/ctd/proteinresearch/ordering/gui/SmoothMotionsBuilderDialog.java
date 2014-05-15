@@ -21,7 +21,6 @@ public class SmoothMotionsBuilderDialog extends JFrame {
     EdgeSwitchLimitationSolver solver;
 
     public SmoothMotionsBuilderDialog() {
-        solver = new EdgeSwitchLimitationSolver();
         initComponents();
 
     }
@@ -103,7 +102,8 @@ public class SmoothMotionsBuilderDialog extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    solver.evaluate(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern(), 0.001, 10);
+                    solver= new EdgeSwitchLimitationSolver(allFilesChooserPanel.getMatrixFile(), allFilesChooserPanel.getArchiveFile(), allFilesChooserPanel.getFilePattern());
+                    solver.run(0.001, 10);
 
                 } catch (Exception e1) {
                     e1.printStackTrace();

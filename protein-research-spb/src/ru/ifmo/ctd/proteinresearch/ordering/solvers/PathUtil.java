@@ -8,7 +8,6 @@ import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 import ru.ifmo.ctd.proteinresearch.ordering.util.SinCos;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,7 @@ public class PathUtil {
         ConformationGraph cg = new ConformationGraph(costFile, archive, pathExpression, indexOffset);
         try (PrintWriter out = new PrintWriter(output)) {
             out.println(cg.forPath(path));
-        }
+        }/*
         for (int i = 0; i < cg.graph.getN(); ++i) {
             for (int j = i + 1; j < cg.graph.getN(); ++j) {
                 try {
@@ -34,7 +33,7 @@ public class PathUtil {
                     ex.printStackTrace();
                 }
             }
-        }
+        }*/
     }
 
 
@@ -101,35 +100,16 @@ public class PathUtil {
         pw.close();
     }
 
-    public static void main(String[] args) throws Exception {
-       /* buildPDB("1BTB.txt", "1BTB.zip", "1BTB/%02d-%02d/Result.pdb", "ResultLong.pdb", new Path(
-                new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                           10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
-                Double.NaN
-        ));*/
-        ConformationGraph cg = PropertiesParser.getGraphData("1CFC.properties");
+    public void run() throws Exception {
+        ConformationGraph cg = PropertiesParser.getGraphData("1BTB.properties");
         ConformationChain cc = cg.getChain(0, 1);
         System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
         buildPDB(cg.matrixFileName, cg.zipArchive, cg.fileNamePattern, cg.indexOffset, "Result_optim.pdb", new Path(
-                new int[]{7, 22, 5, 14, 0, 20, 13},
-                Double.NaN));/*
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
-        ConformationChain cc = cg.getChain(0,1);
-        System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
-
-        buildPDB("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", "Result_optim.pdb", new Path(
-                new int[]{0, 9, 15, 17, 8, 2, 17, 10, 11, 7, 14},
-                Double.NaN
-        ));*/
-
-      /*  ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
-        ConformationChain cc = cg.getChain(0,9);
-        Structure structure = cc.getStructure();
-        Chain chain1 = structure.getModel(0).get(0);
-        Chain chain2 = structure.getModel(1).get(0);
-        List<Chain> chainList = PathUtil.getInterpolatedChains(chain1, chain2, 50);
-        align(chainList);
-        PathUtil.toPDB("test.pdb", chainList);*/
+                new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29},
+                Double.NaN));
+    }
+    public static void main(String[] args) throws Exception {
+       new PathUtil().run();
     }
 
     public static void align(List<Chain> chains) throws StructureException {

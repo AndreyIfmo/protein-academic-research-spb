@@ -8,8 +8,8 @@ import java.awt.*;
  */
 public class LabelTextField extends JPanel {
 
-    JLabel label;
-    JTextField textField;
+    public JLabel label;
+    public JTextField textField;
 
     public LabelTextField(int width, String labelText) {
         setLayout(new GridLayout(2, 1));
