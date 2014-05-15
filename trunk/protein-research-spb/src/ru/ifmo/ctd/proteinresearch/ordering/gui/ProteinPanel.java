@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -26,9 +27,13 @@ public class ProteinPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String fileName = fileChooserPanel.getFileName();
-                    cg = PropertiesParser.getGraphData(fileName);
-                    proteinPanel.textField.textField.setText( ""+PropertiesParser.getBorderValue(fileName));
-                    isComputed = true;
+                    if(new File(fileName).isFile()) {
+                        cg = PropertiesParser.getGraphData(fileName);
+                        proteinPanel.textField.textField.setText("" + PropertiesParser.getBorderValue(fileName));
+                        isComputed = true;
+                    } else {
+                        JOptionPane.showMessageDialog(proteinPanel, "file name is not correct");
+                    }
                 } catch (IOException e1) {
                     throw new RuntimeException(e1);
                 }

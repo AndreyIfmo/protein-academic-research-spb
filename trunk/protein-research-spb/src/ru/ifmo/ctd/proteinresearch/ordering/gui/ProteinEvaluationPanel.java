@@ -27,13 +27,23 @@ public class ProteinEvaluationPanel extends JPanel {
         gbc.weighty=1;
         add(buildButton, gbc);
         textField = new LabelTextField(10, "Border");
-        textArea = new JTextArea(30,30);
-        gbc.gridy=1;
+        textArea = new JTextArea();
+
+        textArea.setEditable(false);
+        textArea.setColumns(30);
+        textArea.setRows(30);
+        textArea.setPreferredSize(new Dimension(500,500));
+        textArea.setMinimumSize(new Dimension(500,500));
+        gbc.gridx=1;
+        gbc.gridy=0;
         gbc.weighty=1;
         add(textField, gbc);
         gbc.gridy=2;
         gbc.weighty=3;
-        add(new JScrollPane(textArea), gbc);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setMinimumSize(textArea.getMinimumSize());
+
+        add(scrollPane, gbc);
 
         buildButton.addActionListener(new ActionListener() {
             @Override
@@ -42,13 +52,14 @@ public class ProteinEvaluationPanel extends JPanel {
                 try {
                     esls.run(Double.parseDouble(textField.textField.getText()));
                     int[][][]paths = esls.getPaths();
-                    String answer="";
-                    for (int i = 0; i < esls.cg.graph.getN(); i++) {
-                        for (int j = 0; j < esls.cg.graph.getN(); j++) {
-                            answer+=(Arrays.toString(paths[i][j])+"\n");
+                    int n = esls.cg.graph.getN();
+                    textArea.setRows(textArea.getRows()+n*n);
+                    for (int i = 0; i < n; i++) {
+                        for (int j = 0; j < n; j++) {
+                            textArea.append(Arrays.toString(paths[i][j])+"\n");
                         }
                     }
-                    textArea.setText(answer);
+
                 } catch (Exception e1) {
                    e1.printStackTrace();
                 }

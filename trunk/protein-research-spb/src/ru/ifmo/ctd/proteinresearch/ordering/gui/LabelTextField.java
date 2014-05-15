@@ -12,7 +12,7 @@ public class LabelTextField extends JPanel {
     public JTextField textField;
 
     public LabelTextField(int width, String labelText) {
-        setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(1, 2));
         this.label = new JLabel(labelText);
         this.textField = new JTextField("0", width);
         textField.setColumns(width);
