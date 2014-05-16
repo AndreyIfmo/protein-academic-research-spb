@@ -4,7 +4,7 @@ import com.sun.istack.internal.Nullable;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Created by AndreyS on 02.05.2014.
@@ -34,28 +34,40 @@ public class SimpleSampling {
      * @return clusterCenters
      */
     @Nullable
-    private int[] evaluate(int numOfClusters) {
+    private List<ClusteringAnswer> evaluate(int numOfClusters) {
+        List<ClusteringAnswer> answer = new ArrayList<>();
         int[] centers = null;
         double maxOfDist = Double.MIN_VALUE;
         int[] vector = new int[numOfClusters];
         int[] curCenters;
         while (!ClusteringUtils.isAll1(vector, distanceMatrix.length - 1)) {
             curCenters = vector;
-            for (int i = 0; i < distanceMatrix.length; i++) {
-                double distI = dist(i, curCenters);
-                if (maxOfDist < distI) {
-                    maxOfDist = distI;
-                    centers = curCenters;
-                }
+            Set<Integer> setCenters = new HashSet<>();
+            for (int it : curCenters) {
+                setCenters.add(it);
             }
+           // if (setCenters.size() == curCenters.length) {
+                for (int i = 0; i < distanceMatrix.length; i++) {
+                    double distI = dist(i, curCenters);
+                    answer.add(new ClusteringAnswer(distI, curCenters));
+                    if (maxOfDist < distI) {
+                        maxOfDist = distI;
+                        centers = curCenters;
+                    }
+                }
+            //}
             vector = ClusteringUtils.next(vector, distanceMatrix.length);
-            System.out.println(Arrays.toString(vector));
+            //   System.out.println(Arrays.toString(vector));
         }
-        return centers;
+        Collections.sort(answer);
+        return answer;
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.print(Arrays.toString(new SimpleSampling("2m3m.txt").evaluate(3)));
+        Object[] answer =  new SimpleSampling("2LJI_optim_costs.txt").evaluate(3).toArray();
+        for (Object it: answer) {
+            System.out.println(it);
+        }
     }
 
 }
