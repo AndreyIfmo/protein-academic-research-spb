@@ -31,7 +31,7 @@ public class ProteinEvaluationPanel extends JPanel {
 
         textArea.setEditable(false);
         textArea.setColumns(30);
-        textArea.setRows(30);
+        textArea.setRows(10);
         textArea.setPreferredSize(new Dimension(500, 500));
         textArea.setMinimumSize(new Dimension(500, 500));
         gbc.gridx=1;
@@ -72,13 +72,20 @@ public class ProteinEvaluationPanel extends JPanel {
                             textArea.append(Arrays.toString(paths[i][j])+"\n");
                         }
                     }
-                    JFrame pathFrame = new JFrame();
+                    JFrame pathFrame = new JFrame(mainPanel.fileName);
                     pathFrame.add(scrollPane);
+                    Dimension standartDim = new Dimension(500, 500);
+                    pathFrame.setSize(standartDim);
                     pathFrame.setVisible(true);
 
-                    JFrame distributionFrame = new HistogramFrame("Distribution", distribution);
+                    JFrame distributionFrame = new HistogramFrame(mainPanel.fileName, distribution);
                     distributionFrame.setVisible(true);
+                    distributionFrame.setSize(standartDim);
 
+                    JFrame pathBuilder = new JFrame(mainPanel.fileName);
+                    pathBuilder.add(new WritePdbPathToFilePanel(mainPanel));
+                    pathBuilder.setSize(standartDim);
+                    pathBuilder.setVisible(true);
                 } catch (Exception e1) {
                    e1.printStackTrace();
                 }

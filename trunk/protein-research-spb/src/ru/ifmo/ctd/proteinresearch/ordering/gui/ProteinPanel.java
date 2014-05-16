@@ -18,6 +18,7 @@ public class ProteinPanel extends JPanel {
     ConformationGraph cg;
     FileChooserPanel fileChooserPanel;
     ProteinEvaluationPanel proteinPanel;
+    String fileName;
     boolean isComputed;
     public ProteinPanel() {
         setLayout(new GridBagLayout());
@@ -26,7 +27,7 @@ public class ProteinPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String fileName = fileChooserPanel.getFileName();
+                    fileName = fileChooserPanel.getFileName();
                     if(new File(fileName).isFile()) {
                         cg = PropertiesParser.getGraphData(fileName);
                         proteinPanel.textField.textField.setText("" + PropertiesParser.getBorderValue(fileName));
