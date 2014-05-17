@@ -29,8 +29,9 @@ public class ProteinPanel extends JPanel {
                 try {
                     fileName = fileChooserPanel.getFileName();
                     if(new File(fileName).isFile()) {
-                        cg = PropertiesParser.getGraphData(fileName);
-                        proteinPanel.textField.textField.setText("" + PropertiesParser.getBorderValue(fileName));
+                        cg = PropertiesParser.getGraphData(fileName, true);
+                        double borderValue = PropertiesParser.getBorderValue(fileName);
+                        proteinPanel.textField.textField.setText("" + borderValue);
                         isComputed = true;
                     } else {
                         JOptionPane.showMessageDialog(proteinPanel, "file name is not correct");

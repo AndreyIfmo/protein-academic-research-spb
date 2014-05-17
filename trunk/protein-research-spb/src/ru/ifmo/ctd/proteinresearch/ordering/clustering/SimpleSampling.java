@@ -11,6 +11,7 @@ import java.util.*;
  */
 public class SimpleSampling {
     double[][] distanceMatrix;
+    String fileName;
 
     public double d(int x, int y) {
         return distanceMatrix[x][y];
@@ -27,6 +28,7 @@ public class SimpleSampling {
     }
 
     public SimpleSampling(String fileName) throws IOException {
+        this.fileName = fileName;
         this.distanceMatrix = GraphParser.parseGraphMatrix(fileName);
     }
 
@@ -47,15 +49,15 @@ public class SimpleSampling {
             for (int it : curCenters) {
                 setCenters.add(it);
             }
-           // if (setCenters.size() == curCenters.length) {
-                for (int i = 0; i < distanceMatrix.length; i++) {
-                    double distI = dist(i, curCenters);
+            // if (setCenters.size() == curCenters.length) {
+            for (int i = 0; i < distanceMatrix.length; i++) {
+                double distI = dist(i, curCenters);
 
-                    if (maxOfDist < distI) {
-                        maxOfDist = distI;
-                        centers = curCenters;
-                    }
+                if (maxOfDist < distI) {
+                    maxOfDist = distI;
+                    centers = curCenters;
                 }
+            }
             answer.add(new ClusteringAnswer(maxOfDist, centers));
             //}
             vector = ClusteringUtils.next(vector, distanceMatrix.length);
@@ -67,44 +69,50 @@ public class SimpleSampling {
 
     public static void main(String[] args) throws IOException {
         SimpleSampling simpleSampling = new SimpleSampling("2LJI_optim_costs.txt");
-        List<ClusteringAnswer> evaluate = simpleSampling.evaluate(4);
-        Object[] answer =  evaluate.toArray();
-        int counter =0;
-        for (List<Integer> it :getClusters(simpleSampling.distanceMatrix, evaluate.get(0).centers)) {
-            for (Integer it1:it) {
-                System.out.print(it1+" ");
-            }
-            System.out.println();
-        }
-        System.out.print("===============================");
-        for (Object it: answer) {
-
-            if (counter<100) {
-            System.out.println(it);
-            }
-            counter++;
-        }
+        simpleSampling.run();
     }
 
-    public static int closes(double[][]weights,int i, int[] ans) {
-        double min=Double.MAX_VALUE;
-        int minI=-1;
-        for (int it=0; it<ans.length; it++) {
+    public void run() {
+        System.out.println("File: " + fileName);
+        List<ClusteringAnswer> evaluate = evaluate(4);
+        Object[] answer = evaluate.toArray();
+        int counter = 0;
+        System.out.println(Arrays.toString(evaluate.get(0).centers));
+        for (List<Integer> it : getClusters(distanceMatrix, evaluate.get(0).centers)) {
+            for (Integer it1 : it) {
+                System.out.print(it1 + " ");
+            }
+            System.out.println();
+        }/*
+        System.out.print("===============================");
+        for (Object it : answer) {
+
+            if (counter < 100) {
+                System.out.println(it);
+            }
+            counter++;
+        }*/
+    }
+
+    public static int closes(double[][] weights, int i, int[] ans) {
+        double min = Double.MAX_VALUE;
+        int minI = -1;
+        for (int it = 0; it < ans.length; it++) {
             double weight = weights[i][ans[it]];
-            if (min> weight) {
+            if (min > weight) {
                 min = weight;
-                minI=it;
+                minI = it;
             }
         }
         return minI;
     }
 
-    public static List<Integer>[] getClusters(double[][]weights, int[] ans) {
-        List<Integer>[] clusters =new List[ans.length];
-        for (int i=0; i<clusters.length; i++) {
-            clusters[i]=new ArrayList<>();
+    public static List<Integer>[] getClusters(double[][] weights, int[] ans) {
+        List<Integer>[] clusters = new List[ans.length];
+        for (int i = 0; i < clusters.length; i++) {
+            clusters[i] = new ArrayList<>();
         }
-        for (int i=0; i<weights.length; i++) {
+        for (int i = 0; i < weights.length; i++) {
             clusters[closes(weights, i, ans)].add(i);
         }
         return clusters;

@@ -13,6 +13,9 @@ import java.util.Properties;
  */
 public class PropertiesParser {
     public static ConformationGraph getGraphData(String fileName) throws IOException {
+        return getGraphData(fileName, false);
+    }
+    public static ConformationGraph getGraphData(String fileName, boolean isInApplet) throws IOException {
         Properties proteinProperties = new Properties();
         File file = new File(fileName);
         proteinProperties.load(new FileInputStream(file));
@@ -22,14 +25,16 @@ public class PropertiesParser {
         if (indexOffsetString != null) {
             indexOffset = Integer.parseInt(indexOffsetString);
         }
-        return new ConformationGraph(file.getParentFile().getAbsolutePath() + "/"+proteinProperties.getProperty("matrix"),
-                file.getParentFile().getAbsolutePath() + "/"+proteinProperties.getProperty("archive"),
+        String prefix=isInApplet?file.getParentFile().getAbsolutePath() + "/":"";
+        return new ConformationGraph(prefix+proteinProperties.getProperty("matrix"),
+                prefix+proteinProperties.getProperty("archive"),
                 proteinProperties.getProperty("mask"), indexOffset, banned != null ? banned.split(",") : new String[0]);
     }
 
     public static double getBorderValue(String fileName) throws IOException {
         Properties proteinProperties = new Properties();
         proteinProperties.load(new FileInputStream(fileName));
-        return Double.parseDouble(proteinProperties.getProperty("border"));
+        String thresold = proteinProperties.getProperty("thresold");
+        return thresold!=null?Double.parseDouble(thresold):0;
     }
 }
