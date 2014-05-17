@@ -179,9 +179,45 @@ public class ConformationChain {
         }
     }
 
+    public static final Atom[] getAtomArray(Chain c, String... atomNames){
+
+        List<Group> groups = c.getAtomGroups();
+
+        List<Atom> atoms = new ArrayList<Atom>();
+
+        for (Group g : groups){
+
+            // a temp container for the atoms of this group
+            List<Atom> thisGroupAtoms = new ArrayList<Atom>();
+            // flag to check if this group contains all the requested atoms.
+            boolean thisGroupAllAtoms = true;
+            for ( int i = 0 ; i < atomNames.length; i++){
+                String atomName = atomNames[i];
+                try {
+                    Atom a = g.getAtom(atomName);
+                    thisGroupAtoms.add(a);
+                } catch (StructureException e){
+                    // this group does not have a required atom, skip it...
+                    thisGroupAllAtoms = false;
+                    break;
+                }
+            }
+            if ( thisGroupAllAtoms){
+                // add the atoms of this group to the array.
+                Iterator<Atom> aIter = thisGroupAtoms.iterator();
+                while(aIter.hasNext()){
+                    Atom a = (Atom) aIter.next();
+                    atoms.add(a);
+                }
+            }
+
+        }
+        return (Atom[]) atoms.toArray(new Atom[atoms.size()]);
+
+    }
     public static Chain align(Chain reference, Chain argument) throws StructureException {
-        Atom[] prev = StructureTools.getAtomCAArray(reference);
-        Atom[] curr = StructureTools.getAtomCAArray(argument);
+        Atom[] prev = getAtomArray(reference, "CA" );
+        Atom[] curr = getAtomArray(argument, "CA");
         if (prev.length != curr.length) {
             throw new IllegalArgumentException("reference.length = " + prev.length + " argument.length = " + curr.length);
         }
