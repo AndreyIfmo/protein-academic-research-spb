@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PathUtilTest extends TestCase {
     public void testGetAtoms() throws Exception {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 1);
         ConformationChain cc = cg.getChain(0,1);
         int number = EvaluatedChain.getAtoms(cc.getStructure().getChain(0)).size();
         Assert.assertEquals(198, number);

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class EvaluatedChainTest extends TestCase {
     public void testRestorePoints() throws Exception {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb");
+        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb",1);
         ConformationChain cc = cg.getChain(0,1);
         Chain chain = cc.getStructure().getChain(0);
         EvaluatedChain ec = new  EvaluatedChain(chain);
