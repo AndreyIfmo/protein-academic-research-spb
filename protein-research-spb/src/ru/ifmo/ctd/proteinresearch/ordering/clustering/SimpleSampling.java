@@ -37,10 +37,11 @@ public class SimpleSampling {
     private List<ClusteringAnswer> evaluate(int numOfClusters) {
         List<ClusteringAnswer> answer = new ArrayList<>();
         int[] centers = null;
-        double maxOfDist = Double.MIN_VALUE;
+
         int[] vector = new int[numOfClusters];
         int[] curCenters;
         while (!ClusteringUtils.isAll1(vector, distanceMatrix.length - 1)) {
+            double maxOfDist = Double.MIN_VALUE;
             curCenters = vector;
             Set<Integer> setCenters = new HashSet<>();
             for (int it : curCenters) {
@@ -49,12 +50,13 @@ public class SimpleSampling {
            // if (setCenters.size() == curCenters.length) {
                 for (int i = 0; i < distanceMatrix.length; i++) {
                     double distI = dist(i, curCenters);
-                    answer.add(new ClusteringAnswer(distI, curCenters));
+
                     if (maxOfDist < distI) {
                         maxOfDist = distI;
                         centers = curCenters;
                     }
                 }
+            answer.add(new ClusteringAnswer(maxOfDist, centers));
             //}
             vector = ClusteringUtils.next(vector, distanceMatrix.length);
             //   System.out.println(Arrays.toString(vector));
@@ -64,10 +66,48 @@ public class SimpleSampling {
     }
 
     public static void main(String[] args) throws IOException {
-        Object[] answer =  new SimpleSampling("2LJI_optim_costs.txt").evaluate(3).toArray();
-        for (Object it: answer) {
-            System.out.println(it);
+        SimpleSampling simpleSampling = new SimpleSampling("2LJI_optim_costs.txt");
+        List<ClusteringAnswer> evaluate = simpleSampling.evaluate(4);
+        Object[] answer =  evaluate.toArray();
+        int counter =0;
+        for (List<Integer> it :getClusters(simpleSampling.distanceMatrix, evaluate.get(0).centers)) {
+            for (Integer it1:it) {
+                System.out.print(it1+" ");
+            }
+            System.out.println();
         }
+        System.out.print("===============================");
+        for (Object it: answer) {
+
+            if (counter<100) {
+            System.out.println(it);
+            }
+            counter++;
+        }
+    }
+
+    public static int closes(double[][]weights,int i, int[] ans) {
+        double min=Double.MAX_VALUE;
+        int minI=-1;
+        for (int it=0; it<ans.length; it++) {
+            double weight = weights[i][ans[it]];
+            if (min> weight) {
+                min = weight;
+                minI=it;
+            }
+        }
+        return minI;
+    }
+
+    public static List<Integer>[] getClusters(double[][]weights, int[] ans) {
+        List<Integer>[] clusters =new List[ans.length];
+        for (int i=0; i<clusters.length; i++) {
+            clusters[i]=new ArrayList<>();
+        }
+        for (int i=0; i<weights.length; i++) {
+            clusters[closes(weights, i, ans)].add(i);
+        }
+        return clusters;
     }
 
 }
