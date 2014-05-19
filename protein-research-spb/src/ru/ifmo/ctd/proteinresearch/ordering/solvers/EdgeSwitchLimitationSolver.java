@@ -16,9 +16,10 @@ import java.util.*;
 public class EdgeSwitchLimitationSolver {
     public ConformationGraph cg;
     boolean[][] banned;
-
+    boolean[][][] mayConnect;
     private int[][][] paths;
     private double[][] newShortest;
+    private Function<Double, Double> f2;
 
     public int[][][] getPaths() {
         return paths;
@@ -48,14 +49,53 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        new EdgeSwitchLimitationSolver("1BTB.properties").run(0.000001, 0.5);
+        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2M2Y.properties");
+        edgeSwitchLimitationSolver.run(0.25000057630667943);
+
+        edgeSwitchLimitationSolver.recalculate();
     }
 
+    private void recalculate() throws Exception {
+        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = this;
+        f2 = new Function<Double, Double>() {
+            @Override
+            public Double apply(Double argument) throws Exception {
+                edgeSwitchLimitationSolver.recalculatePath(edgeSwitchLimitationSolver.getN(), edgeSwitchLimitationSolver.mayConnect, argument);
+                IntPair pathIndexes = findMaxShortestPath(edgeSwitchLimitationSolver.getN());
+                int[] path = paths[pathIndexes.first][pathIndexes.second];
+                System.out.println(argument);
+                System.out.println(path.length);
+                System.out.println(Arrays.toString(path));
+                return (double) path.length;
+            }
+        };
+        f2.apply(8.0);
+
+    }
+
+    public List<Integer> sortedList(int[] distribution) {
+        List<IntPair> sortedList = new ArrayList<>();
+        for (int i=0; i < distribution.length; i++) {
+            sortedList.add(new IntPair(i,distribution[i]));
+        }
+        Collections.sort(sortedList, new Comparator<IntPair>() {
+            @Override
+            public int compare(IntPair o1, IntPair o2) {
+                return Integer.compare(o1.second, o2.second);
+            }
+        });
+
+        List<Integer> answer = new ArrayList<>();
+        for (IntPair it: sortedList) {
+            answer.add(it.first);
+        }
+        return answer;
+    }
     Function<Double, Double> f = new Function<Double, Double>() {
         @Override
         public Double apply(Double argument) throws StructureException, FileNotFoundException {
             int n= getN();
-            boolean[][][] mayConnect = new boolean[n][n][n];
+            mayConnect = new boolean[n][n][n];
             evaluateMayConnectMatrix(n, banned, mayConnect, argument);
             calculatePaths(n, banned, mayConnect);
             IntPair pathIndexes = findMaxShortestPath(n);
@@ -64,6 +104,23 @@ public class EdgeSwitchLimitationSolver {
             return Double.valueOf(path.length);
         }
     };
+
+    private void recalculatePath(int n, boolean[][][] mayConnect, double thresold) {
+        int[] distribution= getDistribution();
+        List<Integer> sortedList = sortedList(distribution);
+        for (int i=0; i< sortedList.size(); i++) {
+            for (int j =0; j< sortedList.size(); j++) {
+                if (Math.abs(i-j)>sortedList.size()/thresold) {
+                    int iv=sortedList.get(i);
+                    int jv=sortedList.get(j);
+                    banned[iv][jv]=true;
+                    banned[jv][iv]=true;
+                    System.out.println(i+" "+j+" "+iv+" "+ jv);
+                }
+            }
+        }
+        calculatePaths(n, banned, mayConnect);
+    }
 
     public EdgeSwitchLimitationSolver(ConformationGraph cg) {
         try {
@@ -107,10 +164,10 @@ public class EdgeSwitchLimitationSolver {
 
     public void run(double minDiffValue, double maxDiffValue) throws Exception {
         banned = getBannedEdges(getN());
-        findOptimalValue(minDiffValue, maxDiffValue);
+        findOptimalValue(minDiffValue, maxDiffValue, f);
     }
 
-    private void findOptimalValue(double minDiffValue, double maxDiffValue) throws Exception {
+    private void findOptimalValue(double minDiffValue, double maxDiffValue, Function f) throws Exception {
         double delta = 0.0000001;
         double border = OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 2);
         System.out.println("Value: " + border);
@@ -255,7 +312,7 @@ public class EdgeSwitchLimitationSolver {
         }
     }
 
-    private void evaluateMayConnectMatrix(int n, boolean[][] banned, boolean[][][] mayConnect, double border) throws StructureException {
+    private void evaluateMayConnectMatrix(int n, boolean[][] banned, boolean[][][] mayConnect, double thresold) throws StructureException {
         for (int vertex = 0; vertex < n; ++vertex) {
             double[][] d = new double[n][];
             int size = -1;
@@ -308,7 +365,7 @@ public class EdgeSwitchLimitationSolver {
                 for (int j = 0; j < n; ++j) {
                     //       System.out.printf("%9f ", sim[i][j]);
 
-                    if (sim[i][j] <= border && i != j && i != vertex && j != vertex) {
+                    if (sim[i][j] <= thresold && i != j && i != vertex && j != vertex) {
                         mayConnect[vertex][i][j] = true;
                     }
                 }
