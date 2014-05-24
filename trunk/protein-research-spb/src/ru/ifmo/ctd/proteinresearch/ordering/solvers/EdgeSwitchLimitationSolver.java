@@ -40,7 +40,7 @@ public class EdgeSwitchLimitationSolver {
         return answer;
     }
 
-    private int getN() {
+    public int getN() {
         return cg.graph.getN();
     }
 
@@ -63,9 +63,9 @@ public class EdgeSwitchLimitationSolver {
                 edgeSwitchLimitationSolver.recalculatePath(edgeSwitchLimitationSolver.getN(), edgeSwitchLimitationSolver.mayConnect, argument);
                 IntPair pathIndexes = findMaxShortestPath(edgeSwitchLimitationSolver.getN());
                 int[] path = paths[pathIndexes.first][pathIndexes.second];
-                System.out.println(argument);
-                System.out.println(path.length);
-                System.out.println(Arrays.toString(path));
+               // System.out.println(argument);
+               // System.out.println(path.length);
+               // System.out.println(Arrays.toString(path));
                 return (double) path.length;
             }
         };
@@ -100,7 +100,7 @@ public class EdgeSwitchLimitationSolver {
             calculatePaths(n, banned, mayConnect);
             IntPair pathIndexes = findMaxShortestPath(n);
             int[] path = paths[pathIndexes.first][pathIndexes.second];
-            System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
+          //  System.out.println(Double.valueOf(path.length) + " " + Arrays.toString(path) + " argument: " + argument);
             return Double.valueOf(path.length);
         }
     };
@@ -115,7 +115,7 @@ public class EdgeSwitchLimitationSolver {
                     int jv=sortedList.get(j);
                     banned[iv][jv]=true;
                     banned[jv][iv]=true;
-                    System.out.println(i+" "+j+" "+iv+" "+ jv);
+             //       System.out.println(i+" "+j+" "+iv+" "+ jv);
                 }
             }
         }
@@ -156,7 +156,16 @@ public class EdgeSwitchLimitationSolver {
     }
 
 
-
+    public void run(double border, List<Integer> bannedVertices) throws Exception {
+        banned = getBannedEdges(getN());
+        for (Integer it:bannedVertices) {
+            for (int i=0; i<banned.length; i++) {
+                banned[it][i] = true;
+                banned[i][it] = true;
+            }
+        }
+        f.apply(border);
+    }
     public void run(double border) throws Exception {
         banned = getBannedEdges(getN());
         f.apply(border);
@@ -170,9 +179,9 @@ public class EdgeSwitchLimitationSolver {
     private void findOptimalValue(double minDiffValue, double maxDiffValue, Function f) throws Exception {
         double delta = 0.0000001;
         double border = OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 2);
-        System.out.println("Value: " + border);
-        System.out.println("ANSWER");
-        System.out.println(f.apply(border));
+     //   System.out.println("Value: " + border);
+      //  System.out.println("ANSWER");
+      //  System.out.println(f.apply(border));
     }
 
     private boolean[][] getBannedEdges(int n) throws Exception {
@@ -184,7 +193,7 @@ public class EdgeSwitchLimitationSolver {
                     banned[i][j] = banned[i][j] || !cg.graph.hasEdge(i, j) || cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
                 }
                 if (banned[i][j]) {
-                    System.out.println(i + " <-> " + j + " banned");
+                    //System.out.println(i + " <-> " + j + " banned");
                 }
             }
         }
@@ -195,16 +204,16 @@ public class EdgeSwitchLimitationSolver {
                     if (cg.files[i][j] == null) {
                         banned[i][j] = true;
                         banned[j][i] = true;
-                        System.out.println(i + "<->" + j + "Not computed");
+                        //System.out.println(i + "<->" + j + "Not computed");
                         continue;
                     }
                     if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
                         banned[i][j] = true;
                         banned[j][i] = true;
-                        System.out.println(i + " <-> " + j + " self-intersected");
+                        //System.out.println(i + " <-> " + j + " self-intersected");
                     }
                 } catch (NullPointerException npe) {
-                    System.out.println(i + " " + j);
+                    //System.out.println(i + " " + j);
                     npe.printStackTrace();
                 }
 
@@ -296,7 +305,7 @@ public class EdgeSwitchLimitationSolver {
         for (int vx = 0; vx < n; ++vx) {
             for (int i = 0; i < n; ++i) {
                 if (Double.isInfinite(newShortest[vx][i])) {
-                    System.out.println("Infinite between " + vx + " and " + i);
+                 //   System.out.println("Infinite between " + vx + " and " + i);
                 }
             }
         }
@@ -306,7 +315,7 @@ public class EdgeSwitchLimitationSolver {
     private void printAllPaths(int n) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                System.out.println(Arrays.toString(paths[i][j]));
+               // System.out.println(Arrays.toString(paths[i][j]));
             }
 
         }
@@ -323,7 +332,7 @@ public class EdgeSwitchLimitationSolver {
                 }
             }
             if (size == -1) {
-                System.out.print("Not connected? " + vertex);
+              //  System.out.print("Not connected? " + vertex);
 
                 continue;
             }
@@ -388,9 +397,9 @@ public class EdgeSwitchLimitationSolver {
     }
 
     private void printPath(int maxI, int maxJ) throws StructureException, FileNotFoundException {
-        System.out.println("Longest shortest path:");
-        System.out.println(Arrays.toString(paths[maxI][maxJ]));
-        System.out.println("Length: " + newShortest[maxI][maxJ]);
+       // System.out.println("Longest shortest path:");
+       // System.out.println(Arrays.toString(paths[maxI][maxJ]));
+       // System.out.println("Length: " + newShortest[maxI][maxJ]);
 
         try (PrintWriter pdb = new PrintWriter("New.pdb")) {
             pdb.print(cg.forPath(new Path(paths[maxI][maxJ], newShortest[maxI][maxJ])));

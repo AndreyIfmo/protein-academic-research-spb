@@ -30,7 +30,7 @@ public class ProteinPanel extends JPanel {
                     fileName = fileChooserPanel.getFileName();
                     if(new File(fileName).isFile()) {
                         cg = PropertiesParser.getGraphData(fileName, true);
-                        double borderValue = PropertiesParser.getBorderValue(fileName);
+                        double borderValue = PropertiesParser.getThresoldValue(fileName);
                         proteinPanel.textField.textField.setText("" + borderValue);
                         isComputed = true;
                     } else {
