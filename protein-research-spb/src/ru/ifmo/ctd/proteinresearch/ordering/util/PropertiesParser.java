@@ -31,7 +31,7 @@ public class PropertiesParser {
                 proteinProperties.getProperty("mask"), indexOffset, banned != null ? banned.split(",") : new String[0]);
     }
 
-    public static double getBorderValue(String fileName) throws IOException {
+    public static double getThresoldValue(String fileName) throws IOException {
         Properties proteinProperties = new Properties();
         proteinProperties.load(new FileInputStream(fileName));
         String thresold = proteinProperties.getProperty("thresold");
