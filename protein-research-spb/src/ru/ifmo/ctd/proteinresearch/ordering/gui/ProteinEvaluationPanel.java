@@ -1,5 +1,6 @@
 package ru.ifmo.ctd.proteinresearch.ordering.gui;
 
+import ru.ifmo.ctd.proteinresearch.ordering.gui.graph.HistogramFrame;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
 
 import javax.swing.*;

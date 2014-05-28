@@ -2,9 +2,11 @@ package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
 import org.biojava.bio.structure.io.*;
+import org.ibex.nestedvm.util.Seekable;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.*;
 
@@ -91,6 +93,15 @@ public class ConformationGraph {
 
         files = new File[n][n];
 
+        File dir = new File("temp");
+        if (!dir.exists()) {
+            boolean result = dir.mkdir();
+            if (result) {
+                System.out.print("temp directory is created");
+            }
+        }
+
+
         try (ZipInputStream input = new ZipInputStream(new FileInputStream(zipArchive))) {
             ZipEntry entry;
             int counter = 0;
@@ -99,7 +110,7 @@ public class ConformationGraph {
                 Integer firstIndex = firstIndices.get(name);
                 Integer secondIndex = secondIndices.get(name);
                 if (firstIndex != null && secondIndex != null) {
-                    File file = new File("temp-" + counter++);
+                    File file = new File("temp/temp-" + counter++);
                     file.deleteOnExit();
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         byte[] buf = new byte[2048];
