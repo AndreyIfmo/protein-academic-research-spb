@@ -2,6 +2,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
+import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,12 +20,23 @@ public class VertexEdgeAnalyzer {
         return new RMSDDistance().distance(chain1, chain2);
     }
 
+    public static double RMSD(Chain chain1, ConformationChain chain2) throws StructureException {
+        Structure structure = chain2.getStructure();
+        double min = Double.MAX_VALUE;
+        for (int i=0; i< structure.nrModels(); i++) {
+            min = Math.min(min, RMSD(chain1, structure.getModel(i).get(0)));
+        }
+        return min;
+    }
+
+
+
     public static void main(String[] args) throws IOException, StructureException {
         new VertexEdgeAnalyzer().run();
     }
 
     public void run() throws IOException, StructureException {
-        ConformationGraph cg = new ConformationGraph("2LJI_optim_costs.txt", "2LJI_optim.zip", "2LJI_optim/2LJI_optim%d_%d.pdb", 0);
+        ConformationGraph cg = PropertiesParser.getGraphData("2LJI.properties");
         int n = cg.graph.getN();
         Container result = new Container(n, 1.2);
         for (int i = 0; i < n; i++) {

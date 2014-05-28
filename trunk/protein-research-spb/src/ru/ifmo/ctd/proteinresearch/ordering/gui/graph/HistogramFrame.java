@@ -1,4 +1,4 @@
-package ru.ifmo.ctd.proteinresearch.ordering.gui;
+package ru.ifmo.ctd.proteinresearch.ordering.gui.graph;
 
 /**
  * Created by Andrey Sokolov on 16.05.2014.
