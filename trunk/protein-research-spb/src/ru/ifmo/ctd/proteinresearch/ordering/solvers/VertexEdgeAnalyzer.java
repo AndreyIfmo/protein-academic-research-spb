@@ -36,26 +36,28 @@ public class VertexEdgeAnalyzer {
     }
 
     public void run() throws IOException, StructureException {
-        ConformationGraph cg = PropertiesParser.getGraphData("2LJI.properties");
+        ConformationGraph cg = PropertiesParser.getGraphData("1BTB.properties");
         int n = cg.graph.getN();
         Container result = new Container(n, 1.2);
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = 0; k < n; k++) {
                     if ((k != i) && (k != j)) {
-                        Structure chainStructure = cg.getChain(i, j).getStructure();
-                        Chain baseChain = getBasicChain(cg, k);
-                        int numberOfModelsInChain = chainStructure.nrModels();
-                        for (int it = 0; it < numberOfModelsInChain; it++) {
-                            List<Chain> chainList = chainStructure.getModel(it);
-                            int cou = 0;
-                            for (Chain chainIt : chainList) {
-                                double rmsd = RMSD(chainIt, baseChain);
+                        if (cg.files[i][j]!=null) {
+                            Structure chainStructure = cg.getChain(i, j).getStructure();
+                            Chain baseChain = getBasicChain(cg, k);
+                            int numberOfModelsInChain = chainStructure.nrModels();
+                            for (int it = 0; it < numberOfModelsInChain; it++) {
+                                List<Chain> chainList = chainStructure.getModel(it);
+                                int cou = 0;
+
+                                double rmsd = RMSD(chainList.get(0), baseChain);
                                 result.addResult(i, j, k, rmsd);
                                 cou++;
                                 if (cou > 1) {
                                     throw new AssertionError("More than one chain");
                                 }
+
                             }
                         }
                     }
@@ -86,13 +88,27 @@ public class VertexEdgeAnalyzer {
         }
         System.out.println("baseMatrix");
         double[][] rmsdMatrix = new double[n][n];
+        double min = Double.MAX_VALUE;
+        double mean=0;
         for (int i = 0; i < n; i++) {
+            double meanI=0;
             for (int j = 0; j < n; j++) {
+
                 rmsdMatrix[i][j] = RMSD(getBasicChain(cg, i), getBasicChain(cg, j));
-                System.out.print((rmsdMatrix[i][j] < 1.0e-10 ? 0 : rmsdMatrix[i][j]) + " ");
+                if (rmsdMatrix[i][j] < 1.0e-10) {
+                    System.out.print(0 + " ");
+                    meanI+=rmsdMatrix[i][j];
+                } else {
+                    System.out.print(rmsdMatrix[i][j] + " ");
+                    min = Math.min(rmsdMatrix[i][j], min);
+                    meanI+=rmsdMatrix[i][j];
+                }
             }
+            mean += meanI/n;
             System.out.println();
         }
+        System.out.println(min);
+        System.out.println(mean/n);
 
     }
 
