@@ -68,7 +68,7 @@ public class SimpleSampling {
     }
 
     public static void main(String[] args) throws IOException {
-        SimpleSampling simpleSampling = new SimpleSampling("2LJI_optim_costs.txt");
+        SimpleSampling simpleSampling = new SimpleSampling("matrixes\\1BTB.txt");
         simpleSampling.run();
     }
 

@@ -15,6 +15,11 @@ import java.util.*;
  */
 public class EdgeSwitchLimitationSolver {
     public ConformationGraph cg;
+
+    public boolean isBanned(int first, int second) {
+        return banned[first][second]||banned[second][first];
+    }
+
     boolean[][] banned;
     boolean[][][] mayConnect;
     private int[][][] paths;
@@ -129,7 +134,6 @@ public class EdgeSwitchLimitationSolver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // cg.cleanUp();
         }
 
     }
@@ -139,7 +143,6 @@ public class EdgeSwitchLimitationSolver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // cg.cleanUp();
         }
 
     }
@@ -150,14 +153,13 @@ public class EdgeSwitchLimitationSolver {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            cg.cleanUp();
         }
 
     }
 
 
     public void run(double border, List<Integer> bannedVertices) throws Exception {
-        banned = getBannedEdges(getN());
+        banned = calculateBannedEdges(getN());
         for (Integer it:bannedVertices) {
             for (int i=0; i<banned.length; i++) {
                 banned[it][i] = true;
@@ -167,12 +169,12 @@ public class EdgeSwitchLimitationSolver {
         f.apply(border);
     }
     public void run(double border) throws Exception {
-        banned = getBannedEdges(getN());
+        banned = calculateBannedEdges(getN());
         f.apply(border);
     }
 
     public void run(double minDiffValue, double maxDiffValue) throws Exception {
-        banned = getBannedEdges(getN());
+        banned = calculateBannedEdges(getN());
         findOptimalValue(minDiffValue, maxDiffValue, f);
     }
 
@@ -184,7 +186,7 @@ public class EdgeSwitchLimitationSolver {
       //  System.out.println(f.apply(border));
     }
 
-    private boolean[][] getBannedEdges(int n) throws Exception {
+    private boolean[][] calculateBannedEdges(int n) throws Exception {
         banned = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
