@@ -109,6 +109,9 @@ public class VertexEdgeAnalyzer {
         }
         System.out.println(min);
         System.out.println(mean/n);
+        for (int i=1; i<rmsdMatrix.length; i++) {
+            System.out.println(rmsdMatrix[i-1][i]);
+        }
 
     }
 
