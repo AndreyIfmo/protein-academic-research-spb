@@ -33,7 +33,7 @@ public class PureClusterizerRunner {
                 System.out.println(counter++ + ", " + Arrays.toString(it.chainSet.toArray()));
             }
 
-        }
+        }/*
         System.out.println("FUZZY: ");
         double[][] matrix = GraphParser.parseGraphMatrix(name);
         for (int numOfClusters = 2; numOfClusters <= 3; numOfClusters++) {
@@ -49,7 +49,7 @@ public class PureClusterizerRunner {
                 System.out.println();
             }
 
-        }
+        }*/
         System.out.println("Sampling");
         SimpleSampling simpleSampling = new SimpleSampling(name);
         simpleSampling.run();

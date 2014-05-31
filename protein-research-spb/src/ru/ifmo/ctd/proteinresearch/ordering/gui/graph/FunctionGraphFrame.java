@@ -8,13 +8,15 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import ru.ifmo.ctd.proteinresearch.ordering.experiments.Experiment1;
 
 import java.awt.*;
-import java.awt.geom.Arc2D;
 import java.io.File;
+import java.util.Arrays;
 
 public class FunctionGraphFrame extends JFrame {
 
@@ -32,28 +34,33 @@ public class FunctionGraphFrame extends JFrame {
         new FunctionGraphFrame();
     }
 
-    String fileName = "2LJI";
-
+    String fileName = "2M2Y";
+    static double graphValue(double d) {
+        return Math.abs(d)<0.001?0:0;
+    }
     public JPanel createDemoPanelForEdges(Experiment1.Answer answer) throws Exception {
         XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries edgesData = new XYSeries((Comparable) (new Double(0.0)));
-        XYSeries bannedEdgesData = new XYSeries((Comparable) (new Double(0.0)));
+        XYSeries edgesData = new XYSeries("Edges");
+        XYSeries bannedEdgesData = new XYSeries("Banned Edges");
 
-        XYSeries verticesData = new XYSeries((Comparable) (new Double(0.0)));
+        XYSeries verticesData = new XYSeries("Vertices");
 
 
-        for (int i = 1; i < answer.rangesBetweenReferenceAndEdges.length; i++) {
+        for (int i = 0; i < answer.rangesBetweenReferenceAndEdges.length; i++) {
             System.out.println(i + " " + answer.rangesBetweenReferenceAndEdges[i] + " " +i + " " + answer.rangesBetweenReferenceAndVertices[i]);
-            edgesData.add(i + 1, answer.rangesBetweenReferenceAndEdges[i]);
-            verticesData.add(i+1, answer.rangesBetweenReferenceAndVertices[i]);
+            edgesData.add(i + 1, graphValue(answer.rangesBetweenReferenceAndEdges[i]));
+            verticesData.add(i+1, graphValue(answer.rangesBetweenReferenceAndVertices[i]));
             if (answer.rangesBetweenReferenceAndBannedEdges[i]< Double.MAX_VALUE) {
-                bannedEdgesData.add(i + 1, answer.rangesBetweenReferenceAndBannedEdges[i]);
+                bannedEdgesData.add(i + 1, graphValue(answer.rangesBetweenReferenceAndBannedEdges[i]));
             }
         }
 
         dataset.addSeries(edgesData);
         dataset.addSeries(verticesData);
         dataset.addSeries(bannedEdgesData);
+        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndEdges));
+        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndVertices));
+        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndBannedEdges));
 
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "RMSD GRAPH",  // title
@@ -61,7 +68,7 @@ public class FunctionGraphFrame extends JFrame {
                 "RMSD",   // y-axis label
                 dataset,            // data
                 org.jfree.chart.plot.PlotOrientation.VERTICAL,
-                false,               // no legend
+                true,
                 true,               // tooltips
                 false               // no URLs
         );
@@ -71,30 +78,6 @@ public class FunctionGraphFrame extends JFrame {
         return new ChartPanel(chart);
     }
 
-    public JPanel createDemoPanelForVertices(Experiment1.Answer answer) throws Exception {
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries xys = new XYSeries((Comparable) (new Double(0.0)));
 
-        for (int i = 1; i < answer.rangesBetweenReferenceAndVertices.length; i++) {
-            System.out.println(i + " " + answer.rangesBetweenReferenceAndVertices[i]);
-            xys.add(i + 1, answer.rangesBetweenReferenceAndVertices[i]);
-        }
-
-        dataset.addSeries(xys);
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "RMSD GRAPH",  // title
-                "Number of used vertices",             // x-axis label
-                "RMSD",   // y-axis label
-                dataset,            // data
-                org.jfree.chart.plot.PlotOrientation.VERTICAL,
-                false,               // no legend
-                true,               // tooltips
-                false               // no URLs
-        );
-
-
-        ChartUtilities.saveChartAsPNG(new File(fileName + ".png"), chart, 800, 800);
-        return new ChartPanel(chart);
-    }
 
 } //end class TickTest

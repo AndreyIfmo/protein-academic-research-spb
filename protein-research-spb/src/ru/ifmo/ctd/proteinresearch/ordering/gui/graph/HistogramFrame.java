@@ -49,7 +49,7 @@ public class HistogramFrame extends ApplicationFrame {
      * @return A sample dataset.
      */
     private IntervalXYDataset createDataset(int [] distrbution) {
-        final XYSeries series = new XYSeries("base Conformation distribution");
+        final XYSeries series = new XYSeries("Распределение");
         for (int i=0; i<distrbution.length; i++) {
             series.add(i,distrbution[i]);
         }
@@ -66,10 +66,10 @@ public class HistogramFrame extends ApplicationFrame {
      */
     private JFreeChart createChart(IntervalXYDataset dataset) {
         final JFreeChart chart = ChartFactory.createXYBarChart(
-                "XY Series Demo",
-                "X",
+                "Количество попаданий вершины, как промежуточной на траекторию движения",
+                "Номер Вершины",
                 false,
-                "Y",
+                "",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
