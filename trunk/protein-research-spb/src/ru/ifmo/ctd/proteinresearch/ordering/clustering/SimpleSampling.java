@@ -30,7 +30,9 @@ public class SimpleSampling {
     public SimpleSampling(String fileName) throws IOException {
         this.fileName = fileName;
         this.distanceMatrix = GraphParser.parseGraphMatrix(fileName);
+        GraphParser.floyd(distanceMatrix);
     }
+
 
     /**
      * @return clusterCenters

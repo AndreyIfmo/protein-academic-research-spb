@@ -10,7 +10,7 @@ import java.io.IOException;
  *         Time: 0:48
  */
 public class MatrixDistance {
-    double[][] matrix;
+    public double[][] matrix;
 
     public MatrixDistance(String pathName) throws IOException {
         matrix = GraphParser.parseGraphMatrix(pathName);

@@ -16,7 +16,16 @@ public class GraphParser {
         double[][] edges = parseGraphMatrix(fileName);
         return new MatrixGraph(edges.length, edges);
     }
+    public static void floyd(double[][] matrix) {
+        int n= matrix.length;
 
+        for (int k = 1;  k< n; k++) {
+        for (int i = 1;  i<n; i++) {
+        for (int j = 1;  j < n; j++) {
+            matrix[i][j] = Math.min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+        }}}
+
+    }
     public static double[][] parseGraphMatrix(String fileName) throws IOException {
         String curString;
         BufferedReader br = new BufferedReader(new FileReader(fileName));
