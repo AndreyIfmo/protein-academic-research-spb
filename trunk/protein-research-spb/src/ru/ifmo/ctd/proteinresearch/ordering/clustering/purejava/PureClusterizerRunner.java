@@ -1,29 +1,28 @@
 package ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava;
 
-import org.biojava.bio.structure.Chain;
+
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.SimpleSampling;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.MatrixDistance;
-import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
-import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.TMDistance;
-import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.fuzzy.FuzzyClusterizer;
-import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.VertexEdgeAnalyzer;
 
-import java.util.ArrayList;
+import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
+
+
+
 import java.util.Arrays;
-import java.util.List;
+
 
 /**
  * Created by Andrey on 25.12.13.
  */
 public class PureClusterizerRunner {
-    public void run(String name) throws Exception {
+    public void run(String name, String propertiesFile) throws Exception {
 
         System.out.println("File: " + name);
         System.out.println("MST");
-        MatrixDistance distanceMatrix = new MatrixDistance(name);
+        EdgeSwitchLimitationSolver esls = new EdgeSwitchLimitationSolver(propertiesFile);
+        boolean[][] banned = esls.getBadFiles(esls.getN(), new boolean[esls.getN()][esls.getN()]);
+
+        MatrixDistance distanceMatrix = new MatrixDistance(name, banned);
         for (int i = 2; i < 7; i++) {
 
             StructuralClusterizer clusterizer3 = new MSTClusterizer(i, distanceMatrix);
@@ -56,8 +55,8 @@ public class PureClusterizerRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new PureClusterizerRunner().run("matrixes/1BTB.txt");
-        new PureClusterizerRunner().run("matrixes/2LJI_optim_costs.txt");
-       new PureClusterizerRunner().run("matrixes/2m2y.txt");
+    //    new PureClusterizerRunner().run("matrixes/1BTB.txt");
+        new PureClusterizerRunner().run("matrixes/2LJI_optim_costs.txt","2LJI.properties");
+      // new PureClusterizerRunner().run("matrixes/2m2y.txt");
     }
 }

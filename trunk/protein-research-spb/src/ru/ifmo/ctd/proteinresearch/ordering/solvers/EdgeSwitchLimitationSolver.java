@@ -57,9 +57,9 @@ public class EdgeSwitchLimitationSolver {
         final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2M2Y.properties");
         edgeSwitchLimitationSolver.run(0.25000057630667943);
 
-        edgeSwitchLimitationSolver.recalculate();
+//        edgeSwitchLimitationSolver.recalculate();
     }
-
+/*
     private void recalculate() throws Exception {
         final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = this;
         f2 = new Function<Double, Double>() {
@@ -76,7 +76,7 @@ public class EdgeSwitchLimitationSolver {
         };
         f2.apply(8.0);
 
-    }
+    }*/
 
     public List<Integer> sortedList(int[] distribution) {
         List<IntPair> sortedList = new ArrayList<>();
@@ -186,7 +186,7 @@ public class EdgeSwitchLimitationSolver {
       //  System.out.println(f.apply(border));
     }
 
-    private boolean[][] calculateBannedEdges(int n) throws Exception {
+    public boolean[][] calculateBannedEdges(int n) throws Exception {
         banned = new boolean[n][n];
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -200,19 +200,24 @@ public class EdgeSwitchLimitationSolver {
             }
         }
 
+        getBadFiles(n, banned);
+        return banned;
+    }
+
+    public boolean[][] getBadFiles(int n, boolean[][] banned) throws Exception {
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
                 try {
                     if (cg.files[i][j] == null) {
                         banned[i][j] = true;
                         banned[j][i] = true;
-                        //System.out.println(i + "<->" + j + "Not computed");
+                        System.out.println(i + "<->" + j + "Not computed");
                         continue;
                     }
                     if (IntersectionUtils.checkFile(cg.files[i][j].getPath()) > 0) {
                         banned[i][j] = true;
                         banned[j][i] = true;
-                        //System.out.println(i + " <-> " + j + " self-intersected");
+                        System.out.println(i + " <-> " + j + " self-intersected");
                     }
                 } catch (NullPointerException npe) {
                     //System.out.println(i + " " + j);
@@ -220,8 +225,7 @@ public class EdgeSwitchLimitationSolver {
                 }
 
             }
-        }
-        return banned;
+        }return banned;
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
