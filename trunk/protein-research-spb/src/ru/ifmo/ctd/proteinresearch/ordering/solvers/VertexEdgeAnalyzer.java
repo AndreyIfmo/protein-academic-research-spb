@@ -3,12 +3,10 @@ package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 import org.biojava.bio.structure.*;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
 import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
+import ru.ifmo.ctd.proteinresearch.ordering.util.SinCos;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}
@@ -19,6 +17,17 @@ public class VertexEdgeAnalyzer {
     public static double RMSD(Chain chain1, Chain chain2) throws StructureException {
         return new RMSDDistance().distance(chain1, chain2);
     }
+    public static double[] torsionAngleDiff(Chain chain1, Chain chain2, double norm) throws Exception {
+        List<Atom> atoms1 = EvaluatedChain.getAtoms(chain1);
+        List<SinCos> torsionAngles1 = EvaluatedChain.getTorsionAngles(atoms1);
+        List<Atom> atoms2 = EvaluatedChain.getAtoms(chain2);
+        List<SinCos> torsionAngles2 = EvaluatedChain.getTorsionAngles(atoms2);
+        double[] angles = new double[torsionAngles1.size()];
+        for (int i=0; i< torsionAngles1.size(); i++) {
+            angles[i]=(torsionAngles2.get(i).angle-torsionAngles1.get(i).angle)/norm;
+        }
+        return angles;
+    }
 
     public static double RMSD(Chain chain1, ConformationChain chain2) throws StructureException {
         Structure structure = chain2.getStructure();
@@ -27,6 +36,29 @@ public class VertexEdgeAnalyzer {
             min = Math.min(min, RMSD(chain1, structure.getModel(i).get(0)));
         }
         return min;
+    }
+
+    public static double[] torsionAngleDiff(ConformationChain chain, double weight, int n) throws Exception {
+        Structure structure = chain.getStructure();
+        List<Atom> atoms1 = EvaluatedChain.getAtoms(structure.getModel(0).get(0));
+        List<SinCos> torsionAngles1 = EvaluatedChain.getTorsionAngles(atoms1);
+        int size = torsionAngles1.size();
+        double[] maxDiff = new double[size];
+        double[] minDiff = new double[size];
+        Arrays.fill(maxDiff, Double.MIN_VALUE);
+        Arrays.fill(minDiff, Double.MAX_VALUE);
+        for (int i = 1; i < structure.nrModels(); i++) {
+            double[] temp = torsionAngleDiff(structure.getModel(i - 1).get(0), structure.getModel(i).get(0), weight / n);
+            for (int j = 0; j < temp.length; j++) {
+                maxDiff[j] = Math.max(maxDiff[j], temp[j]);
+                minDiff[j] = Math.min(minDiff[j], temp[j]);
+            }
+        }
+        double[] answer = new double[maxDiff.length];
+        for (int i = 0; i < maxDiff.length; i++) {
+            answer[i] = maxDiff[i] - minDiff[i];
+        }
+        return answer;
     }
 
 
