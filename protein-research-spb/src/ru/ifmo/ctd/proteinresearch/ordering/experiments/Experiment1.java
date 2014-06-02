@@ -45,6 +45,7 @@ public class Experiment1 {
         for (int i = 0; i < esls.getN(); i++) {
             bannedVertices.remove(0);
             esls.run(thresoldValue, bannedVertices);
+            int numberOfModelsonTheEdge= esls.cg.getChain(0,1).getStructure().nrModels();
             int[][][] paths = esls.getPaths();
             double minEdge = Double.MAX_VALUE;
             double minVertex = Double.MAX_VALUE;
@@ -54,12 +55,16 @@ public class Experiment1 {
                     int[] path = paths[j][k];
                     if (path != null) {
                         ConformationChain edge = esls.cg.forPath(new Path(path, Double.NaN));
-                        minEdge = Math.min(minEdge, VertexEdgeAnalyzer.RMSD(reference, edge));
+                        Structure structure = edge.getStructure();
+
+                        if (structure.nrModels()>0) {
+                            minEdge = Math.min(minEdge, VertexEdgeAnalyzer.RMSD(reference, structure.getModel(structure.nrModels() / 2).get(0)));
+                        }
                         minVertex = Math.min(minVertex, VertexEdgeAnalyzer.RMSD(reference, VertexEdgeAnalyzer.getBasicChain(esls.cg, j)));
                         minVertex = Math.min(minVertex, VertexEdgeAnalyzer.RMSD(reference, VertexEdgeAnalyzer.getBasicChain(esls.cg, k)));
 
                         if (esls.isBanned(j, k)) {
-                            Structure structure = edge.getStructure();
+
                             minBannedEdge = Math.min(minBannedEdge, VertexEdgeAnalyzer.RMSD(reference, structure.getModel(structure.nrModels() / 2).get(0)));
                         }
                     }
@@ -109,7 +114,7 @@ public class Experiment1 {
     }
 
     public static void main(String[] args) throws Exception {
-        new Experiment1().runEdges("1BTB.properties");
+        new Experiment1().runEdges("2LJI.properties");
     }
 
 

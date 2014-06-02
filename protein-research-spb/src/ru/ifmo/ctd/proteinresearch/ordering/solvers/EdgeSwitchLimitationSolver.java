@@ -133,7 +133,6 @@ public class EdgeSwitchLimitationSolver {
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
         }
 
     }
@@ -142,7 +141,6 @@ public class EdgeSwitchLimitationSolver {
             cg = PropertiesParser.getGraphData(propertiesFileName);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
         }
 
     }
@@ -152,7 +150,6 @@ public class EdgeSwitchLimitationSolver {
             cg = new ConformationGraph(matrixFileName, zipArchive, fileNamePattern, 0);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
         }
 
     }
@@ -188,6 +185,7 @@ public class EdgeSwitchLimitationSolver {
 
     public boolean[][] calculateBannedEdges(int n) throws Exception {
         banned = new boolean[n][n];
+        int counter = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 banned[i][j] = false;
@@ -195,16 +193,18 @@ public class EdgeSwitchLimitationSolver {
                     banned[i][j] = banned[i][j] || !cg.graph.hasEdge(i, j) || cg.graph.getEdgeWeight(i, j) > 2 * (cg.graph.getEdgeWeight(i, k) + cg.graph.getEdgeWeight(k, j));
                 }
                 if (banned[i][j]) {
+                    counter++;
                     //System.out.println(i + " <-> " + j + " banned");
                 }
             }
         }
-
+        System.out.println(counter);
         getBadFiles(n, banned);
         return banned;
     }
 
     public boolean[][] getBadFiles(int n, boolean[][] banned) throws Exception {
+        int selfIntersectedCounter = 0;
         for (int i = 0; i < n; ++i) {
             for (int j = i + 1; j < n; ++j) {
                 try {
@@ -218,6 +218,7 @@ public class EdgeSwitchLimitationSolver {
                         banned[i][j] = true;
                         banned[j][i] = true;
                         System.out.println(i + " <-> " + j + " self-intersected");
+                        selfIntersectedCounter++;
                     }
                 } catch (NullPointerException npe) {
                     //System.out.println(i + " " + j);
@@ -225,7 +226,9 @@ public class EdgeSwitchLimitationSolver {
                 }
 
             }
-        }return banned;
+        }
+        System.out.println("bad-intersected: " +selfIntersectedCounter);
+        return banned;
     }
 
     private void calculatePaths(int n, boolean[][] banned, boolean[][][] mayConnect) {
@@ -328,6 +331,7 @@ public class EdgeSwitchLimitationSolver {
     }
 
     private void evaluateMayConnectMatrix(int n, boolean[][] banned, boolean[][][] mayConnect, double thresold) throws StructureException {
+        int counter = 0;
         for (int vertex = 0; vertex < n; ++vertex) {
             double[][] d = new double[n][];
             int size = -1;
@@ -382,11 +386,14 @@ public class EdgeSwitchLimitationSolver {
 
                     if (sim[i][j] <= thresold && i != j && i != vertex && j != vertex) {
                         mayConnect[vertex][i][j] = true;
+                    } else {
+                        counter++;
                     }
                 }
                 //   System.out.println();
             }
         }
+        System.out.println("NUMBEROFBANNED: " + counter);
     }
 
     public IntPair findMaxShortestPath(int n) throws StructureException, FileNotFoundException {

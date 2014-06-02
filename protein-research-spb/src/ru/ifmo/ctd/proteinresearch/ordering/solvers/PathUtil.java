@@ -95,7 +95,7 @@ public class PathUtil {
     }
 
     public void run() throws Exception {
-        ConformationGraph cg = PropertiesParser.getGraphData("1BTB.properties");
+        ConformationGraph cg = PropertiesParser.getGraphData("2LJI.properties");
         ConformationChain cc = cg.getChain(0, 1);
         System.out.print(Arrays.toString(EvaluatedChain.getTorsionAngles(EvaluatedChain.getAtoms(cc.getStructure().getChain(0))).toArray()));
         buildPDB(cg.matrixFileName, cg.zipArchive, cg.fileNamePattern, cg.indexOffset, "Result_optim.pdb", new Path(
