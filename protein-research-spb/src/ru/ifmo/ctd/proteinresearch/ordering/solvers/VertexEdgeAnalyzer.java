@@ -24,7 +24,7 @@ public class VertexEdgeAnalyzer {
         List<SinCos> torsionAngles2 = EvaluatedChain.getTorsionAngles(atoms2);
         double[] angles = new double[torsionAngles1.size()];
         for (int i=0; i< torsionAngles1.size(); i++) {
-            angles[i]=(torsionAngles2.get(i).angle-torsionAngles1.get(i).angle)/norm;
+            angles[i]=(torsionAngles2.get(i).sub(torsionAngles1.get(i)).angle)/norm;
         }
         return angles;
     }
@@ -38,27 +38,31 @@ public class VertexEdgeAnalyzer {
         return min;
     }
 
-    public static double[] torsionAngleDiff(ConformationChain chain, double weight, int n) throws Exception {
+    public static double[] torsionAngleDiff(ConformationChain chain, double[] norm, int n) throws Exception {
         Structure structure = chain.getStructure();
-        List<Atom> atoms1 = EvaluatedChain.getAtoms(structure.getModel(0).get(0));
-        List<SinCos> torsionAngles1 = EvaluatedChain.getTorsionAngles(atoms1);
-        int size = torsionAngles1.size();
-        double[] maxDiff = new double[size];
-        double[] minDiff = new double[size];
-        Arrays.fill(maxDiff, Double.MIN_VALUE);
-        Arrays.fill(minDiff, Double.MAX_VALUE);
-        for (int i = 1; i < structure.nrModels(); i++) {
-            double[] temp = torsionAngleDiff(structure.getModel(i - 1).get(0), structure.getModel(i).get(0), weight / n);
-            for (int j = 0; j < temp.length; j++) {
-                maxDiff[j] = Math.max(maxDiff[j], temp[j]);
-                minDiff[j] = Math.min(minDiff[j], temp[j]);
+        if (structure.nrModels()>0) {
+            List<Atom> atoms1 = EvaluatedChain.getAtoms(structure.getModel(0).get(0));
+            List<SinCos> torsionAngles1 = EvaluatedChain.getTorsionAngles(atoms1);
+            int size = torsionAngles1.size();
+            double[] maxDiff = new double[size];
+            double[] minDiff = new double[size];
+            Arrays.fill(maxDiff, Double.MIN_VALUE);
+            Arrays.fill(minDiff, Double.MAX_VALUE);
+            for (int i = 1; i < structure.nrModels(); i++) {
+                double[] temp = torsionAngleDiff(structure.getModel(i - 1).get(0), structure.getModel(i).get(0), norm[(i-1)/n]);
+
+                for (int j = 0; j < temp.length; j++) {
+                    maxDiff[j] = Math.max(maxDiff[j], temp[j]);
+                    minDiff[j] = Math.min(minDiff[j], temp[j]);
+                }
             }
+            double[] answer = new double[maxDiff.length];
+            for (int i = 0; i < maxDiff.length; i++) {
+                answer[i] = maxDiff[i] - minDiff[i];
+            }
+            return answer;
         }
-        double[] answer = new double[maxDiff.length];
-        for (int i = 0; i < maxDiff.length; i++) {
-            answer[i] = maxDiff[i] - minDiff[i];
-        }
-        return answer;
+        return new double[0];
     }
 
 
