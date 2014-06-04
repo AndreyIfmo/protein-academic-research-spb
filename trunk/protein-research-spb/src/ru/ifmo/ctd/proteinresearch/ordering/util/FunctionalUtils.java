@@ -18,4 +18,12 @@ public class FunctionalUtils {
         }
         return list;
     }
+
+    public static double sum(double [] arg) {
+        double sum = 0;
+        for (int i=0; i<arg.length; i++) {
+            sum +=arg[i];
+        }
+        return sum;
+    }
 }

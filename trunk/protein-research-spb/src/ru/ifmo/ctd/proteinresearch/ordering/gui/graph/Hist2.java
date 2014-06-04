@@ -5,8 +5,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui.graph;
  */
 
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 
 import org.jfree.chart.ChartFactory;
@@ -24,10 +23,6 @@ import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 import ru.ifmo.ctd.proteinresearch.ordering.experiments.AngleExperiment;
 
-/**
- * This demo shows a simple bar chart created using the {@link XYSeriesCollection} dataset.
- *
- */
 public class Hist2 extends ApplicationFrame {
 
     /**
@@ -45,13 +40,18 @@ public class Hist2 extends ApplicationFrame {
     }
 
     public static void main(String[] args) throws Exception {
-        double[] distrbution = AngleExperiment.runEdges("2LJI.properties", 8, 10);
+
+        double[] distrbution = AngleExperiment.runEdges("2LJI.properties", 1, 3);/*
+        for (int i=0; i<distrbution.length; i++) {
+            distrbution[i] = distrbution[i]>3?distrbution[i]:0;
+        }*/
         Hist2 frame = new Hist2("Hi", distrbution);
         double sum = 0;
         for (double aDistrbution : distrbution) {
             sum += aDistrbution;
         }
         System.out.print(sum);
+        frame.setSize(new Dimension(800,600));
         frame.setVisible(true);
     }
 
@@ -77,7 +77,7 @@ public class Hist2 extends ApplicationFrame {
      */
     private JFreeChart createChart(IntervalXYDataset dataset) {
         final JFreeChart chart = ChartFactory.createXYBarChart(
-                "Количество попаданий вершины, как промежуточной на траекторию движения",
+                "Амплитуда улгов",
                 "Номер Вершины",
                 false,
                 "",
@@ -93,7 +93,7 @@ public class Hist2 extends ApplicationFrame {
         target.setLabelFont(new Font("SansSerif", Font.ITALIC, 11));
         target.setLabelAnchor(RectangleAnchor.LEFT);
         target.setLabelTextAnchor(TextAnchor.CENTER_LEFT);
-        target.setPaint(new Color(222, 222, 255, 128));
+        target.setPaint(new Color(255, 255, 255));
         plot.addRangeMarker(target, Layer.BACKGROUND);
         return chart;
     }

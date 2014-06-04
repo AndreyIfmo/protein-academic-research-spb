@@ -144,6 +144,20 @@ public class ConformationGraph {
         return rv;
     }
 
+    public double [] getAngleWeights(Path path) throws StructureException {
+        double [] weight = new double[path.vertices.length-1];
+
+        for (int i = 1; i < path.vertices.length; ++i) {
+            int from = path.vertices[i - 1];
+            int to = path.vertices[i];
+            weight[i-1] = graph.getEdgeWeight(from, to);
+            int numberOfModels = chains[from][to].getStructure().nrModels();
+            weight[i-1]/=numberOfModels;
+        }
+        return weight;
+    }
+
+
 
     public void cleanUp() {
         for (File[] filesIt : files) {
