@@ -8,7 +8,7 @@ import java.util.Set;
  * Created by Andrey on 24.12.13.
  */
 public class Cluster<T> {
-    Set<T> chainSet;
+    public Set<T> chainSet;
 
     public Cluster() {
         this.chainSet = new HashSet<T>();

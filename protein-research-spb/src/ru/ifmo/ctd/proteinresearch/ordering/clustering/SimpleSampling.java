@@ -1,6 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.clustering;
 
 import com.sun.istack.internal.Nullable;
+import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.Cluster;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
 
 import java.io.IOException;
@@ -71,21 +72,25 @@ public class SimpleSampling {
 
     public static void main(String[] args) throws IOException {
         SimpleSampling simpleSampling = new SimpleSampling("matrixes\\1BTB.txt");
-        simpleSampling.run();
+        simpleSampling.run(4);
     }
 
-    public void run() {
+    public List<Cluster> run(int number) {
+        List<Cluster> clusters = new ArrayList<>();
         System.out.println("File: " + fileName);
-        List<ClusteringAnswer> evaluate = evaluate(4);
+        List<ClusteringAnswer> evaluate = evaluate(number);
         Object[] answer = evaluate.toArray();
         int counter = 0;
-        System.out.println(Arrays.toString(evaluate.get(0).centers));
-        for (List<Integer> it : getClusters(distanceMatrix, evaluate.get(0).centers)) {
+        ClusteringAnswer clusteringAnswer = evaluate.get(0);
+        System.out.println(Arrays.toString(clusteringAnswer.centers));
+        for (List<Integer> it : ClusteringAnswer.getClusters(distanceMatrix, clusteringAnswer.centers)) {
             for (Integer it1 : it) {
                 System.out.print(it1 + " ");
             }
             System.out.println();
-        }/*
+        }
+        return clusteringAnswer.toClusters(distanceMatrix);
+        /*
         System.out.print("===============================");
         for (Object it : answer) {
 
@@ -107,17 +112,6 @@ public class SimpleSampling {
             }
         }
         return minI;
-    }
-
-    public static List<Integer>[] getClusters(double[][] weights, int[] ans) {
-        List<Integer>[] clusters = new List[ans.length];
-        for (int i = 0; i < clusters.length; i++) {
-            clusters[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < weights.length; i++) {
-            clusters[closes(weights, i, ans)].add(i);
-        }
-        return clusters;
     }
 
 }

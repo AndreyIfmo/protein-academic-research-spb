@@ -29,7 +29,7 @@ public class FunctionGraphFrame extends JFrame {
         new FunctionGraphFrame();
     }
 
-    String fileName = "2LJI";
+    String fileName = "1BTB";
     static double graphValue(double d) {
         return Math.abs(d)<0.001?0:d;
     }

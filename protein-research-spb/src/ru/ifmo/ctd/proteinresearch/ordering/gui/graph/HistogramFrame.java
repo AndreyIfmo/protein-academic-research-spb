@@ -7,9 +7,12 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui.graph;
 
         import java.awt.Color;
         import java.awt.Font;
+        import java.io.File;
+        import java.io.IOException;
 
         import org.jfree.chart.ChartFactory;
         import org.jfree.chart.ChartPanel;
+        import org.jfree.chart.ChartUtilities;
         import org.jfree.chart.JFreeChart;
         import org.jfree.chart.plot.IntervalMarker;
         import org.jfree.chart.plot.PlotOrientation;
@@ -34,10 +37,11 @@ public class HistogramFrame extends ApplicationFrame {
      *
      * @param title  the frame title.
      */
-    public HistogramFrame(final String title, int[] distrbution) {
+    public HistogramFrame(final String title, int[] distrbution) throws IOException {
         super(title);
         IntervalXYDataset dataset = createDataset(distrbution);
         JFreeChart chart = createChart(dataset);
+        ChartUtilities.saveChartAsPNG(new File(title + ".png"), chart, 800, 800);
         final ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
         setContentPane(chartPanel);

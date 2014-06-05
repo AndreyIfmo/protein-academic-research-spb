@@ -54,8 +54,8 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2M2Y.properties");
-        edgeSwitchLimitationSolver.run(0.25000057630667943);
+        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2LJI.properties");
+        edgeSwitchLimitationSolver.run(0.001, 10);
 
 //        edgeSwitchLimitationSolver.recalculate();
     }
@@ -172,12 +172,12 @@ public class EdgeSwitchLimitationSolver {
 
     public void run(double minDiffValue, double maxDiffValue) throws Exception {
         banned = calculateBannedEdges(getN());
-        findOptimalValue(minDiffValue, maxDiffValue, f);
+        run(findOptimalValue(minDiffValue, maxDiffValue, f));
     }
 
-    private void findOptimalValue(double minDiffValue, double maxDiffValue, Function f) throws Exception {
+    private double findOptimalValue(double minDiffValue, double maxDiffValue, Function f) throws Exception {
         double delta = 0.0000001;
-        double border = OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 2);
+        return OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 15);
      //   System.out.println("Value: " + border);
       //  System.out.println("ANSWER");
       //  System.out.println(f.apply(border));

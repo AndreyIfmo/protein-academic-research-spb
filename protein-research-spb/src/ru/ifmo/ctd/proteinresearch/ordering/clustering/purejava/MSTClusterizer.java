@@ -32,6 +32,8 @@ public class MSTClusterizer implements StructuralClusterizer {
         distanceMatrix = new double[operator.getN()][operator.getN()];
     }
 
+
+
     public MSTClusterizer(int numberOfClusters, Distance operator) {
         this.numberOfClusters = numberOfClusters;
         this.distance = operator;
