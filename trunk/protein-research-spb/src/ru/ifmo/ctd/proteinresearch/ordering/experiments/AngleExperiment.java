@@ -3,7 +3,6 @@ package ru.ifmo.ctd.proteinresearch.ordering.experiments;
 import org.biojava.bio.structure.Structure;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.VertexEdgeAnalyzer;
 import ru.ifmo.ctd.proteinresearch.ordering.util.FunctionalUtils;

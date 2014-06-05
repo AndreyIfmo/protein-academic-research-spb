@@ -3,7 +3,6 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui;
 import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 /**

@@ -6,11 +6,9 @@ import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.PathUtil;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 
 /**

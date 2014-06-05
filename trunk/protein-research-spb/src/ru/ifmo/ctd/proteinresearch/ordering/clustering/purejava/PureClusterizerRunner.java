@@ -4,11 +4,7 @@ package ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.ClusteringMarksUtils;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.SimpleSampling;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.MatrixDistance;
-
-import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.EdgeSwitchLimitationSolver;
-
-
 
 import java.util.Arrays;
 import java.util.List;

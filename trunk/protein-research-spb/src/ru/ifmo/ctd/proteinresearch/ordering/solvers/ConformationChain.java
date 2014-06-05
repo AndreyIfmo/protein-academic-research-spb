@@ -1,7 +1,7 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
 import org.biojava.bio.structure.*;
-import org.biojava.bio.structure.jama.*;
+import org.biojava.bio.structure.jama.Matrix;
 
 import java.util.*;
 

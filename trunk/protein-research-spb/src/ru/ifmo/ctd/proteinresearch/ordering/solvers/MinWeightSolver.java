@@ -1,9 +1,13 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Edge;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.MatrixGraph;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Maxim Buzdalov

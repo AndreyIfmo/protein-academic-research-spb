@@ -1,13 +1,17 @@
 package ru.ifmo.ctd.proteinresearch.ordering.clustering.weka;
 
-import org.biojava.bio.structure.*;
+import org.biojava.bio.structure.Chain;
+import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.StructureException;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.ClusteringUtils;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.VertexEdgeAnalyzer;
 import weka.clusterers.HierarchicalClusterer;
-import weka.core.*;
-
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -7,18 +7,16 @@ You can get it from http://jmol.sourceforge.net
 
 */
 
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-
 import org.jmol.adapter.smarter.SmarterJmolAdapter;
 import org.jmol.api.JmolAdapter;
 import org.jmol.api.JmolSimpleViewer;
 import org.jmol.api.JmolViewer;
 import ru.ifmo.ctd.proteinresearch.ordering.gui.JmolExtensionPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class MainApplet {

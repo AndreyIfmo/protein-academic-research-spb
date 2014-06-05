@@ -1,9 +1,8 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import weka.core.pmml.Array;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author Andrey Sokolov {@link "mailto:ansokolmail@gmail.com"}

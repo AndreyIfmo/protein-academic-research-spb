@@ -1,12 +1,15 @@
-import java.io.*;
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureImpl;
 import org.biojava.bio.structure.io.PDBFileReader;
+import ru.ifmo.ctd.proteinresearch.intersections.CalcEqualRectangularCuboidNew;
+import ru.ifmo.ctd.proteinresearch.intersections.ChainSequence;
+import ru.ifmo.ctd.proteinresearch.intersections.Point;
+import ru.ifmo.ctd.proteinresearch.intersections.PointsChain;
 
-import ru.ifmo.ctd.proteinresearch.intersections.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * @author Smetannikov

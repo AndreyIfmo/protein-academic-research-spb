@@ -1,8 +1,9 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 /**

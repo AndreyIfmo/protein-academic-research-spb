@@ -12,7 +12,6 @@ import ru.ifmo.ctd.proteinresearch.ordering.experiments.Experiment1;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.Arrays;
 
 public class FunctionGraphFrame2 extends JFrame {
 

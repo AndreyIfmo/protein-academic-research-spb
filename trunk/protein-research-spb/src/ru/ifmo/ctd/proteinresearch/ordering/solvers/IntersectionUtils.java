@@ -1,15 +1,15 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
+import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.io.PDBFileReader;
+import ru.ifmo.ctd.proteinresearch.intersections.CalcRectangularTreeNew;
+import ru.ifmo.ctd.proteinresearch.intersections.ChainSequence;
+import ru.ifmo.ctd.proteinresearch.intersections.Point;
+import ru.ifmo.ctd.proteinresearch.intersections.PointsChain;
+
 import java.io.*;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import org.biojava.bio.structure.Structure;
-import org.biojava.bio.structure.io.PDBFileReader;
-
-import ru.ifmo.ctd.proteinresearch.intersections.*;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationGraph;
 
 
 public class IntersectionUtils {
