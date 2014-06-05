@@ -1,6 +1,6 @@
 package ru.ifmo.ctd.proteinresearch.ordering.graph;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * A class that is able to give the shortest series of paths

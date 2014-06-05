@@ -1,9 +1,12 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.ExactMinPathCoverage;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
 
 /**
  */

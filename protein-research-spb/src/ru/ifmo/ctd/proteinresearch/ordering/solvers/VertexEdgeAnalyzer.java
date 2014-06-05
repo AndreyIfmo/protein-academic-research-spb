@@ -1,6 +1,9 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import org.biojava.bio.structure.*;
+import org.biojava.bio.structure.Atom;
+import org.biojava.bio.structure.Chain;
+import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.StructureException;
 import ru.ifmo.ctd.proteinresearch.ordering.clustering.purejava.distance.RMSDDistance;
 import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 import ru.ifmo.ctd.proteinresearch.ordering.util.SinCos;

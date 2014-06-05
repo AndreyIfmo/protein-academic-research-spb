@@ -1,13 +1,17 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import org.biojava.bio.structure.*;
+import org.biojava.bio.structure.Atom;
+import org.biojava.bio.structure.Chain;
+import org.biojava.bio.structure.Group;
+import org.biojava.bio.structure.StructureException;
 import org.biojava.bio.structure.io.FileConvert;
 import ru.ifmo.ctd.proteinresearch.intersections.Point;
-import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 import ru.ifmo.ctd.proteinresearch.ordering.util.PropertiesParser;
 import ru.ifmo.ctd.proteinresearch.ordering.util.SinCos;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

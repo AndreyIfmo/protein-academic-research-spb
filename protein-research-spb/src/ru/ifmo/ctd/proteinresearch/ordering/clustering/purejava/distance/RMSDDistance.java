@@ -5,7 +5,6 @@ import org.biojava.bio.structure.Chain;
 import org.biojava.bio.structure.Group;
 import org.biojava.bio.structure.StructureException;
 import ru.ifmo.ctd.proteinresearch.ordering.solvers.ConformationChain;
-import ru.ifmo.ctd.proteinresearch.ordering.solvers.VertexEdgeAnalyzer;
 
 import java.util.ArrayList;
 import java.util.List;

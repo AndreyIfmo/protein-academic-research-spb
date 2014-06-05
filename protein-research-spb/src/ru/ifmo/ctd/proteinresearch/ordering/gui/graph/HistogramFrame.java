@@ -5,26 +5,24 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui.graph;
  */
 
 
-        import java.awt.Color;
-        import java.awt.Font;
-        import java.io.File;
-        import java.io.IOException;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.Layer;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.TextAnchor;
 
-        import org.jfree.chart.ChartFactory;
-        import org.jfree.chart.ChartPanel;
-        import org.jfree.chart.ChartUtilities;
-        import org.jfree.chart.JFreeChart;
-        import org.jfree.chart.plot.IntervalMarker;
-        import org.jfree.chart.plot.PlotOrientation;
-        import org.jfree.chart.plot.XYPlot;
-        import org.jfree.data.xy.IntervalXYDataset;
-        import org.jfree.data.xy.XYSeries;
-        import org.jfree.data.xy.XYSeriesCollection;
-        import org.jfree.ui.ApplicationFrame;
-        import org.jfree.ui.Layer;
-        import org.jfree.ui.RectangleAnchor;
-        import org.jfree.ui.RefineryUtilities;
-        import org.jfree.ui.TextAnchor;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This demo shows a simple bar chart created using the {@link XYSeriesCollection} dataset.

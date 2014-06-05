@@ -5,9 +5,6 @@ package ru.ifmo.ctd.proteinresearch.ordering.gui.graph;
  */
 
 
-import java.awt.*;
-
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,6 +19,8 @@ import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 import ru.ifmo.ctd.proteinresearch.ordering.experiments.AngleExperiment;
+
+import java.awt.*;
 
 public class Hist2 extends ApplicationFrame {
 

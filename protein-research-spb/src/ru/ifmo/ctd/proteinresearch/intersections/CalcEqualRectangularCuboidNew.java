@@ -1,7 +1,6 @@
 package ru.ifmo.ctd.proteinresearch.intersections;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class CalcEqualRectangularCuboidNew extends AbstractCalc {
 	public int minimalProportion = 4;

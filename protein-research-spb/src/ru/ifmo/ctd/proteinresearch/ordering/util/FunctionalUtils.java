@@ -1,8 +1,5 @@
 package ru.ifmo.ctd.proteinresearch.ordering.util;
 
-import org.biojava.bio.structure.StructureException;
-
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

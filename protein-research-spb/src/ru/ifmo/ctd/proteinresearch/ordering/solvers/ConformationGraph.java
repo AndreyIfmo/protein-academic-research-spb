@@ -1,14 +1,19 @@
 package ru.ifmo.ctd.proteinresearch.ordering.solvers;
 
-import org.biojava.bio.structure.*;
-import org.biojava.bio.structure.io.*;
-import org.ibex.nestedvm.util.Seekable;
-import ru.ifmo.ctd.proteinresearch.ordering.graph.*;
+import org.biojava.bio.structure.Structure;
+import org.biojava.bio.structure.StructureException;
+import org.biojava.bio.structure.io.PDBFileReader;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Graph;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.GraphParser;
+import ru.ifmo.ctd.proteinresearch.ordering.graph.Path;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * A conformation change matrix augmented with edge chains of conformations.
