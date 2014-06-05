@@ -19,7 +19,7 @@ public class ConformationGraph {
     public final Graph graph;
     private final ConformationChain[][] chains;
     public final File[][] files;
-    private final ConformationChain[] roots;
+    public final ConformationChain[] roots;
     private final PDBFileReader fileReader = new PDBFileReader();
     private final Queue<Integer> openChains = new ArrayDeque<>();
     public final String matrixFileName;

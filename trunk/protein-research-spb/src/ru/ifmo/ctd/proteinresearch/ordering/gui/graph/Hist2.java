@@ -41,7 +41,7 @@ public class Hist2 extends ApplicationFrame {
 
     public static void main(String[] args) throws Exception {
 
-        double[] distrbution = AngleExperiment.runEdges("2LJI.properties", 1, 3);/*
+        double[] distrbution = AngleExperiment.runEdges("2LJI.properties", 1, 5);/*
         for (int i=0; i<distrbution.length; i++) {
             distrbution[i] = distrbution[i]>3?distrbution[i]:0;
         }*/

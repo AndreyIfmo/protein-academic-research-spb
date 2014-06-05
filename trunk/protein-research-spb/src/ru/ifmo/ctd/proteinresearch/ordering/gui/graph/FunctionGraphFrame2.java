@@ -31,31 +31,11 @@ public class FunctionGraphFrame2 extends JFrame {
         new FunctionGraphFrame2();
     }
 
-    String fileName = "2LJI";
+    String fileName = "2M2Y";
     static double graphValue(double d) {
         return Math.abs(d)<0.001?0:d;
     }
-    public JPanel createDemoPanelForEdges(Experiment1.Answer answer) throws Exception {
-        XYSeriesCollection dataset = getXySeriesCollectionRMSD(answer);
-/*        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndEdges));
-        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndVertices));
-        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndBannedEdges));*/
 
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "",  // title
-                "Количество вершин",             // x-axis label
-                "RMSD",   // y-axis label
-                dataset,            // data
-                org.jfree.chart.plot.PlotOrientation.VERTICAL,
-                true,
-                true,               // tooltips
-                false               // no URLs
-        );
-
-
-        ChartUtilities.saveChartAsPNG(new File(fileName + ".png"), chart, 800, 800);
-        return new ChartPanel(chart);
-    }
 
     public JPanel createDemoPanelForAngles(double[] points) throws Exception {
         XYSeriesCollection dataset =getAnlgesSeries(points);

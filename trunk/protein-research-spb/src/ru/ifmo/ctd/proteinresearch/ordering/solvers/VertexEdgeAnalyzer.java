@@ -58,7 +58,7 @@ public class VertexEdgeAnalyzer {
             }
             double[] answer = new double[maxDiff.length];
             for (int i = 0; i < maxDiff.length; i++) {
-                answer[i] = maxDiff[i] - minDiff[i];
+                answer[i] = maxDiff[i];
             }
             return answer;
         }
@@ -72,7 +72,7 @@ public class VertexEdgeAnalyzer {
     }
 
     public void run() throws IOException, StructureException {
-        ConformationGraph cg = PropertiesParser.getGraphData("1BTB.properties");
+        ConformationGraph cg = PropertiesParser.getGraphData("2M2Y.properties");
         int n = cg.graph.getN();
         Container result = new Container(n, 1.2);
         for (int i = 0; i < n; i++) {
