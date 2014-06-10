@@ -21,8 +21,7 @@ import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * This demo shows a simple bar chart created using the {@link XYSeriesCollection} dataset.
@@ -50,12 +49,17 @@ public class HistogramFrame extends ApplicationFrame {
      *
      * @return A sample dataset.
      */
-    private IntervalXYDataset createDataset(int [] distrbution) {
+    private IntervalXYDataset createDataset(int [] distrbution) throws IOException {
         final XYSeries series = new XYSeries("Распределение");
+        File file = new File("histogram.csv");
+        FileWriter fw = new FileWriter(file);
+        System.out.println();
         for (int i=0; i<distrbution.length; i++) {
             series.add(i,distrbution[i]);
+            fw.write(i + "; " + distrbution[i] + "\n");
         }
         final XYSeriesCollection dataset = new XYSeriesCollection(series);
+        fw.close();
         return dataset;
     }
 
