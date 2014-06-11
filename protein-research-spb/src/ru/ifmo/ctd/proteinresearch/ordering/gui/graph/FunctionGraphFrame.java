@@ -29,7 +29,7 @@ public class FunctionGraphFrame extends JFrame {
         new FunctionGraphFrame();
     }
 
-    String fileName = "1BTB";
+    String fileName = "2LJI";
     static double graphValue(double d) {
         return Math.abs(d)<0.001?0:d;
     }
@@ -56,9 +56,9 @@ public class FunctionGraphFrame extends JFrame {
         dataset.addSeries(edgesData);
         dataset.addSeries(verticesData);
       //  dataset.addSeries(bannedEdgesData);
-        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndEdges));
-        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndVertices));
-        System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndBannedEdges));
+        HistogramFrame.writeGraphDataToFile(answer.rangesBetweenReferenceAndEdges, "1.csv");
+        HistogramFrame.writeGraphDataToFile(answer.rangesBetweenReferenceAndVertices, "2.csv");
+        //System.out.println(Arrays.toString(answer.rangesBetweenReferenceAndBannedEdges));
 
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "",  // title
