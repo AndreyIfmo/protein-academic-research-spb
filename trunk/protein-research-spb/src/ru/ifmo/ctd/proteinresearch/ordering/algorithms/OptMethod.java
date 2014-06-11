@@ -50,4 +50,19 @@ public class OptMethod {
         return minArg;
     }
 
+    public static double PHI = (1+Math.sqrt(5)+1)/2;
+
+    public static double gold(Function<Double, Double> f, double a, double b, double eps) throws Exception {
+
+        while (Math.abs(b-a)>eps) {
+            double x1 = b - (b - a) / PHI;
+            double x2 = a + (b - a) / PHI;
+            double y1 = f.apply(x1);
+            double y2 = f.apply(x2);
+            if (y1 <= y2) {
+                a = x1;
+            }
+        }
+        return (a+b)/2;
+    }
 }
