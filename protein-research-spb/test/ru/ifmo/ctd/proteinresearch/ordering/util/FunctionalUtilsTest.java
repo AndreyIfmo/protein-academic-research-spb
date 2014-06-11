@@ -26,5 +26,9 @@ public class FunctionalUtilsTest extends TestCase {
         Assert.assertEquals(new Integer(1), list2.get(0));
     }
 
+    public void testListFunctions() {
+        FunctionalUtils.list(1,5,3);
+        Assert.assertEquals(FunctionalUtils.list(0,2,4),FunctionalUtils.complList(FunctionalUtils.list(1,5,3),5));
+    }
 
 }

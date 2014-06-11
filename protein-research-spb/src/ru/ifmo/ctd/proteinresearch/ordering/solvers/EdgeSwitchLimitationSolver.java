@@ -57,7 +57,7 @@ public class EdgeSwitchLimitationSolver {
     }
 
     public static void main(String[] args) throws Exception {
-        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2LJI.properties");
+        final EdgeSwitchLimitationSolver edgeSwitchLimitationSolver = new EdgeSwitchLimitationSolver("2M2Y.properties");
         edgeSwitchLimitationSolver.run(0.001, 10);
 
 //        edgeSwitchLimitationSolver.recalculate();
@@ -160,14 +160,19 @@ public class EdgeSwitchLimitationSolver {
 
     public void run(double border, List<Integer> bannedVertices) throws Exception {
         banned = calculateBannedEdges(getN());
+        applyBanned(bannedVertices);
+        f.apply(border);
+    }
+
+    private void applyBanned(List<Integer> bannedVertices) {
         for (Integer it:bannedVertices) {
             for (int i=0; i<banned.length; i++) {
                 banned[it][i] = true;
                 banned[i][it] = true;
             }
         }
-        f.apply(border);
     }
+
     public void run(double border) throws Exception {
         banned = calculateBannedEdges(getN());
         f.apply(border);
@@ -175,12 +180,20 @@ public class EdgeSwitchLimitationSolver {
 
     public void run(double minDiffValue, double maxDiffValue) throws Exception {
         banned = calculateBannedEdges(getN());
+        double optimalValue = findOptimalValue(minDiffValue, maxDiffValue, f);
+        System.out.println("OPT"+optimalValue);
+        run(optimalValue);
+    }
+
+    public void run(double minDiffValue, double maxDiffValue, List<Integer> bannedVertices) throws Exception {
+        banned = calculateBannedEdges(getN());
+        applyBanned(bannedVertices);
         run(findOptimalValue(minDiffValue, maxDiffValue, f));
     }
 
     private double findOptimalValue(double minDiffValue, double maxDiffValue, Function f) throws Exception {
         double delta = 0.0000001;
-        return OptMethod.upgradedTriSearch(f, minDiffValue, maxDiffValue, delta, 15);
+        return OptMethod.gold(f, minDiffValue, maxDiffValue, delta);
      //   System.out.println("Value: " + border);
       //  System.out.println("ANSWER");
       //  System.out.println(f.apply(border));

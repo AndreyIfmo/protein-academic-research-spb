@@ -23,4 +23,24 @@ public class FunctionalUtils {
         }
         return sum;
     }
+
+    public static List<Integer> list(Integer... arg) {
+        List<Integer> answer = new ArrayList<Integer>();
+        for (int i:arg) {
+            answer.add(i);
+        }
+        return answer;
+    }
+
+
+    public static List<Integer> complList(List<Integer> arg, int maxN) {
+        List<Integer> answer = new ArrayList<>();
+        for (int i=0;i<maxN; i++) {
+            if (!arg.contains(i)) {
+                answer.add(i);
+            }
+        }
+        return answer;
+    }
+
 }
