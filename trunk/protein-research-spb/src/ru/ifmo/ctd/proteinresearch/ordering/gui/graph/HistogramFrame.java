@@ -51,16 +51,33 @@ public class HistogramFrame extends ApplicationFrame {
      */
     private IntervalXYDataset createDataset(int [] distrbution) throws IOException {
         final XYSeries series = new XYSeries("Распределение");
-        File file = new File("histogram.csv");
+        String pathname = "histogram.csv";
+        writeGraphDataToFile(distrbution, pathname);
+        for (int i=0; i<distrbution.length; i++) {
+            series.add(i, distrbution[i]);
+        }
+        final XYSeriesCollection dataset = new XYSeriesCollection(series);
+        return dataset;
+    }
+
+    public static void writeGraphDataToFile(int[] distrbution, String pathname) throws IOException {
+        File file = new File(pathname);
         FileWriter fw = new FileWriter(file);
         System.out.println();
         for (int i=0; i<distrbution.length; i++) {
-            series.add(i,distrbution[i]);
             fw.write(i + "; " + distrbution[i] + "\n");
         }
-        final XYSeriesCollection dataset = new XYSeriesCollection(series);
         fw.close();
-        return dataset;
+    }
+
+    public static void writeGraphDataToFile(double[] distrbution, String pathname) throws IOException {
+        File file = new File(pathname);
+        FileWriter fw = new FileWriter(file);
+        System.out.println();
+        for (int i=0; i<distrbution.length; i++) {
+            fw.write(i + "; " + distrbution[i] + "\n");
+        }
+        fw.close();
     }
 
     /**
